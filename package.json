@@ -1,0 +1,23 @@
+{
+  "name": "nek-server",
+  "version": "0.0.1",
+  "description": "Server for NEK",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@g.hz.netease.com:22222/NEK/nek-server.git"
+  },
+  "keywords": [
+    "NEK"
+  ],
+  "author": "Kaola",
+  "license": "ISC",
+  "dependencies": {
+    "koa": "^1.2.4",
+    "koa-router": "^5.4.0",
+    "koa-static": "^2.0.0"
+  }
+}
