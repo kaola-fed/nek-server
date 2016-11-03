@@ -39,24 +39,24 @@ module.exports = {
   },
   plugins: [
     new WebpackCleanupPlugin(),
-		new webpack.DefinePlugin({
-			'process.env': {
-				NODE_ENV: '"production"'
-			}
-		}),
-		new webpack.optimize.UglifyJsPlugin({
-			compress: {
-				warnings: false,
-				screw_ie8: true,
-				drop_console: true,
-				drop_debugger: true
-			}
-		}),
-		new webpack.optimize.OccurenceOrderPlugin(),
-		new ExtractTextPlugin('[contenthash].css', {
-			allChunks: true
-		}),
-		new HtmlWebpackPlugin(),
-		new webpack.optimize.DedupePlugin(),
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: '"production"'
+      }
+    }),
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        warnings: false,
+        screw_ie8: true,
+        drop_console: true,
+        drop_debugger: true
+      }
+    }),
+    new webpack.optimize.OccurenceOrderPlugin(),
+    new ExtractTextPlugin('[contenthash].css', {
+      allChunks: true
+    }),
+    new HtmlWebpackPlugin(),
+    new webpack.optimize.DedupePlugin(),
   ],
 };

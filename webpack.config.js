@@ -20,14 +20,14 @@ module.exports = {
     },
   },
   devServer: {
-		contentBase: "./dist",
-		noInfo: true,
-		hot: true,
-		inline: true,
-		historyApiFallback: true,
-		port: PORT,
-		host: HOST
-	},
+    contentBase: "./dist",
+    noInfo: true,
+    hot: true,
+    inline: true,
+    historyApiFallback: true,
+    port: PORT,
+    host: HOST
+  },
   module: {
     loaders: [
       { test: /\.html$/, loader: 'raw' },
@@ -41,7 +41,7 @@ module.exports = {
   },
   plugins: [
     new webpack.NoErrorsPlugin(),
-		new webpack.HotModuleReplacementPlugin(),
+    new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin(),
   ],
 };
