@@ -1,13 +1,12 @@
 const RGUI = require('nek-ui');
 const tpl = require('!raw!./index.html');
-const Button = require('./common/Button');
-const Demo = require('./modules/Demo');
+const Demo = require('./modules/demo');
 
 require('rgui_css/regular-ui.default.css');
 require('./sass/main.scss');
 
 const App = RGUI.Component.extend({
-  name: 'App',
+  name: 'app',
   template: tpl,
   config: function () {
     this.defaults({
