@@ -1,8 +1,6 @@
 const RGUI = require('nek-ui');
 const tpl = require('!raw!./index.html');
 
-require('rgui_css/regular-ui.default.css');
-require('../../sass/dropArea.scss');
 
 const DropArea = RGUI.Component.extend({
     name: 'dropArea',

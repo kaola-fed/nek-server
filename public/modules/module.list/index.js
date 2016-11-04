@@ -2,8 +2,6 @@ const RGUI = require('nek-ui');
 const tpl = require('!raw!./index.html');
 import {  Draggable, Droppable, Movable } from 'rgui-ui-drag'
 
-require('rgui_css/regular-ui.default.css');
-require('../../sass/moduleList.scss');
 
 const ModuleList = RGUI.Component.extend({
     name: 'moduleList',
