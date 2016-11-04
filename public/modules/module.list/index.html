@@ -1,0 +1,15 @@
+<div class="module-list f-fl">
+    {#list list as cate}
+    <div class="f-cb">
+        <div class="titie">{cate.category.name}</div>
+        {#list cate.category.modules as module}
+        <draggable>
+        <div class="module">
+            <img src="">
+            <span>{module.name}</span>
+        </div>
+        </draggable>
+        {/list}
+        </div>
+    {/list}
+</div>

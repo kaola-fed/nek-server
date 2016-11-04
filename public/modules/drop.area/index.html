@@ -1,0 +1,15 @@
+<div class="drop-area f-fl">
+<droppable>
+<table class="table">
+    <tbody>
+        {#list 0..(row-1) as tr}
+        <tr>
+            {#list 0..(col-1) as td}
+            <td></td>
+            {/list}
+        </tr>
+        {/list}
+    </tbody>
+</table>
+</droppable>
+</div>
