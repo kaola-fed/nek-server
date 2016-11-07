@@ -8,6 +8,7 @@ const ModuleList = RGUI.Component.extend({
     template: tpl,
     config: function() {
         this.defaults({
+            tdWidth: 40,
             list: [
                 {
                     category: {
@@ -21,13 +22,13 @@ const ModuleList = RGUI.Component.extend({
                             name: 'form.number',
                             moduleId: 1,
                             width: 4,
-                            height: 1
+                            height: 2
                         },
                         {
                             name: 'form.number',
                             moduleId: 1,
-                            width: 4,
-                            height: 1
+                            width: 5,
+                            height: 3
                         }]
                     }
                 },

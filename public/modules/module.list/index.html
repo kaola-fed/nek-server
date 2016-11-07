@@ -3,12 +3,15 @@
     <div class="f-cb">
         <div class="titie">{cate.category.name}</div>
         {#list cate.category.modules as module}
-        <draggable>
-        <div class="module">
-            <img src="">
-            <span>{module.name}</span>
-        </div>
-        </draggable>
+        <draggable name={module.name} moduleId={module.moduleId} width={module.width} height={module.height}>
+            <div class="module">
+                <img src="">
+                <span>{module.name}</span>
+            </div>
+            <draggable.proxy>
+                <div class="proxy-module" style="width: {module.width*tdWidth}px;height: {module.height*tdWidth}px;line-height: {module.height*tdWidth}px;">{module.name}</div>
+            </draggable.proxy>
+            </draggable>
         {/list}
         </div>
     {/list}

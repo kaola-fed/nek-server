@@ -1,9 +1,21 @@
-.table {
-    margin-left: 50px;
-    border-collapse: collapse;
-    td {
-        border: solid 1px #ccc;
-        width: 40px;
-        height: 40px;
+.drop-area {
+    margin: 20px 0 50px 50px;
+    .table {
+        border-collapse: collapse;
+        td {
+            border: solid 1px #ccc;
+            &.border-top {
+                border-top: solid 2px #3c8dbc;
+            }
+            &.border-bottom {
+                border-bottom: solid 2px #3c8dbc;
+            }
+            &.border-left {
+                border-left: solid 2px #3c8dbc;
+            }
+            &.border-right {
+                border-right: solid 2px #3c8dbc;
+            }
+        }
     }
 }
