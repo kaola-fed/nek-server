@@ -5,16 +5,16 @@
         td {
             border: solid 1px #ccc;
             &.border-top {
-                border-top: solid 2px #3c8dbc;
+                border-top: dashed 2px #3c8dbc;
             }
             &.border-bottom {
-                border-bottom: solid 2px #3c8dbc;
+                border-bottom: dashed 2px #3c8dbc;
             }
             &.border-left {
-                border-left: solid 2px #3c8dbc;
+                border-left: dashed 2px #3c8dbc;
             }
             &.border-right {
-                border-right: solid 2px #3c8dbc;
+                border-right: dashed 2px #3c8dbc;
             }
         }
     }

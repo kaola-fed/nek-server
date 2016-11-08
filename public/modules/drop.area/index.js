@@ -5,16 +5,16 @@ const Regular = require('regularjs');
 const DropArea = RGUI.Component.extend({
     name: 'dropArea',
     template: tpl,
-    config: function() {
+    config() {
         this.defaults({
             col: 24,           // drop区域有多少列
-            row: 24,           // drop区域有多少行
+            row: 24,           // drop区域有多少行, 初始一行
             tdWidth: 40        // drop区域一个格子的宽度，也即高度
         });
         this.supr();
     },
-    dragOver: function(event) {
-        var data = this.data,
+    dragOver(event) {
+        let data = this.data,
             moduleId = event.origin.data.moduleId,
             width = event.origin.data.width,
             height= event.origin.data.height,
@@ -25,32 +25,32 @@ const DropArea = RGUI.Component.extend({
             rows = Array.prototype.slice.call(dropArea.getElementsByClassName('row'));
         // console.log(moduleId, width, height, dropArea, dropAreaRect, proxy, proxyRect);
 
-        var firstTd = this.getDropLattice(dropAreaRect, proxyRect, width, height);
+        let firstTd = this.getDropLattice(dropAreaRect, proxyRect, width, height);
         this.setDropLatticeBorder(firstTd.firstCol, firstTd.firstRow, width, height, rows)
     },
-    dragLeave: function(event) {
+    dragLeave(event) {
 
     },
-    drop: function(event) {
+    drop(event) {
 
     },
     // 计算drop后，模块左上角所属的格子
-    getDropLattice: function(dropAreaRect, proxyRect, width, height) {
-        var data = this.data,
+    getDropLattice(dropAreaRect, proxyRect, width, height) {
+        let data = this.data,
             dropAreaTop = dropAreaRect.top,
             dropAreaLeft = dropAreaRect.left,
             proxyLeft = proxyRect.left,
             proxyTop = proxyRect.top,
             firstCol,firstRow;
 
-        for(var i = 0; i < data.col; i++) {
+        for(let i = 0; i < data.col; i++) {
             if (proxyLeft == (dropAreaLeft + i * data.tdWidth) || (proxyLeft > (dropAreaLeft + i * data.tdWidth) && proxyLeft < (dropAreaLeft + (i+1) * data.tdWidth))) {
                 firstCol = i;
                 break;
             }
         }
 
-        for(var i = 0; i < data.row; i++) {
+        for(let i = 0; i < data.row; i++) {
             if (proxyTop == (dropAreaTop + i * data.tdWidth) || (proxyTop > (dropAreaTop + i * data.tdWidth) && proxyTop < (dropAreaTop + (i+1) * data.tdWidth))) {
                 firstRow = i;
                 break;
@@ -66,8 +66,8 @@ const DropArea = RGUI.Component.extend({
         return {firstCol: firstCol, firstRow: firstRow}
     },
     // 设置模块所属dropArea的格子边框
-    setDropLatticeBorder: function(firstCol, firstRow, moduleWidth, moduleHeight, rows) {
-        var tdRow,tdCol,tdRowUp,tdColUp;
+    setDropLatticeBorder(firstCol, firstRow, moduleWidth, moduleHeight, rows) {
+        let tdRow,tdCol,tdRowUp,tdColUp;
         // 清除所有样式
         rows.forEach(function(row) {
             row = Array.prototype.slice.call(row.getElementsByClassName('col'));
@@ -78,10 +78,10 @@ const DropArea = RGUI.Component.extend({
                 Regular.dom.delClass(col, 'border-left');
             })
         })
-        for(var i = 0; i < moduleHeight; i++) {
+        for(let i = 0; i < moduleHeight; i++) {
             tdRow = rows[firstRow+i];
             tdCol = Array.prototype.slice.call(tdRow.getElementsByClassName('col'));
-            for(var j = 0; j < moduleWidth; j++) {
+            for(let j = 0; j < moduleWidth; j++) {
                 if(i == 0) {
                     Regular.dom.addClass(tdCol[firstCol+j], 'border-top');
                 }

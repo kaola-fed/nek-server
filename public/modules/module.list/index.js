@@ -20,13 +20,13 @@ const ModuleList = RGUI.Component.extend({
                             height: 1
                         }, {
                             name: 'form.number',
-                            moduleId: 1,
+                            moduleId: 2,
                             width: 4,
                             height: 2
                         },
                         {
                             name: 'form.number',
-                            moduleId: 1,
+                            moduleId: 3,
                             width: 5,
                             height: 3
                         }]
@@ -37,19 +37,19 @@ const ModuleList = RGUI.Component.extend({
                         name: '业务组件',
                         modules: [{
                             name: 'form.input',
-                            moduleId: 1,
-                            width: 5,
-                            height: 1
+                            moduleId: 4,
+                            width: 24,
+                            height: 5
                         }, {
                             name: 'form.input',
-                            moduleId: 1,
-                            width: 5,
-                            height: 1
+                            moduleId: 5,
+                            width: 10,
+                            height: 3
                         }, {
                             name: 'form.number',
-                            moduleId: 1,
-                            width: 4,
-                            height: 1
+                            moduleId: 6,
+                            width: 12,
+                            height: 6
                         }]
                     }
                 }
