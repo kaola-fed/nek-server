@@ -3,7 +3,7 @@ const tpl = require('!raw!./index.html');
 const Regular = RGUI.Regular;
 
 const DropArea = RGUI.Component.extend({
-    name: 'dropArea',
+    name: 'drop.area',
     template: tpl,
     config() {
         this.defaults({

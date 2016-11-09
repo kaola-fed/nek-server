@@ -4,7 +4,7 @@ import {  Draggable, Droppable, Movable } from 'rgui-ui-drag'
 
 
 const ModuleList = RGUI.Component.extend({
-    name: 'moduleList',
+    name: 'module.list',
     template: tpl,
     config: function() {
         this.defaults({

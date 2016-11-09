@@ -1,8 +1,8 @@
 const RGUI = require('nek-ui');
 const tpl = require('!raw!./index.html');
 const Demo = require('./modules/demo');
-const moduleList = require('./modules/module.list');
-const dropArea = require('./modules/drop.area');
+const ModuleList = require('./modules/module.list');
+const DropArea = require('./modules/drop.area');
 
 require('rgui_css/regular-ui.default.css');
 require('./sass/main.scss');
