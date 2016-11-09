@@ -1,15 +1,15 @@
-const RGUI = require('nek-ui');
-const tpl = require('!raw!./index.html');
-const ModuleList = require('./modules/module.list');
-const DropArea = require('./modules/drop.area');
+import { Component } from 'nek-ui';
+import template from '!raw!./index.html';
+import ModuleList from './modules/module.list';
+import DropArea from './modules/drop.area';
 
 require('rgui_css/regular-ui.default.css');
 require('./sass/main.scss');
 
-const App = RGUI.Component.extend({
+const App = Component.extend({
   name: 'app',
-  template: tpl,
-  config: function () {
+  template,
+  config() {
     this.defaults({
       text: 'NEK',
     });

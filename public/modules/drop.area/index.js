@@ -1,10 +1,9 @@
-const RGUI = require('nek-ui');
-const tpl = require('!raw!./index.html');
-const Regular = RGUI.Regular;
+import { Regular, Component } from 'nek-ui';
+import template from '!raw!./index.html';
 
-const DropArea = RGUI.Component.extend({
+const DropArea = Component.extend({
     name: 'drop.area',
-    template: tpl,
+    template,
     config() {
         this.defaults({
             col: 24,           // drop区域有多少列
@@ -99,4 +98,4 @@ const DropArea = RGUI.Component.extend({
     }
 });
 
-module.exports = DropArea;
+export default DropArea;

@@ -1,14 +1,13 @@
-const RGUI = require('nek-ui');
-const tpl = require('!raw!./index.html');
-const categoryList = require('../../categoryList');
+import { Component } from 'nek-ui';
+import template from '!raw!./index.html';
+import categoryList from '../../categoryList';
+import { Draggable, Droppable, Movable } from 'rgui-ui-drag'
 
-import {  Draggable, Droppable, Movable } from 'rgui-ui-drag'
 
-
-const ModuleList = RGUI.Component.extend({
+const ModuleList = Component.extend({
     name: 'module.list',
-    template: tpl,
-    config: function() {
+    template,
+    config() {
         this.defaults({
             tdWidth: 40,
             categoryList: categoryList,
@@ -17,4 +16,4 @@ const ModuleList = RGUI.Component.extend({
     }
 });
 
-module.exports = ModuleList;
+export default ModuleList;
