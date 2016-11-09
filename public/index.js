@@ -1,6 +1,5 @@
 const RGUI = require('nek-ui');
 const tpl = require('!raw!./index.html');
-const Demo = require('./modules/demo');
 const ModuleList = require('./modules/module.list');
 const DropArea = require('./modules/drop.area');
 
