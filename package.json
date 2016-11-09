@@ -17,6 +17,7 @@
   "author": "Kaola",
   "license": "ISC",
   "dependencies": {
+    "rgui-ui-drag": "^0.2.0-alpha.1",
     "express": "^4.14.0",
     "nek-ui": "^0.1.9"
   },
@@ -31,7 +32,6 @@
     "html-webpack-plugin": "^2.24.1",
     "node-sass": "^3.10.1",
     "raw-loader": "^0.5.1",
-    "rgui-ui-drag": "^0.2.0-alpha.1",
     "sass-loader": "^4.0.2",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
