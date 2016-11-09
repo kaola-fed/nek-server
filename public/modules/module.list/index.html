@@ -5,7 +5,7 @@
         {#list cate.moduleList as module}
         <draggable name={module.name} width={module.cols} height={1}>
             <div class="module">
-                <img src="">
+                <img src={module.icon}>
                 <span>{module.desc}</span>
             </div>
             <draggable.proxy>
