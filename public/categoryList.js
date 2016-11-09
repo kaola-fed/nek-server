@@ -26,4 +26,4 @@ const categoryList = [{
     }]
 }];
 
-module.exports = categoryList;
+export default categoryList;
