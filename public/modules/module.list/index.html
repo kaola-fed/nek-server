@@ -1,15 +1,15 @@
 <div class="module-list f-fl">
-    {#list list as cate}
+    {#list categoryList as cate}
     <div class="f-cb">
-        <div class="titie">{cate.category.name}</div>
-        {#list cate.category.modules as module}
-        <draggable name={module.name} moduleId={module.moduleId} width={module.width} height={module.height}>
+        <div class="titie">{cate.title}</div>
+        {#list cate.moduleList as module}
+        <draggable name={module.name} width={module.cols} height={1}>
             <div class="module">
                 <img src="">
-                <span>{module.name}</span>
+                <span>{module.desc}</span>
             </div>
             <draggable.proxy>
-                <div class="proxy-module" style="width: {module.width*tdWidth}px;height: {module.height*tdWidth}px;line-height: {module.height*tdWidth}px;">{module.name}</div>
+                <div class="proxy-module" style="width: {module.cols*tdWidth}px;height: {tdWidth}px;line-height: {tdWidth}px;">{module.name}</div>
             </draggable.proxy>
             </draggable>
         {/list}
