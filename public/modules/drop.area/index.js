@@ -1,6 +1,6 @@
 const RGUI = require('nek-ui');
 const tpl = require('!raw!./index.html');
-const Regular = require('regularjs');
+const Regular = RGUI.Regular;
 
 const DropArea = RGUI.Component.extend({
     name: 'dropArea',
