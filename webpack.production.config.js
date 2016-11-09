@@ -24,6 +24,10 @@ module.exports = {
         loader: 'raw',
       },
       {
+        test: /\.js|jsx$/, loader: 'babel',
+        include: [path.join(__dirname, '/public'), /node_modules(\\|\/)rgui-/],
+      },
+      {
         test: /\.css$/,
         loader: ExtractTextPlugin.extract('style', 'css'),
       },
