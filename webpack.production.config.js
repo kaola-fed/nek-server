@@ -34,7 +34,7 @@ module.exports = {
       },
       {
         test: /\.scss$/,
-        loader: ExtractTextPlugin.extract('style', 'css', 'sass'),
+        loader: ExtractTextPlugin.extract('style', 'css!sass'),
       },
       {
         test: /\.(eot|woff|woff2|ttf|svg|png|jpe?g|gif)(\?\S*)?$/,
@@ -61,7 +61,7 @@ module.exports = {
     new ExtractTextPlugin('[contenthash].css', {
       allChunks: true
     }),
-    new HtmlWebpackPlugin(),
+    new HtmlWebpackPlugin({ title: 'NEK Server' }),
     new webpack.optimize.DedupePlugin(),
   ],
 };
