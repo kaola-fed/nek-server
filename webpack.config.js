@@ -30,7 +30,7 @@ module.exports = {
   },
   module: {
     loaders: [
-      { test: /\.js|jsx$/, loader: 'babel', include: [path.join(__dirname, '/public'), /node_modules(\\|\/)rgui-/] },
+      { test: /\.js|jsx$/, loader: 'babel', include: [path.join(__dirname, 'public'), /node_modules(\\|\/)rgui-/] },
       { test: /\.html$/, loader: 'raw' },
       { test: /\.css$/, loader: 'style!css' },
       { test: /\.scss$/, loader: 'style!css!sass' },

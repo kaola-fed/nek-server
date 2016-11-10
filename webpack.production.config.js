@@ -10,7 +10,7 @@ module.exports = {
   ],
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: '[contenthash].js',
+    filename: 'bundle-[hash].js',
   },
   resolve: {
     alias: {
@@ -26,7 +26,7 @@ module.exports = {
       {
         test: /\.js|jsx$/,
         loader: 'babel',
-        include: [path.join(__dirname, '/public'), /node_modules(\\|\/)rgui-/],
+        include: [path.join(__dirname, 'public'), /node_modules(\\|\/)rgui-/],
       },
       {
         test: /\.css$/,
