@@ -1,0 +1,15 @@
+<div class="drop-area f-fl">
+<droppable on-dragover={this.dragOver($event)} on-dragleave={this.dragLeave($event)} on-drop={this.drop($event)}>
+<table class="table">
+    <tbody>
+        {#list 0..(row-1) as tr}
+        <tr class="row">
+            {#list 0..(col-1) as td}
+            <td class="col" style="width: {tdWidth}px; height: {tdWidth}px"></td>
+            {/list}
+        </tr>
+        {/list}
+    </tbody>
+</table>
+</droppable>
+</div>

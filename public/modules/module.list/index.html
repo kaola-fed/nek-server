@@ -1,0 +1,18 @@
+<div class="module-list f-fl">
+    {#list categoryList as cate}
+    <div class="f-cb">
+        <div class="titie">{cate.title}</div>
+        {#list cate.moduleList as module}
+        <draggable name={module.name} width={module.cols} height={1}>
+            <div class="module">
+                <img src={module.icon}>
+                <span>{module.desc}</span>
+            </div>
+            <draggable.proxy>
+                <div class="proxy-module" style="width: {module.cols*tdWidth}px;height: {tdWidth}px;line-height: {tdWidth}px;">{module.name}</div>
+            </draggable.proxy>
+            </draggable>
+        {/list}
+        </div>
+    {/list}
+</div>

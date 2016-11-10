@@ -1,0 +1,30 @@
+.module-list {
+    width: 242px;
+    background-color: #fff;
+    overflow: auto;
+    border: solid 1px #ddd;
+    .titie {
+        height: 30px;
+        background-color: #ddd;
+        text-align: center;
+        line-height: 30px;
+    }
+    .module {
+        width: 120px;
+        float: left;
+        background-color: #fff;
+        padding: 20px;
+        img {
+            cursor: pointer;
+        }
+    }
+    img {
+        width: 80px;
+        height: 80px;
+    }
+}
+.proxy-module {
+    border: solid 1px #3c8dbc;
+    text-align: center;
+    color: #3c8dbc;
+}

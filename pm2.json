@@ -1,0 +1,8 @@
+{
+  "apps": [{
+    "name": "nek",
+    "script": "app.js",
+    "instances": 0,
+    "exec_mode": "fork"
+  }]
+}
