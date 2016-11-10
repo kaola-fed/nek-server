@@ -7,7 +7,7 @@
   {{/if}}
   {{#if isPage}}
   ,'text!./page.html'
-  {{#else}}
+  {{else}}
   ,'text!./index.html'
   {{/if}}
   {{#each modals}}
