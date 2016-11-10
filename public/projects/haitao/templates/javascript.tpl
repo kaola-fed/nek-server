@@ -5,6 +5,11 @@
   {{else}}
   '{{BaseComponent}}'
   {{/if}}
+  {{#if isPage}}
+  'text!./page.html'
+  {{#else}}
+  'text!./index.html'
+  {{/if}}
   {{#each modals}}
   {{#if isPage}}
   ,'../modal/{{name}}/index.js'
@@ -27,23 +32,25 @@
  * @see KJDS-2758: {{today}} 你的名字 初始化页面
  */
 define([{{deps}}
-], function({{#if isModal}}BaseModal{{else}}BaseComponent{{/if}}{{#each modals}},{{cammel name}}{{/each}}) {
+], function({{#if isModal}}BaseModal{{else}}BaseComponent{{/if}},template{{#each modals}},{{cammel name}}{{/each}}) {
 
   {{#if isModal}}
   return BaseModal.extend({
     {{#if name}}
-    name:'{{name}}',
+    name: '{{name}}',
     {{/if}}
-    config:function(data) {
+    template: template,
+    config: function(data) {
       this.supr(data);
     }
   })
   {{else}}
   return BaseComponent.extend({
     {{#if name}}
-    name:'{{name}}',
+    name: '{{name}}',
     {{/if}}
-    config:function(data) {
+    template: template,
+    config: function(data) {
       this.supr(data);
     }
   });
