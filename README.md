@@ -45,5 +45,12 @@ NEK 的服务端，包含了页面拖拽构建以及数据库交互
  - `npm start`
  - open `http://localhost:3300`
 
+## 部署
+
+ - `npm i`
+ - `npm run build`
+ - `npm -g pm2`
+ - `pm2`
+
  [1]: https://github.com/kaola-fed/regular-ui
  [2]: https://kaola-fed.github.io/regular-ui/doc/start/rule.html
