@@ -25,10 +25,11 @@ const DropArea = Component.extend({
         this.setDropLatticeBorder(firstCol, moudleWidth, dropArea);
     },
     dragLeave(event) {
-
+        let dropArea = event.target;
+        this.clearBorder(dropArea);
     },
-    drop(event) {
-
+    drop(event, index) {
+        console.log(index);
     },
     // 计算drop后，模块左上角所属的格子
     getDropLattice(dropAreaRect, proxyRect, moudleWidth) {
@@ -54,16 +55,33 @@ const DropArea = Component.extend({
     setDropLatticeBorder(firstCol, moduleWidth, dropArea) {
         let data = this.data;
         let lines = Array.prototype.slice.call(dropArea.getElementsByClassName('line'));
-        // 清除所有样式
-        lines.forEach(function(line) {
-            Regular.dom.delClass(line, 'border-left');
-        })
+        this.clearBorder(dropArea);
 
         for(let i = 0; i < moduleWidth + 1; i++) {
+            if(firstCol + i - 1 == -1) {
+                Regular.dom.addClass(dropArea, 'border-left');
+            }
+            if(firstCol + i - 1 == data.col - 1) {
+                Regular.dom.addClass(dropArea, 'border-right');
+            }
             if(firstCol + i - 1 > -1 && firstCol + i - 1 < data.col - 1) {
                 Regular.dom.addClass(lines[firstCol + i - 1], 'border-left');
             }
         }
+    },
+    // 清除所有border
+    clearBorder(row) {
+        let lines = Array.prototype.slice.call(row.getElementsByClassName('line'));
+        Regular.dom.delClass(row, 'border-left');
+        Regular.dom.delClass(row, 'border-right');
+        lines.forEach(function(line) {
+            Regular.dom.delClass(line, 'border-left');
+        })
+    },
+    // 添加一行
+    addRow() {
+        let data = this.data;
+        data.rows.push({});
     }
 });
 

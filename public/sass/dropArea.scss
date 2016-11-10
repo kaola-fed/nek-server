@@ -1,3 +1,4 @@
+$mainColor: #3c8dbc;
 .drop-area {
     margin: 20px 0 50px 50px;
     .row {
@@ -11,8 +12,20 @@
             width: 2;
             height: 100%;
         }
-        .border-left {
-            border-left: dashed 2px #3c8dbc;
-        }
+    }
+    .border-left {
+        border-left: dashed 2px $mainColor;
+    }
+    .border-right {
+        border-right: dashed 2px $mainColor;
+    }
+    .add-row {
+        width: 70px;
+        height: 40px;
+        background-color: $mainColor;
+        display: inline-block;
+        line-height: 40px;
+        color: #fff;
+        border-radius: 5px;
     }
 }
