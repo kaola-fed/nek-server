@@ -4,10 +4,10 @@
         "projectId": "xxx",
         "url": "http://ms.kaola.com/backend/auditDetail/detail",
         "templates":{
-            "entry":"http://127.0.0.1:3000/projects/haitao/templates/entry.tpl",
-            "javascript":"http://127.0.0.1:3000/projects/haitao/templates/javascript.tpl",
-            "html":"http://127.0.0.1:3000/projects/haitao/templates/html.tpl",
-            "freemarker":"http://127.0.0.1:3000/projects/haitao/templates/freemarker.tpl"
+            "entry":"http://nek.kaolafed.com/project/haitao/templates/entry.tpl",
+            "javascript":"http://nek.kaolafed.com/project/haitao/templates/javascript.tpl",
+            "html":"http://nek.kaolafed.com/project/haitao/templates/html.tpl",
+            "freemarker":"http://nek.kaolafed.com/project/haitao/templates/freemarker.tpl"
         },
         "ftlData": [{
             "name": "auditId",
