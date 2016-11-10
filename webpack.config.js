@@ -43,6 +43,6 @@ module.exports = {
   plugins: [
     new webpack.NoErrorsPlugin(),
     new webpack.HotModuleReplacementPlugin(),
-    new HtmlWebpackPlugin(),
+    new HtmlWebpackPlugin({ title: 'NEK Server' }),
   ],
 };
