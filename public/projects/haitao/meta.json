@@ -1,0 +1,172 @@
+{
+    "code": 200,
+    "meta": {
+        "projectId": "xxx",
+        "url": "http://ms.kaola.com/backend/auditDetail/detail",
+        "templates":{
+            "entry":"http://127.0.0.1:3000/projects/haitao/templates/entry.tpl",
+            "javascript":"http://127.0.0.1:3000/projects/haitao/templates/javascript.tpl",
+            "html":"http://127.0.0.1:3000/projects/haitao/templates/html.tpl",
+            "freemarker":"http://127.0.0.1:3000/projects/haitao/templates/freemarker.tpl"
+        },
+        "ftlData": [{
+            "name": "auditId",
+            "type": "string"
+        }, {
+            "name": "isEdit",
+            "type": "boolean"
+        }],
+        "rows": [{
+            "clazz": "f-mb10",
+            "components": [{
+                "name": "contract.info",
+                "id": 0,
+                "layout": {
+                    "cols": 12
+                },
+                "data": {
+                    "auditId": "auditId"
+                }
+            }]
+        }, {
+            "clazz": "f-mb10",
+            "components": [{
+                "id": 0,
+                "name": "basic.info",
+                "title": "基础信息",
+                "desc": "基础信息",
+                "isForm": true,
+                "rows": [{
+                    "clazz": "f-mb10",
+                    "components": [{
+                        "name": "legend",
+                        "id": 502,
+                        "layout": {
+                            "cols":12
+                        },
+                        "text": "仓库信息"
+                    }]
+                }, {
+                    "clazz": "f-mb10",
+                    "components": [{
+                        "name": "form.select",
+                        "id": 1004,
+                        "layout": {
+                            "cols": 3
+                        },
+                        "attributes": {
+                            "title": "计划入库仓库",
+                            "required": true
+                        },
+                        "data": {
+                            "valueId": "dto.warehouseId",
+                            "valueName": "dto.warehouseName",
+                            "isEdit": "isEdit",
+                            "key": "warehouseList"
+                        }
+                    }, {
+                        "name": "form.select",
+                        "id": 1004,
+                        "layout": {
+                            "cols": 3
+                        },
+                        "attributes": {
+                            "title": "采购币种",
+                            "required": true
+                        },
+                        "data": {
+                            "valueId": "dto.currencyId",
+                            "valueName": "dto.currencyName",
+                            "isEdit": "isEdit",
+                            "key": "currencyList"
+                        }
+                    }, {
+                        "name": "form.select",
+                        "id": 1004,
+                        "layout": {
+                            "cols": 3
+                        },
+                        "attributes": {
+                            "title": "采购方式",
+                            "required": true
+                        },
+                        "data": {
+                            "valueId": "dto.importTypeId",
+                            "valueName": "dto.importTypeName",
+                            "isEdit": "isEdit",
+                            "key": "importTypeList"
+                        }
+                    }]
+                }, {
+                    "clazz": "f-mb10",
+                    "components": [{
+                        "name": "form.datepicker",
+                        "id": 1007,
+                        "layout": {
+                            "cols": 3
+                        },
+                        "attributes": {
+                            "title": "预计到港日期",
+                            "required": true
+                        },
+                        "data": {
+                            "valueId": "dto.expectedArrivalTime",
+                            "valueName": "dto.expectedArrivalTime",
+                            "isEdit": "isEdit"
+                        }
+                    }, {
+                        "name": "form.number",
+                        "id": 1003,
+                        "layout": {
+                            "cols": 3
+                        },
+                        "attributes": {
+                            "title": "采购金额",
+                            "required": true
+                        },
+                        "data": {
+                            "valueId": "dto.amount",
+                            "valueName": "dto.amount",
+                            "isEdit": "isEdit",
+                            "fixed": "2:4"
+                        }
+                    }, {
+                        "name": "form.checkbox",
+                        "id": 1003,
+                        "layout": {
+                            "cols": 3
+                        },
+                        "attributes": {
+                            "title": "商品保质期",
+                            "required": true
+                        },
+                        "data": {
+                            "valueId": "dto.importTypeId",
+                            "valueName": "dto.importTypeName",
+                            "isEdit": "isEdit",
+                            "source": [{ "id":1, "name":"选项1" }, { "id":2, "name":"选项2" }]
+                        }
+                    }]
+                }]
+            },{
+                "id": 0,
+                "modal":true,
+                "name": "test.modal",
+                "desc": "增加库存模块",
+                "rows": [{
+                    "clazz": "f-mb10",
+                    "components": [{
+                        "name": "LABEL",
+                        "id": 41,
+                        "layout": {
+                            "cols": 2
+                        },
+                        "data": {
+                            "text": "支出费用"
+                        }
+                    }]
+                }]
+            }]
+        }]
+    }
+}
