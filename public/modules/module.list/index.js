@@ -9,7 +9,7 @@ const ModuleList = Component.extend({
     template,
     config() {
         this.defaults({
-            tdWidth: 40,
+            colWidth: 80,
             categoryList: categoryList,
         });
         this.supr();

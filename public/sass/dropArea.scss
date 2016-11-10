@@ -1,21 +1,18 @@
 .drop-area {
     margin: 20px 0 50px 50px;
-    .table {
-        border-collapse: collapse;
-        td {
-            border: solid 1px #ccc;
-            &.border-top {
-                border-top: dashed 2px #3c8dbc;
-            }
-            &.border-bottom {
-                border-bottom: dashed 2px #3c8dbc;
-            }
-            &.border-left {
-                border-left: dashed 2px #3c8dbc;
-            }
-            &.border-right {
-                border-right: dashed 2px #3c8dbc;
-            }
+    .row {
+        height: 40px;
+        width: 962px;
+        position: relative;
+        border: solid 1px #ccc;
+        margin-bottom: 5px;
+        .line {
+            position: absolute;
+            width: 2;
+            height: 100%;
+        }
+        .border-left {
+            border-left: dashed 2px #3c8dbc;
         }
     }
 }
