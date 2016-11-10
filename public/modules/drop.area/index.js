@@ -8,7 +8,7 @@ const DropArea = Component.extend({
         this.defaults({
             col: 12,           // drop区域一行有12格
             colWidth: 80,      // drop区域一列的宽度
-            rows: [{}]         // 放组件
+            rows: [[]]         // 放组件
         });
         this.supr();
     },
@@ -28,8 +28,24 @@ const DropArea = Component.extend({
         let dropArea = event.target;
         this.clearBorder(dropArea);
     },
+    // index 表示是哪一行
     drop(event, index) {
-        console.log(index);
+        let data = this.data,
+            moduleName = event.origin.data.name,
+            moudleWidth = event.origin.data.width,
+            dropArea = event.target,
+            dropAreaRect = event.target.getBoundingClientRect(),
+            proxy = event.proxy,
+            proxyRect = event.proxy.getBoundingClientRect(),
+            firstCol = this.getDropLattice(dropAreaRect, proxyRect, moudleWidth);
+
+        data.rows[index].push({
+            offset: firstCol,
+            name: moduleName
+        })
+
+        this.clearBorder(dropArea);
+
     },
     // 计算drop后，模块左上角所属的格子
     getDropLattice(dropAreaRect, proxyRect, moudleWidth) {
@@ -81,7 +97,7 @@ const DropArea = Component.extend({
     // 添加一行
     addRow() {
         let data = this.data;
-        data.rows.push({});
+        data.rows.push([]);
     }
 });
 

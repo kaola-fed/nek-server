@@ -10,6 +10,11 @@ const categoryList = [{
       name: 'nek.label',
       cols: 1,
       icon: "http://placeholder.cn/80",
+    }, {
+      desc: "日期选择(test用)",
+      name: 'datePicker',
+      cols: 2,
+      icon: "http://placeholder.cn/80",
     }]
 }, {
   title: "基础组件",

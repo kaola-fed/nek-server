@@ -2,7 +2,7 @@ $mainColor: #3c8dbc;
 .drop-area {
     margin: 20px 0 50px 50px;
     .row {
-        height: 40px;
+        min-height: 36px;
         width: 962px;
         position: relative;
         border: solid 1px #ccc;
