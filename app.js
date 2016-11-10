@@ -1,7 +1,8 @@
 const express = require('express');
+const path = require('path');
 const app = express();
 
-app.use('/project', express.static('public/projects'));
+app.use('/project', express.static(path.join(__dirname, 'public', 'projects')));
 
 app.use('/', express.static('dist'));
 
