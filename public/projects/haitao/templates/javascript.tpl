@@ -6,9 +6,9 @@
   '{{BaseComponent}}'
   {{/if}}
   {{#if isPage}}
-  'text!./page.html'
+  ,'text!./page.html'
   {{#else}}
-  'text!./index.html'
+  ,'text!./index.html'
   {{/if}}
   {{#each modals}}
   {{#if isPage}}
