@@ -34,9 +34,6 @@ const DropArea = Component.extend({
             moduleName = event.origin.data.name,
             moudleWidth = event.origin.data.width,
             dropArea = event.target,
-            dropAreaRect = event.target.getBoundingClientRect(),
-            proxy = event.proxy,
-            proxyRect = event.proxy.getBoundingClientRect(),
             row = data.rows[index];
 
         let res = this.getIndexAndOffset(row, data.firstCol, moudleWidth);
@@ -104,7 +101,6 @@ const DropArea = Component.extend({
     },
     // 计算放下的组件在一行中的位置和offset
     getIndexAndOffset(row, firstCol, moduleWidth) {
-        debugger
         let data = this.data;
         // 为空行的情况下
         if (row.length == 0) {
