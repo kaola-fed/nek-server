@@ -15,6 +15,11 @@ const categoryList = [{
       name: 'datePicker',
       cols: 2,
       icon: "http://placeholder.cn/80",
+    }, {
+      desc: "多行输入(test用)",
+      name: 'textarea2',
+      cols: 4,
+      icon: "http://placeholder.cn/80",
     }]
 }, {
   title: "基础组件",

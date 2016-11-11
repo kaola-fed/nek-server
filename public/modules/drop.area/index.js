@@ -21,8 +21,8 @@ const DropArea = Component.extend({
             proxy = event.proxy,
             proxyRect = event.proxy.getBoundingClientRect();
 
-        let firstCol = this.getDropLattice(dropAreaRect, proxyRect, moudleWidth);
-        this.setDropLatticeBorder(firstCol, moudleWidth, dropArea);
+        data.firstCol = this.getDropLattice(dropAreaRect, proxyRect, moudleWidth);
+        this.setDropLatticeBorder(data.firstCol, moudleWidth, dropArea);
     },
     dragLeave(event) {
         let dropArea = event.target;
@@ -37,17 +37,20 @@ const DropArea = Component.extend({
             dropAreaRect = event.target.getBoundingClientRect(),
             proxy = event.proxy,
             proxyRect = event.proxy.getBoundingClientRect(),
-            firstCol = this.getDropLattice(dropAreaRect, proxyRect, moudleWidth);
+            row = data.rows[index];
 
-        data.rows[index].push({
-            offset: firstCol,
-            name: moduleName
-        })
-
+        let res = this.getIndexAndOffset(row, data.firstCol, moudleWidth);
+        if(res) {
+            data.rows[index] = [
+                ...row.slice(0, res.moduleIndex),
+                {name: moduleName, moduleWidth: moudleWidth, offset: res.offset, firstCol: res.firstCol},
+                ...row.slice(res.moduleIndex + 1)
+            ]
+        }
         this.clearBorder(dropArea);
 
     },
-    // 计算drop后，模块左上角所属的格子
+    // 计算move过程中，模块左上角所属的格子
     getDropLattice(dropAreaRect, proxyRect, moudleWidth) {
         let data = this.data,
             dropAreaLeft = dropAreaRect.left,
@@ -55,7 +58,7 @@ const DropArea = Component.extend({
             firstCol;
 
         for(let i = 0; i < data.col; i++) {
-            if (proxyLeft == (dropAreaLeft + i * data.colWidth) || (proxyLeft > (dropAreaLeft + i * data.colWidth) && proxyLeft < (dropAreaLeft + (i+1) * data.colWidth))) {
+            if (proxyLeft > (dropAreaLeft -1 + i * data.colWidth) && proxyLeft < (dropAreaLeft + (i+1) * data.colWidth)) {
                 firstCol = i;
                 break;
             }
@@ -98,6 +101,28 @@ const DropArea = Component.extend({
     addRow() {
         let data = this.data;
         data.rows.push([]);
+    },
+    // 计算放下的组件在一行中的位置和offset
+    getIndexAndOffset(row, firstCol, moduleWidth) {
+        debugger
+        let data = this.data;
+        // 为空行的情况下
+        if (row.length == 0) {
+            return {moduleIndex: 0, offset: firstCol, firstCol: firstCol}
+        }
+
+        // 非空行，放在第一个的情况下
+
+        // 非空行，非第一个的情况下
+        for(let i = 0; i < row.length; i++) {
+            let module = row[i];
+            // 没有下一个组件，就算到行尾
+            let moduleNext = row[i+1] || {firstCol: data.col};
+            if(module.firstCol + module.moduleWidth -1 < firstCol && firstCol + moduleWidth < moduleNext.firstCol + 1) {
+                return {moduleIndex: i+1, offset: firstCol-module.firstCol-module.moduleWidth, firstCol: firstCol}
+            }
+        }
+        return false;
     }
 });
 
