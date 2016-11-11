@@ -44,7 +44,7 @@ const DropArea = Component.extend({
             data.rows[index] = [
                 ...row.slice(0, res.moduleIndex),
                 {name: moduleName, moduleWidth: moudleWidth, offset: res.offset, firstCol: res.firstCol},
-                ...row.slice(res.moduleIndex + 1)
+                ...row.slice(res.moduleIndex)
             ]
         }
         this.clearBorder(dropArea);
@@ -112,6 +112,10 @@ const DropArea = Component.extend({
         }
 
         // 非空行，放在第一个的情况下
+        if (firstCol + moduleWidth < row[0].firstCol + 1) {
+            row[0].offset = row[0].firstCol - firstCol - moduleWidth;
+            return {moduleIndex: 0, offset: firstCol, firstCol: firstCol}
+        }
 
         // 非空行，非第一个的情况下
         for(let i = 0; i < row.length; i++) {
@@ -119,6 +123,7 @@ const DropArea = Component.extend({
             // 没有下一个组件，就算到行尾
             let moduleNext = row[i+1] || {firstCol: data.col};
             if(module.firstCol + module.moduleWidth -1 < firstCol && firstCol + moduleWidth < moduleNext.firstCol + 1) {
+                row[i+1] ? moduleNext.offset = moduleNext.firstCol - firstCol - moduleWidth : '';
                 return {moduleIndex: i+1, offset: firstCol-module.firstCol-module.moduleWidth, firstCol: firstCol}
             }
         }
