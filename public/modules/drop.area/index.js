@@ -124,6 +124,16 @@ const DropArea = Component.extend({
             }
         }
         return false;
+    },
+    deleteModule(row_index, module_index) {
+        let data = this.data,
+            module = data.rows[row_index][module_index],
+            moduleNext = data.rows[row_index][module_index+1];
+        data.rows[row_index].splice(module_index, 1);
+
+        if(moduleNext) {
+            moduleNext.offset += module.offset + module.moduleWidth;
+        }
     }
 });
 
