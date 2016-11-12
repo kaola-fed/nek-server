@@ -5,7 +5,7 @@ NEJ.define([
 ], function(k, m, Page, p, pro) {
 
     p._$$Module = k._$klass();
-    pro = p._$$Module._$extend(m._$$MModule);
+    pro = p._$$Module._$extend(m._$$Module);
 
     pro.__init = function(options){
         this.__super(options);
