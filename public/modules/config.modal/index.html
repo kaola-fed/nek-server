@@ -1,0 +1,11 @@
+<div class="m-form">
+  {#list conf as item}
+  <div class="u-formitem">
+    <label class="formitem_tt">{item.desc}</label>
+    <span class="formitem_ct">
+      <!-- 这里需要根据组件 type 生成对应的配置框 -->
+      <input class="u-input">
+    </span>
+  </div>
+  {/list}
+</div>

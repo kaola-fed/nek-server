@@ -1,5 +1,6 @@
 import { Regular, Component } from 'nek-ui';
 import template from '!raw!./index.html';
+import ConfigModal from '../config.modal';
 
 const DropArea = Component.extend({
     name: 'drop.area',
@@ -134,6 +135,9 @@ const DropArea = Component.extend({
         if(moduleNext) {
             moduleNext.offset += module.offset + module.moduleWidth;
         }
+    },
+    configModule() {
+        new ConfigModal();
     },
     moveRowUp(row_index) {
         let data = this.data,

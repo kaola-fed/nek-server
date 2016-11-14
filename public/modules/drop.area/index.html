@@ -15,7 +15,7 @@
                 <r-component is='{module.name}'></r-component><!-- 去掉行内元素带来的间隙
                 --><div class="option">
                     <i class="f-csp u-icon u-icon-trash-o" aria-hidden="true" on-click={this.deleteModule(row_index, module_index)}></i>
-                    <i class="f-csp u-icon u-icon-pencil" aria-hidden="true"></i>
+                    <i class="f-csp u-icon u-icon-pencil" aria-hidden="true" on-click={this.configModule()}></i>
                 </div>
             </div>
             {/list}
