@@ -6,6 +6,8 @@ const ConfigModal = Modal.extend({
   config() {
     this.defaults({
       contentTemplate,
+      title: '组件配置',
+      cancelButton: true,
       conf: [],
     });
     this.$on('ok', this._ok);

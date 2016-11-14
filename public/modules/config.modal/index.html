@@ -1,10 +1,10 @@
 <div class="m-form">
   {#list conf as item}
   <div class="u-formitem">
-    <label class="formitem_tt">{item.desc}</label>
+    <label class="formitem_tt">{item.desc}{#if item.isRequired}<span class="formitem_rqr">*</span>{/if}</label>
     <span class="formitem_ct">
       <!-- 这里需要根据组件 type 生成对应的配置框 -->
-      <input class="u-input">
+      <input class="u-input" value={item.default}>
     </span>
   </div>
   {/list}

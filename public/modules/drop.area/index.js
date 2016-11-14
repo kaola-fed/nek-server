@@ -136,8 +136,13 @@ const DropArea = Component.extend({
             moduleNext.offset += module.offset + module.moduleWidth;
         }
     },
-    configModule() {
-        new ConfigModal();
+    configModule(module) {
+        let m = this.$refs[module];
+        new ConfigModal({
+          data: {
+            conf: (m.$$NEK && m.$$NEK().conf) || []
+          }
+        });
     },
     moveRowUp(row_index) {
         let data = this.data,
