@@ -3,8 +3,27 @@
   <div class="u-formitem">
     <label class="formitem_tt">{item.desc}{#if item.isRequired}<span class="formitem_rqr">*</span>{/if}</label>
     <span class="formitem_ct">
-      <!-- 这里需要根据组件 type 生成对应的配置框 -->
-      <input class="u-input" r-model={item.value}>
+      {#if item.type == 'string'}
+      <input2 value={item.value} />
+      {/if}
+      {#if item.type == 'select'}
+      <select2 source={item.selects} value={item.value} />
+      {/if}
+      {#if item.type == 'number'}
+      <numberInput value={item.value} />
+      {/if}
+      {#if item.type == 'boolean'}
+      <check2 value={item.value} />
+      {/if}
+      {#if item.type == 'none'}
+      <check2 value={item.value} />
+      {/if}
+      {#if item.type == 'array'}
+      <check2Group source={item.selects} value={item.value} />
+      {/if}
+      {#if item.type == 'expresion'}
+      <input2 value={item.value} />
+      {/if}
     </span>
   </div>
   {/list}
