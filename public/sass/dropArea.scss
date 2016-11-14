@@ -1,6 +1,6 @@
 $mainColor: #3c8dbc;
-.drop-area {
-    margin: 20px 0 50px 50px;
+.m-dropArea {
+    width: 1050px;
     .row {
         box-sizing: content-box;
         min-height: 34px;
@@ -39,6 +39,7 @@ $mainColor: #3c8dbc;
     }
     .option {
         display: none;
+        width: 115px;
         position: absolute;
         right: 0;
         top: 0;
