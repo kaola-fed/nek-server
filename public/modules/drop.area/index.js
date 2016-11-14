@@ -134,6 +134,30 @@ const DropArea = Component.extend({
         if(moduleNext) {
             moduleNext.offset += module.offset + module.moduleWidth;
         }
+    },
+    moveRowUp(row_index) {
+        let data = this.data,
+            rows = data.rows;
+        data.rows = [
+            ...rows.slice(0, row_index - 1),
+            rows[row_index],
+            rows[row_index - 1],
+            ...rows.slice(row_index + 1)
+        ]
+    },
+    moveRowDown(row_index) {
+        let data = this.data,
+            rows = data.rows;
+        data.rows = [
+            ...rows.slice(0, row_index),
+            rows[row_index + 1],
+            rows[row_index],
+            ...rows.slice(row_index + 2)
+        ]
+    },
+    deleteRow(row_index) {
+        let data = this.data;
+        data.rows.splice(row_index, 1);
     }
 });
 

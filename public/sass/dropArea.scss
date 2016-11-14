@@ -15,9 +15,6 @@ $mainColor: #3c8dbc;
             z-index: 10;
         }
     }
-    .margin-left-1 {
-        margin-left: -1px;
-    }
     .border-left {
         border-left: dashed 2px $mainColor;
     }
@@ -51,6 +48,14 @@ $mainColor: #3c8dbc;
         border-bottom-left-radius: 5px;
         i {
             margin: 0 7px;
+        }
+    }
+    .row-action {
+        line-height: 36px;
+        width: 80px;
+        margin-left: 5px;
+        i {
+            margin-left: 5px;
         }
     }
 }
