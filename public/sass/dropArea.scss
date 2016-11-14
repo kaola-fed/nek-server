@@ -1,9 +1,9 @@
 $mainColor: #3c8dbc;
 .m-dropArea {
-    width: 1050px;
     .row {
         box-sizing: content-box;
         min-height: 34px;
+        /*width: calc(100% - 100px);*/
         width: 960px;
         position: relative;
         border: solid 1px #ccc;

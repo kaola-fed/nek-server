@@ -1,5 +1,4 @@
 .m-modules {
-    width: 242px;
     background-color: #fff;
     overflow: auto;
     border: solid 1px #ddd;
@@ -7,7 +6,7 @@
         height: 40px;
         background-color: rgba(238, 238, 238, 0.7);
         line-height: 40px;
-        padding: 0 10px;
+        padding: 0 15px;
         cursor: pointer;
         position: relative;
         font-weight: bold;
@@ -18,7 +17,7 @@
     }
     .module {
         background-color: #fff;
-        padding: 10px;
+        padding: 10px 15px;
         cursor: pointer;
         &:hover {
             background-color: #eaf8fe;

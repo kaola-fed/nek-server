@@ -28,15 +28,18 @@ body {
 }
 
 .g-sd {
-    width: 242px;
+    position: fixed;
+    top: 75px;
+    bottom: 30px;
+    width: 290px;
 }
 
 .g-mn {
     flex: 1;
     -webkit-box-flex: 1;
-    min-height: 900px;
+    min-height: 800px;
     background-color: #fff;
-    margin-left: 30px;
+    margin-left: 320px;
     padding: 30px;
 }
 
