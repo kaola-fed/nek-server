@@ -1,4 +1,4 @@
-<div class="drop-area f-fl">
+<div class="m-dropArea">
 {#list rows as row}
 <div class="f-cb">
     <droppable on-dragover={this.dragOver($event)} on-dragleave={this.dragLeave($event)} on-drop={this.drop($event, row_index)}>
@@ -16,6 +16,12 @@
                 --><div class="option">
                     <i class="f-csp u-icon u-icon-trash-o" aria-hidden="true" on-click={this.deleteModule(row_index, module_index)}></i>
                     <i class="f-csp u-icon u-icon-pencil" aria-hidden="true" on-click={this.configModule(module.name, row_index, module_index)}></i>
+                    <draggable name={module.name} width={module.moduleWidth}>
+                        <i class="f-csp u-icon u-icon-arrows" aria-hidden="true"></i>
+                        <draggable.proxy>
+                            <div class="proxy-module" style="width: {module.moduleWidth*80}px;height: 40px;line-height: 40px;">{module.name}</div>
+                        </draggable.proxy>
+                    </draggable>
                 </div>
             </div>
             {/list}
