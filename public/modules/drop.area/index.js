@@ -139,9 +139,12 @@ const DropArea = Component.extend({
     configModule(name, row_index, module_index) {
         let ref = name + '_' + row_index + '_' + module_index,
             mod = this.$refs[ref];
+        // mod.$$NEK() 会做数据持久化到 mod.data.$$NEK
+        // 故优先从 mod.data.$$NEK 获取值，否则走 mod.$$NEK() 做初始化操作
+        let $$NEK = mod.data.$$NEK || mod.$$NEK() || {};
         new ConfigModal({
             data: {
-                conf: (mod.$$NEK && mod.$$NEK().conf) || []
+                conf: $$NEK.conf || []
             }
         });
     },

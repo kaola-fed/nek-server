@@ -10,11 +10,16 @@ const ConfigModal = Modal.extend({
       cancelButton: true,
       conf: [],
     });
+    // 深度复制，只有在确定的时候才真实写回
+    this.data.curConf = JSON.parse(JSON.stringify(this.data.conf));
     this.$on('ok', this._ok);
     this.supr();
   },
   _ok() {
-    // 这里保存对应组件的配置
+    const { conf, curConf } = this.data;
+    curConf.forEach(function(d, i) {
+      conf[i].value = curConf[i].value;
+    });
   }
 });
 
