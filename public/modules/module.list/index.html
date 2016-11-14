@@ -3,15 +3,15 @@
     <div class="f-cb">
         <div class="titie">{cate.title}</div>
         {#list cate.moduleList as module}
-        <draggable name={module.name} width={module.cols} height={1}>
             <div class="module">
-                <img src="">
+                <draggable name={module.name} width={module.cols}>
+                    <img src="">
+                    <draggable.proxy>
+                        <div class="proxy-module" style="width: {module.cols*colWidth}px;height: 40px;line-height: 40px;">{module.name}</div>
+                    </draggable.proxy>
+                </draggable>
                 <span>{module.desc}</span>
             </div>
-            <draggable.proxy>
-                <div class="proxy-module" style="width: {module.cols*colWidth}px;height: 40px;line-height: 40px;">{module.name}</div>
-            </draggable.proxy>
-        </draggable>
         {/list}
         </div>
     {/list}
