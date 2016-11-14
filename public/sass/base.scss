@@ -9,48 +9,35 @@ body {
   background-color: $bgColor;
 }
 
-.g-head {
+.g-hd {
     background-color: $bgColor2;
-    height: 80px;
-    padding-left: 30px;
-    margin-bottom: 25px;
+    height: 45px;
+    padding-left: 32px;
     .logo {
-        font-size: 35px;
+        font-size: 30px;
         font-weight: bold;
-        line-height: 80px;
+        line-height: 45px;
         color: #606060
     }
 }
 
 .g-bd {
-    .g-mid {
-        width: calc(100% - 60px);
-        margin: 0 auto;
-        border-top-left-radius: 8px;
-        border-top-right-radius: 8px;
-        overflow: hidden;
-    }
+    padding: 30px;
+    display: flex;
+    display: -webkit-box;
 }
 
 .g-sd {
     width: 242px;
-    float: left;
-    border-radius: 8px;
-    overflow: hidden;
 }
 
 .g-mn {
-    float: right;
-    width: 100%;
-    margin-left: -260px;
-    .main {
-        margin-left: 272px;
-        background-color: #fff;
-        min-height: 1000px;
-        border-radius: 8px;
-        overflow: hidden;
-        padding: 30px;
-    }
+    flex: 1;
+    -webkit-box-flex: 1;
+    min-height: 900px;
+    background-color: #fff;
+    margin-left: 30px;
+    padding: 30px;
 }
 
 

@@ -1,17 +1,19 @@
 <div class="m-modules">
     {#list categoryList as cate}
     <div class="f-cb">
-        <div class="titie">{cate.title}</div>
+        <div class="titie f-tal">
+            {cate.title}
+            <i class="f-csp u-icon u-icon-lg u-icon-angle-up" aria-hidden="true"></i>
+        </div>
         {#list cate.moduleList as module}
+        <draggable name={module.name} width={module.cols}>
             <div class="module">
-                <draggable name={module.name} width={module.cols}>
-                    <img src="">
-                    <draggable.proxy>
-                        <div class="proxy-module" style="width: {module.cols*colWidth}px;height: 40px;line-height: 40px;">{module.name}</div>
-                    </draggable.proxy>
-                </draggable>
                 <span>{module.desc}</span>
             </div>
+            <draggable.proxy>
+                <div class="proxy-module" style="width: {module.cols*colWidth}px;height: 40px;line-height: 40px;">{module.name}</div>
+            </draggable.proxy>
+        </draggable>
         {/list}
         </div>
     {/list}

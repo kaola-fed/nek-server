@@ -4,18 +4,24 @@
     overflow: auto;
     border: solid 1px #ddd;
     .titie {
-        height: 30px;
-        background-color: #ddd;
-        text-align: center;
-        line-height: 30px;
+        height: 40px;
+        background-color: rgba(238, 238, 238, 0.7);
+        line-height: 40px;
+        padding: 0 10px;
+        cursor: pointer;
+        position: relative;
+        font-weight: bold;
+        i {
+            position: absolute;
+            right: 20px;
+        }
     }
     .module {
-        width: 120px;
-        float: left;
         background-color: #fff;
-        padding: 20px;
-        img {
-            cursor: pointer;
+        padding: 10px;
+        cursor: pointer;
+        &:hover {
+            background-color: #eaf8fe;
         }
     }
     img {
