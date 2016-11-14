@@ -3,8 +3,8 @@ $mainColor: #3c8dbc;
     .row {
         box-sizing: content-box;
         min-height: 34px;
-        /*width: calc(100% - 100px);*/
-        width: 960px;
+        width: calc(100% - 90px);
+        /*width: 960px;*/
         position: relative;
         border: solid 1px #ccc;
         margin-bottom: 5px;
@@ -15,13 +15,13 @@ $mainColor: #3c8dbc;
             z-index: 10;
         }
     }
-    .border-left {
+    .borderleft {
         border-left: dashed 2px $mainColor;
     }
-    .border-right {
+    .borderright {
         border-right: dashed 2px $mainColor;
     }
-    .add-row {
+    .addrow {
         width: 70px;
         height: 40px;
         background-color: $mainColor;
@@ -51,7 +51,7 @@ $mainColor: #3c8dbc;
             margin: 0 7px;
         }
     }
-    .row-action {
+    .rowaction {
         line-height: 36px;
         width: 80px;
         margin-left: 5px;

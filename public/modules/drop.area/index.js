@@ -8,7 +8,6 @@ const DropArea = Component.extend({
     config() {
         this.defaults({
             col: 12,           // drop区域一行有12格
-            colWidth: 80,      // drop区域一列的宽度
             rows: [[]]         // 放组件
         });
         this.supr();
@@ -52,11 +51,12 @@ const DropArea = Component.extend({
     getDropLattice(dropAreaRect, proxyRect, moudleWidth) {
         let data = this.data,
             dropAreaLeft = dropAreaRect.left,
+            dropAreaWidth = dropAreaRect.width,
+            colWidth = (dropAreaWidth-2)/12,
             proxyLeft = proxyRect.left,
             firstCol;
-
         for(let i = 0; i < data.col; i++) {
-            if (proxyLeft > (dropAreaLeft -1 + i * data.colWidth) && proxyLeft < (dropAreaLeft + (i+1) * data.colWidth)) {
+            if (proxyLeft > (dropAreaLeft -1 + i * colWidth) && proxyLeft < (dropAreaLeft + (i+1) * colWidth)) {
                 firstCol = i;
                 break;
             }
@@ -76,23 +76,23 @@ const DropArea = Component.extend({
 
         for(let i = 0; i < moduleWidth + 1; i++) {
             if(firstCol + i - 1 == -1) {
-                Regular.dom.addClass(dropArea, 'border-left');
+                Regular.dom.addClass(dropArea, 'borderleft');
             }
             if(firstCol + i - 1 == data.col - 1) {
-                Regular.dom.addClass(dropArea, 'border-right');
+                Regular.dom.addClass(dropArea, 'borderright');
             }
             if(firstCol + i - 1 > -1 && firstCol + i - 1 < data.col - 1) {
-                Regular.dom.addClass(lines[firstCol + i - 1], 'border-left');
+                Regular.dom.addClass(lines[firstCol + i - 1], 'borderleft');
             }
         }
     },
     // 清除所有border
     clearBorder(row) {
         let lines = Array.prototype.slice.call(row.getElementsByClassName('line'));
-        Regular.dom.delClass(row, 'border-left');
-        Regular.dom.delClass(row, 'border-right');
+        Regular.dom.delClass(row, 'borderleft');
+        Regular.dom.delClass(row, 'borderright');
         lines.forEach(function(line) {
-            Regular.dom.delClass(line, 'border-left');
+            Regular.dom.delClass(line, 'borderleft');
         })
     },
     // 添加一行

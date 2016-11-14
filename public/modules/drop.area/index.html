@@ -28,7 +28,7 @@
             {/if}
         </div>
     </droppable>
-    <div class="f-fl row-action">
+    <div class="f-fl rowaction">
         {#if row_index != 0}
         <i class="f-csp u-icon u-icon-arrow-up" aria-hidden="true" on-click={this.moveRowUp(row_index)}></i>
         {/if}
@@ -40,6 +40,6 @@
 </div>
 {/list}
 <div class="f-tac">
-    <span class="add-row f-csp" on-click={this.addRow()}>添加行</span>
+    <span class="addrow f-csp" on-click={this.addRow()}>添加行</span>
 </div>
 </div>
