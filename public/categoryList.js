@@ -33,6 +33,11 @@ const categoryList = [{
       name: 'nek.select',
       cols: 2,
       icon: "http://placeholder.cn/80",
+    }, {
+      desc: "测试按钮",
+      name: 'ui.button',
+      cols: 2,
+      icon: "http://placeholder.cn/80",
     }]
 }];
 
