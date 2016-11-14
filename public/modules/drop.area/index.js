@@ -136,12 +136,13 @@ const DropArea = Component.extend({
             moduleNext.offset += module.offset + module.moduleWidth;
         }
     },
-    configModule(module) {
-        let m = this.$refs[module];
+    configModule(name, row_index, module_index) {
+        let ref = name + '_' + row_index + '_' + module_index,
+            mod = this.$refs[ref];
         new ConfigModal({
-          data: {
-            conf: (m.$$NEK && m.$$NEK().conf) || []
-          }
+            data: {
+                conf: (mod.$$NEK && mod.$$NEK().conf) || []
+            }
         });
     },
     moveRowUp(row_index) {
@@ -168,6 +169,8 @@ const DropArea = Component.extend({
         let data = this.data;
         data.rows.splice(row_index, 1);
     }
+}).filter('uniq', function(name, row_index, module_index) {
+    return name + '_' + row_index + '_' + module_index;
 });
 
 export default DropArea;
