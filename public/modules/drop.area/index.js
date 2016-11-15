@@ -34,10 +34,18 @@ const DropArea = Component.extend({
             moduleName = event.origin.data.name,
             moudleWidth = event.origin.data.width,
             dropArea = event.target,
-            row = data.rows[index];
+            row = data.rows[index],
+            // 移动组件时的参数
+            isMoveModule = event.origin.data.isMoveModule,
+            rowIndex = event.origin.data.rowIndex,
+            moduleIndex = event.origin.data.moduleIndex;
 
-        let res = this.getIndexAndOffset(row, data.firstCol, moudleWidth);
+        let res = this.getIndexAndOffset(row, data.firstCol, moudleWidth, index, isMoveModule, rowIndex, moduleIndex);
         if(res) {
+            // 移动组件
+            if(isMoveModule) {
+                this.deleteModule(rowIndex, moduleIndex);
+            }
             data.rows[index] = [
                 ...row.slice(0, res.moduleIndex),
                 {name: moduleName, moduleWidth: moudleWidth, offset: res.offset, firstCol: res.firstCol},
@@ -101,8 +109,13 @@ const DropArea = Component.extend({
         data.rows.push([]);
     },
     // 计算放下的组件在一行中的位置和offset
-    getIndexAndOffset(row, firstCol, moduleWidth) {
+    getIndexAndOffset(row, firstCol, moduleWidth, dropRowIndex, isMoveModule, rowIndex, moduleIndex) {
         let data = this.data;
+        // 是移动组件且是同行内移动
+        if(isMoveModule && dropRowIndex == rowIndex) {
+            row = this.deleteModule(rowIndex, moduleIndex);
+        }
+
         // 为空行的情况下
         if (row.length == 0) {
             return {moduleIndex: 0, offset: firstCol, firstCol: firstCol}
@@ -135,6 +148,7 @@ const DropArea = Component.extend({
         if(moduleNext) {
             moduleNext.offset += module.offset + module.moduleWidth;
         }
+        return data.rows[row_index];
     },
     configModule(name, row_index, module_index) {
         let ref = name + '_' + row_index + '_' + module_index,
