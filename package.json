@@ -17,9 +17,10 @@
   "author": "Kaola",
   "license": "ISC",
   "dependencies": {
-    "rgui-ui-drag": "^0.2.0-alpha.1",
     "express": "^4.14.0",
-    "nek-ui": "0.1.14"
+    "lodash": "^4.17.0",
+    "nek-ui": "0.1.14",
+    "rgui-ui-drag": "^0.2.0-alpha.1"
   },
   "devDependencies": {
     "babel-cli": "^6.16.0",
