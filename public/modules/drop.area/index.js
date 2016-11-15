@@ -138,13 +138,13 @@ const DropArea = Component.extend({
     },
     configModule(name, row_index, module_index) {
         let ref = name + '_' + row_index + '_' + module_index,
-            mod = this.$refs[ref];
-        // mod.$$NEK() 会做数据持久化到 mod.data.$$NEK
-        // 故优先从 mod.data.$$NEK 获取值，否则走 mod.$$NEK() 做初始化操作
-        let $$NEK = mod.data.$$NEK || mod.$$NEK() || {};
+            modRef = this.$refs[ref],
+            module = this.data.rows[row_index][module_index];
+        // 首次会把 NEK 数据放到 module 里作持久化，故需先调用组件的 $$NEK() 方法
+        module.NEK = module.NEK || modRef.$$NEK() || {};
         new ConfigModal({
             data: {
-                conf: $$NEK.conf || []
+                conf: module.NEK.conf || []
             }
         });
     },

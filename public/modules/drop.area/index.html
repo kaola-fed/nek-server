@@ -12,7 +12,7 @@
             {#if row && row.length > 0}
             {#list row as module by module_index}
             <div class="f-fl f-pr g-offset-{module.offset} module">
-                <r-component is={module.name} ref={module.name | uniq: row_index, module_index}></r-component><!-- 去掉行内元素带来的间隙
+                <r-component is={module.name} NEK={module.NEK} ref={module.name | uniq: row_index, module_index}></r-component><!-- 去掉行内元素带来的间隙
                 --><div class="option">
                     <i class="f-csp u-icon u-icon-trash-o" aria-hidden="true" on-click={this.deleteModule(row_index, module_index)}></i>
                     <i class="f-csp u-icon u-icon-pencil" aria-hidden="true" on-click={this.configModule(module.name, row_index, module_index)}></i>
