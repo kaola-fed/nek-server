@@ -22,6 +22,21 @@ const ConfigModal = Modal.extend({
     });
     this.data.modRef.$emit('update', conf);
   }
+}).filter('name2id', {
+    get(name, selects) {
+      const source = selects.map(function(d) {
+        if (typeof d === 'object') return d.name;
+        return d;
+      })
+      return source.indexOf(name) + '';
+    },
+    set(id, selects) {
+      const source = selects.map(function(d) {
+        if (typeof d === 'object') return d.name;
+        return d;
+      })
+      return source[id/1];
+    }
 });
 
 export default ConfigModal;

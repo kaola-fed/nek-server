@@ -7,19 +7,19 @@
       <input2 value={item.value} />
       {/if}
       {#if item.type == 'select'}
-      <select2 source={item.selects} value={item.value} />
+      <select2 source={item.selects} value={item.value | name2id : item.selects} />
       {/if}
       {#if item.type == 'number'}
       <numberInput value={item.value} />
       {/if}
       {#if item.type == 'boolean'}
-      <check2 value={item.value} />
+      <check2 checked={item.value} />
       {/if}
       {#if item.type == 'none'}
-      <check2 value={item.value} />
+      <check2 checked={item.value} />
       {/if}
       {#if item.type == 'array'}
-      <check2Group source={item.selects} value={item.value} />
+      <check2Group source={item.selects} />
       {/if}
       {#if item.type == 'expresion'}
       <input2 value={item.value} />
