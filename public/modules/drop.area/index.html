@@ -1,11 +1,11 @@
 <div class="m-dropArea">
 {#list rows as row}
-<div class="f-cb">
+<div class="f-cb rowcontainer">
     <droppable on-dragover={this.dragOver($event)} on-dragleave={this.dragLeave($event)} on-drop={this.drop($event, row_index)}>
-        <div class="row f-cb f-fl">
+        <div class="row f-cb">
             <!-- 行内的参考线 -->
             {#list 1..11 as itm}
-            <div class="line" style="left: {itm*80}px"></div>
+            <div class="line" style="left: {100*itm/12}%"></div>
             {/list}
 
             <!-- 输出每行的组件 -->
@@ -28,7 +28,7 @@
             {/if}
         </div>
     </droppable>
-    <div class="f-fl row-action">
+    <div class="rowaction">
         {#if row_index != 0}
         <i class="f-csp u-icon u-icon-arrow-up" aria-hidden="true" on-click={this.moveRowUp(row_index)}></i>
         {/if}
@@ -40,6 +40,6 @@
 </div>
 {/list}
 <div class="f-tac">
-    <span class="add-row f-csp" on-click={this.addRow()}>添加行</span>
+    <span class="addrow f-csp" on-click={this.addRow()}>添加行</span>
 </div>
 </div>
