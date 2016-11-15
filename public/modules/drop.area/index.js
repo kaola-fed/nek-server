@@ -63,7 +63,6 @@ const DropArea = Component.extend({
             }
         }
         this.clearBorder(dropArea);
-
     },
     // 计算move过程中，模块左侧所属的格子
     getDropLattice(dropAreaRect, proxyRect, moudleWidth) {
@@ -223,6 +222,7 @@ const DropArea = Component.extend({
             })
         })
         console.log(res);
+        console.log(JSON.stringify(res));
     }
 }).filter('uniq', function(name, row_index, module_index) {
     return name + '_' + row_index + '_' + module_index;

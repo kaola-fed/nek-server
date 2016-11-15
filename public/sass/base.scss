@@ -10,14 +10,14 @@ body {
 }
 
 .g-hd {
-    background-color: $bgColor2;
+    background: linear-gradient(to right, #3c8dbc, #aeaeae);
     height: 45px;
     padding-left: 32px;
     .logo {
         font-size: 30px;
         font-weight: bold;
         line-height: 45px;
-        color: #4497c8;
+        color: #fff;
     }
 }
 
