@@ -23,13 +23,14 @@ $mainColor: #3c8dbc;
         border-right: dashed 2px $mainColor;
     }
     .addrow {
-        width: 70px;
+        padding: 0 15px;
         height: 40px;
         background-color: $mainColor;
         display: inline-block;
         line-height: 40px;
         color: #fff;
         border-radius: 5px;
+        margin-right: 10px;
     }
     .module {
         &:hover {

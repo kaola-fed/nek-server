@@ -111,6 +111,7 @@ const DropArea = Component.extend({
     // 计算放下的组件在一行中的位置和offset
     getIndexAndOffset(row, firstCol, moduleWidth, dropRowIndex, isMoveModule, rowIndex, moduleIndex) {
         let data = this.data;
+
         // 是移动组件且是同行内移动
         if(isMoveModule && dropRowIndex == rowIndex) {
             row = this.deleteModule(rowIndex, moduleIndex);
@@ -185,6 +186,32 @@ const DropArea = Component.extend({
     deleteRow(row_index) {
         let data = this.data;
         data.rows.splice(row_index, 1);
+    },
+    exportJson() {
+        let data = this.data,
+            self = this,
+            res = {};
+        res.rows = [];
+
+        data.rows.forEach(function(row, rowIndex) {
+            res.rows.push({
+                clazz: '',
+                components: []
+            })
+            row.forEach(function(module, moduleIndex) {
+                let ref = module.name + '_' + rowIndex + '_' + moduleIndex,
+                    modRef = self.$refs[ref],
+                    NEK = module.NEK || modRef.$$NEK() || {};
+                res.rows[rowIndex].components.push({
+                    name: NEK.name,
+                    id: NEK.id,
+                    clazz: '',
+                    layout: NEK.layout,
+                    conf: NEK.conf
+                })
+            })
+        })
+        console.log(res);
     }
 }).filter('uniq', function(name, row_index, module_index) {
     return name + '_' + row_index + '_' + module_index;
