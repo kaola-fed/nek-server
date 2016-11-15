@@ -1,6 +1,6 @@
 import { Component } from 'nek-ui';
 import template from '!raw!./index.html';
-import categoryList from '../../categoryList';
+import categoryList from '../../../categoryList';
 import { Draggable, Droppable, Movable } from 'rgui-ui-drag'
 
 

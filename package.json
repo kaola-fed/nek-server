@@ -20,6 +20,7 @@
     "express": "^4.14.0",
     "lodash": "^4.17.0",
     "nek-ui": "0.1.20",
+    "regular-state": "^0.2.1",
     "rgui-ui-drag": "^0.2.0-alpha.1"
   },
   "devDependencies": {

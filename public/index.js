@@ -1,20 +1,15 @@
+import restate from 'regular-state';
 import { Component } from 'nek-ui';
-import template from '!raw!./index.html';
-import ModuleList from './modules/module.list';
-import DropArea from './modules/drop.area';
+import App from './modules/app';
+import Home from './modules/home';
+import Detail from './modules/detail';
+import Setting from './modules/setting';
 
-require('rgui_css/regular-ui.default.css');
-require('./sass/main.scss');
+const stateman = restate({ Component: Component });
 
-const App = Component.extend({
-  name: 'app',
-  template,
-  config() {
-    this.defaults({
-      text: 'NEK',
-    });
-    this.supr();
-  }
-});
-
-new App().$inject(document.body);
+stateman
+  .state('app', App, '')
+  .state('app.home', Home, '')
+  .state('app.detail', Detail, 'detail')
+  .state('app.setting', Setting, 'setting')
+  .start({ html5: true, root: '/', prefix: '!' });
