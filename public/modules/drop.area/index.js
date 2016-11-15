@@ -122,7 +122,6 @@ const DropArea = Component.extend({
     getIndexAndOffset(row, firstCol, moduleWidth, dropRowIndex, isMoveModule, rowIndex, moduleIndex) {
         let data = this.data,
             rowClone = _.cloneDeep(row);
-
         // 是移动组件且是同行内移动
         if(isMoveModule && dropRowIndex == rowIndex) {
             rowClone = this.deleteModule(rowClone, moduleIndex);
@@ -135,7 +134,7 @@ const DropArea = Component.extend({
 
         // 非空行，放在第一个的情况下
         if (firstCol + moduleWidth < rowClone[0].firstCol + 1) {
-            rowClone[0].offset = rowClone[0].firstCol - firstCol - moduleWidth;
+            row[0].offset = row[0].firstCol - firstCol - moduleWidth;
             return {moduleIndex: 0, offset: firstCol, firstCol: firstCol}
         }
 
@@ -143,8 +142,9 @@ const DropArea = Component.extend({
         for(let i = 0; i < rowClone.length; i++) {
             let module = rowClone[i];
             // 没有下一个组件，就算到行尾
-            let moduleNext = rowClone[i+1] || {firstCol: data.col};
-            if(module.firstCol + module.moduleWidth -1 < firstCol && firstCol + moduleWidth < moduleNext.firstCol + 1) {
+            let moduleNext = row[i+1] || {firstCol: data.col};
+            let moduleNextClone = rowClone[i+1] || {firstCol: data.col};
+            if(module.firstCol + module.moduleWidth -1 < firstCol && firstCol + moduleWidth < moduleNextClone.firstCol + 1) {
                 rowClone[i+1] ? moduleNext.offset = moduleNext.firstCol - firstCol - moduleWidth : '';
                 return {moduleIndex: i+1, offset: firstCol-module.firstCol-module.moduleWidth, firstCol: firstCol}
             }
