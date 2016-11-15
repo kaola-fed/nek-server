@@ -1,4 +1,4 @@
-<div class="m-dropArea">
+<div class="m-droparea">
 {#list rows as row}
 <div class="f-cb rowcontainer">
     <droppable on-dragover={this.dragOver($event)} on-dragleave={this.dragLeave($event)} on-drop={this.drop($event, row_index)}>
@@ -31,11 +31,11 @@
     <div class="rowaction">
         {#if row_index != 0}
         <i class="f-csp u-icon u-icon-arrow-up" aria-hidden="true" on-click={this.moveRowUp(row_index)}></i>
-        {/if}
-        {#if row_index != rows.length - 1}
+        {/if}{#if row_index != rows.length - 1}
         <i class="f-csp u-icon u-icon-arrow-down" aria-hidden="true" on-click={this.moveRowDown(row_index)}></i>
-        {/if}
+        {/if}{#if rows.length > 1}
         <i class="f-csp u-icon u-icon-trash-o" aria-hidden="true" on-click={this.deleteRow(row_index)}></i>
+        {/if}
     </div>
 </div>
 {/list}
