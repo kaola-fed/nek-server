@@ -20,6 +20,7 @@ const ConfigModal = Modal.extend({
     curConf.forEach(function(d, i) {
       conf[i].value = curConf[i].value;
     });
+    this.data.modRef.$emit('update', conf);
   }
 });
 

@@ -169,6 +169,7 @@ const DropArea = Component.extend({
         module.NEK = module.NEK || modRef.$$NEK() || {};
         new ConfigModal({
             data: {
+                modRef,
                 conf: module.NEK.conf || []
             }
         });
