@@ -3,7 +3,8 @@ $mainColor: #3c8dbc;
     .row {
         box-sizing: content-box;
         min-height: 34px;
-        width: calc(100% - 90px);
+        flex: 1;
+        -webkit-box-flex: 1;
         /*width: 960px;*/
         position: relative;
         border: solid 1px #ccc;
@@ -58,5 +59,9 @@ $mainColor: #3c8dbc;
         i {
             margin-left: 5px;
         }
+    }
+    .rowcontainer {
+        display: flex;
+        display: -webkit-box;
     }
 }
