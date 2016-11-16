@@ -39,6 +39,14 @@ const categoryList = [{
       cols: 2,
       icon: "http://placeholder.cn/80",
     }]
+}, {
+  title: "模块",
+  moduleList: [{
+      desc: "模块",
+      name: 'modules',
+      cols: 12,
+      icon: "http://placeholder.cn/80",
+    }]
 }];
 
 export default categoryList;

@@ -37,11 +37,12 @@ const DropArea = Component.extend({
             dropArea = event.target,
             row = data.rows[index],
             // 移动组件时的参数
-            isMoveModule = event.origin.data.isMoveModule,
-            rowIndex = event.origin.data.rowIndex,
-            moduleIndex = event.origin.data.moduleIndex;
+            isMoveModule = event.origin.data.isMoveModule,   // 是否移动组件
+            rowIndex = event.origin.data.rowIndex,           // 组件原先所在行的index
+            moduleIndex = event.origin.data.moduleIndex;     // 组件原先所在的moduleIndex
 
         let res = this.getIndexAndOffset(row, data.firstCol, moudleWidth, index, isMoveModule, rowIndex, moduleIndex);
+        
         if(res) {
             // 移动组件
             if(isMoveModule) {

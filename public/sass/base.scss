@@ -9,8 +9,21 @@ body {
   background-color: $bgColor;
 }
 
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-thumb {
+    height: 50px;
+    background-color: #bbb;
+    -webkit-border-radius: 4px;
+    outline: 2px solid #fff;
+    outline-offset: -2px;
+    border: 2px solid #fff;
+}
+
 .g-hd {
-    background: linear-gradient(to right, #3c8dbc, #aeaeae);
+    background: linear-gradient(to bottom, #3c8dbc, rgba(60, 141, 188, 0.6));
     height: 45px;
     padding-left: 32px;
     .logo {
@@ -32,13 +45,19 @@ body {
     padding: 30px;
     display: flex;
     display: -webkit-box;
+    position: relative;
 }
 
-.g-sd {
+.g-lsd, .g-rsd{
     position: fixed;
     top: 75px;
     bottom: 30px;
     width: 290px;
+    overflow: auto;
+}
+
+.g-rsd {
+    right: 30px;
 }
 
 .g-mn {
@@ -46,7 +65,7 @@ body {
     -webkit-box-flex: 1;
     min-height: 800px;
     background-color: #fff;
-    margin-left: 320px;
+    margin: 0 320px;
     padding: 30px;
 }
 
