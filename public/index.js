@@ -12,4 +12,7 @@ stateman
   .state('app.home', Home, '')
   .state('app.detail', Detail, 'detail')
   .state('app.setting', Setting, 'setting')
-  .start({ html5: true, root: '/', prefix: '!' });
+  .on("notfound", function(){
+    this.go("app.home", {replace: true})
+  })
+  .start({ html5: false, root: '/', prefix: '!' });
