@@ -128,7 +128,6 @@ const DropArea = Component.extend({
     // 添加子行
     addSubRow(row) {
         row.subRow.push([])
-
     },
     // 计算放下的组件在一行中的位置和offset
     getIndexAndOffset(subRow, firstCol, moduleWidth, dropRowIndex, dropSubRowIndex, isMoveModule, rowIndex, subRowIndex, moduleIndex) {
@@ -177,7 +176,6 @@ const DropArea = Component.extend({
         let ref = name + '_' + row_index + '_' + subRow_index+ '_' + module_index,
             modRef = this.$refs[ref],
             module = this.data.rows[row_index]['subRow'][subRow_index][module_index];
-            debugger
         // 首次会把 NEK 数据放到 module 里作持久化，故需先调用组件的 $$NEK() 方法
         module.NEK = module.NEK || modRef.$$NEK() || {};
         new ConfigModal({
@@ -212,32 +210,58 @@ const DropArea = Component.extend({
         data.rows.splice(row_index, 1);
     },
     exportJson() {
-        // let data = this.data,
-        //     self = this,
-        //     res = {};
-        // res.rows = [];
+        let data = this.data,
+            self = this,
+            res = {};
+        res.rows = [];
 
-        // data.rows.forEach(function(row, rowIndex) {
-        //     res.rows.push({
-        //         clazz: '',
-        //         components: []
-        //     })
-        //     row.forEach(function(module, moduleIndex) {
-        //         let ref = module.name + '_' + rowIndex + '_' + moduleIndex,
-        //             modRef = self.$refs[ref],
-        //             NEK = module.NEK || modRef.$$NEK() || {};
-        //         res.rows[rowIndex].components.push({
-        //             name: NEK.name,
-        //             id: NEK.id,
-        //             clazz: '',
-        //             layout: NEK.layout,
-        //             conf: NEK.conf
-        //         })
-        //     })
-        // })
-        // console.log(res);
-        // console.log(JSON.stringify(res));
+        data.rows.forEach(function(row, rowIndex) {
+            res.rows.push({
+                clazz: '',
+                components: []
+            })
+            let isContainer = row.isContainer;
+            if(!isContainer) {
+                row.subRow[0].forEach(function(module, moduleIndex) {
+                    let ref = module.name + '_' + rowIndex + '_0_' + moduleIndex,
+                        modRef = self.$refs[ref],
+                        NEK = module.NEK || modRef.$$NEK() || {};
+                    res.rows[rowIndex].components.push({
+                        name: NEK.name,
+                        id: NEK.id,
+                        clazz: '',
+                        layout: NEK.layout,
+                        conf: NEK.conf
+                    })
+                })
+            } else {
+                res.rows[rowIndex].components.push({
+                    name: 'container',
+                    clazz: '',
+                    rows: []
+                })
+                row.subRow.forEach(function(subRow, subRowIndex) {
+                                    // debugger
+                    res.rows[rowIndex].components[0].rows.push([]);
+                    subRow.forEach(function(module, moduleIndex) {
+                        let ref = module.name + '_' + rowIndex + '_' + subRowIndex + '_' + moduleIndex,
+                        modRef = self.$refs[ref],
+                        NEK = module.NEK || modRef.$$NEK() || {};
+                        res.rows[rowIndex].components[0].rows[subRowIndex].push({
+                            name: NEK.name,
+                            id: NEK.id,
+                            clazz: '',
+                            layout: NEK.layout,
+                            conf: NEK.conf
+                        })
+                    })
+                })
+            }
+            
+        })
         console.log(this.data);
+        console.log(res);
+        console.log(JSON.stringify(res));
     }
 }).filter('uniq', function(name, row_index, subRow_index, module_index) {
     return name + '_' + row_index + '_' + subRow_index + '_' + module_index;
