@@ -1,19 +1,19 @@
 const FileStreamRotator = require('file-stream-rotator')
-const express = require('express');
-const bodyParser = require('body-parser');
-const favicon = require('serve-favicon');
+const moment = require('moment');
+const morgan = require('koa-morgan');
+const server = require('koa-static');
+const favicon = require('koa-favicon');
+const mount = require('koa-mount');
+const Router = require('koa-router');
 const path = require('path');
 const fs = require('fs');
-const morgan = require('morgan');
 require('app-module-path').addPath(__dirname + '/app/controllers');
 
 module.exports = {
-  // 基础设置
   DEBUG_MODE: process.env.DEBUG_MODE || 'false',
   db: process.env.MONGODB_URI || 'mongodb://localhost/nek',
 
-  // express 相关设置
-  express(app) {
+  basic(app) {
     const logDir = path.join(__dirname, 'logs');
     fs.existsSync(logDir) || fs.mkdirSync(logDir);
     const stream = FileStreamRotator.getStream({
@@ -22,29 +22,19 @@ module.exports = {
       date_format: 'YYYY-MM-DD',
       verbose: false,
     });
-    app.use(morgan(':remote-addr [:date[clf]] :method :url :status :response-time ms', { stream }));
+    morgan.token('date', () => moment().format('YYYY-MM-DD HH:mm:ss'));
+    app.use(morgan(':remote-addr [:date] ":method :url" - :status :response-time ms', { stream }));
     app.use(favicon(__dirname + '/public/images/favicon.ico'));
-    app.use('/', express.static('dist'));
-    app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(mount('/', server('dist')));
   },
 
-  // 异步路由相关设置
   router(app) {
-    const index = express.Router();
-    index.use((req, res, next) => {
-      // 暂时未接入认证
-      if (true) {
-        next();
-      } else {
-        const err = new Error('Unauthorized');
-        err.status = 401;
-        next(err);
-      }
-    });
+    const index = new Router({ prefix: '/api' });
     index.use('/project', require('project'));
     index.use('/page', require('page'));
     index.use('/component', require('component'));
-    app.use('/api', index);
+    index.use('/upload', require('upload'));
+    app.use(index.routes());
+    app.use(index.allowedMethods());
   }
 };

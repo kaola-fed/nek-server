@@ -7,7 +7,7 @@ const projectSchema = new Schema({
   desc: String,
   templates: [{
     name: String,
-    fileId: Schema.Types.ObjectId,
+    file: Schema.Types.ObjectId,
   }],
 });
 

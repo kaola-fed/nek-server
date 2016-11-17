@@ -1,10 +1,10 @@
-const express = require('express');
+const Router = require('koa-router');
 const mongoose = require('mongoose');
 
-const page = express.Router();
+const page = new Router();
 
-page.get('/', (req, res, next) => {
-  res.json({ test: 0 });
+page.get('/', async ctx => {
+  ctx.body = 'page';
 });
 
-module.exports = page;
+module.exports = page.routes();
