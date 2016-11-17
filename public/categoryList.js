@@ -2,8 +2,8 @@ const categoryList = [{
   title: "简单组件",
   moduleList: [{
       desc: "按钮",
-      name: 'nek.button',
-      cols: 2,
+      name: 'ui.button',
+      cols: 1,
       icon: "http://placeholder.cn/80",
     }, {
       desc: "标签",
@@ -36,7 +36,7 @@ const categoryList = [{
     }, {
       desc: "测试按钮",
       name: 'ui.button',
-      cols: 2,
+      cols: 1,
       icon: "http://placeholder.cn/80",
     }]
 }, {

@@ -53,13 +53,13 @@ $mainColor: #3c8dbc;
     .module {
         &:hover {
             .option {
-                display: block;
+                display: flex;
             }
         }
     }
     .option {
         display: none;
-        width: 119px;
+        width: 88px;
         position: absolute;
         right: 0;
         top: 0;
