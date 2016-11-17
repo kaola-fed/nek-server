@@ -23,6 +23,7 @@
     "app-module-path": "^2.1.0",
     "file-stream-rotator": "0.0.7",
     "koa": "^2.0.0-alpha.7",
+    "koa-bodyparser": "^3.2.0",
     "koa-favicon": "^2.0.0",
     "koa-morgan": "^1.0.1",
     "koa-mount": "^2.0.0",

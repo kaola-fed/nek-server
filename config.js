@@ -5,6 +5,7 @@ const server = require('koa-static');
 const favicon = require('koa-favicon');
 const mount = require('koa-mount');
 const Router = require('koa-router');
+const bodyParser = require('koa-bodyparser');
 const path = require('path');
 const fs = require('fs');
 require('app-module-path').addPath(__dirname + '/app/controllers');
@@ -25,7 +26,9 @@ module.exports = {
     morgan.token('date', () => moment().format('YYYY-MM-DD HH:mm:ss'));
     app.use(morgan(':remote-addr [:date] ":method :url" - :status :response-time ms', { stream }));
     app.use(favicon(__dirname + '/public/images/favicon.ico'));
-    app.use(mount('/', server('dist')));
+    app.use(mount('/', server(path.join(__dirname, 'dist'))));
+    app.use(mount('/project', server(path.join(__dirname, 'public/projects'))));
+    app.use(bodyParser());
   },
 
   router(app) {
@@ -34,6 +37,7 @@ module.exports = {
     index.use('/page', require('page'));
     index.use('/component', require('component'));
     index.use('/upload', require('upload'));
+    index.use('/test', require('test'));
     app.use(index.routes());
     app.use(index.allowedMethods());
   }

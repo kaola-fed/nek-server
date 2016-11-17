@@ -6,4 +6,11 @@ const categorySchema = new Schema({
   components: [{ type: Schema.Types.ObjectId, ref: 'Component' }],
 });
 
+categorySchema.statics = {
+  async add(name) {
+    const category = new this({ name });
+    await category.save();
+  }
+};
+
 mongoose.model('Category', categorySchema);
