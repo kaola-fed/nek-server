@@ -8,8 +8,8 @@ const DropArea = Component.extend({
     template,
     config() {
         this.defaults({
-            col: 12,           // drop区域一行有12格
-            rows: [[]]         // 放组件
+            col: 12,                                        // drop区域一行有12格
+            rows: [{subRow:[[]], isContainer: false}]       // 放组件
         });
         this.supr();
     },
@@ -29,38 +29,45 @@ const DropArea = Component.extend({
         let dropArea = event.target;
         this.clearBorder(dropArea);
     },
-    // index 表示是哪一行
-    drop(event, index) {
+    // row_index 表示放入的行， subRow_index 表示放入的子行
+    drop(event, row_index, subRow_index) {
         let data = this.data,
             moduleName = event.origin.data.name,
             moudleWidth = event.origin.data.width,
             dropArea = event.target,
-            row = data.rows[index],
-            // 移动组件时的参数
-            isMoveModule = event.origin.data.isMoveModule,   // 是否移动组件
+            subRow = data.rows[row_index]['subRow'][subRow_index],
+            // 移动组件时才有的参数
+            isMoveModule = event.origin.data.isMoveModule,   // 是否为移动组件
             rowIndex = event.origin.data.rowIndex,           // 组件原先所在行的index
+            subRowIndex = event.origin.data.subRowIndex,     // 组件原先所在子行的index
             moduleIndex = event.origin.data.moduleIndex;     // 组件原先所在的moduleIndex
 
-        let res = this.getIndexAndOffset(row, data.firstCol, moudleWidth, index, isMoveModule, rowIndex, moduleIndex);
-        
-        if(res) {
-            // 移动组件
-            if(isMoveModule) {
-                let module = _.cloneDeep(data.rows[rowIndex][moduleIndex]);
-                module.firstCol = res.firstCol;
-                module.offset = res.offset;
-                this.deleteModule(data.rows[rowIndex], moduleIndex);
-                data.rows[index] = [
-                    ...row.slice(0, res.moduleIndex),
-                    module,
-                    ...row.slice(res.moduleIndex)
-                ]
-            } else {
-                data.rows[index] = [
-                    ...row.slice(0, res.moduleIndex),
-                    {name: moduleName, moduleWidth: moudleWidth, offset: res.offset, firstCol: res.firstCol},
-                    ...row.slice(res.moduleIndex)
-                ]
+        let res = this.getIndexAndOffset(subRow, data.firstCol, moudleWidth, row_index, subRow_index, isMoveModule, rowIndex, subRowIndex, moduleIndex);
+        if(moduleName == 'container') {
+            // 只有drop行不是container，且为空行才能放置container
+            if(!data.rows[row_index]['isContainer'] && data.rows[row_index].subRow.length == 1 && data.rows[row_index].subRow[0].length == 0) {
+                data.rows[row_index]['isContainer'] = true;
+            }
+        } else {
+            if(res) {
+                // 移动组件
+                if(isMoveModule) {
+                    let module = _.cloneDeep(data.rows[rowIndex]['subRow'][subRowIndex][moduleIndex]);
+                    module.firstCol = res.firstCol;
+                    module.offset = res.offset;
+                    this.deleteModule(data.rows[rowIndex]['subRow'][subRowIndex], moduleIndex);
+                    data.rows[row_index]['subRow'][subRow_index] = [
+                        ...subRow.slice(0, res.moduleIndex),
+                        module,
+                        ...subRow.slice(res.moduleIndex)
+                    ]
+                } else {
+                    data.rows[row_index]['subRow'][subRow_index] = [
+                        ...subRow.slice(0, res.moduleIndex),
+                        {name: moduleName, moduleWidth: moudleWidth, offset: res.offset, firstCol: res.firstCol},
+                        ...subRow.slice(res.moduleIndex)
+                    ]
+                }
             }
         }
         this.clearBorder(dropArea);
@@ -116,55 +123,61 @@ const DropArea = Component.extend({
     // 添加一行
     addRow() {
         let data = this.data;
-        data.rows.push([]);
+        data.rows.push({subRow:[[]], isContainer: false});
+    },
+    // 添加子行
+    addSubRow(row) {
+        row.subRow.push([])
+
     },
     // 计算放下的组件在一行中的位置和offset
-    getIndexAndOffset(row, firstCol, moduleWidth, dropRowIndex, isMoveModule, rowIndex, moduleIndex) {
+    getIndexAndOffset(subRow, firstCol, moduleWidth, dropRowIndex, dropSubRowIndex, isMoveModule, rowIndex, subRowIndex, moduleIndex) {
         let data = this.data,
-            rowClone = _.cloneDeep(row);
+            subRowClone = _.cloneDeep(subRow);
         // 是移动组件且是同行内移动
-        if(isMoveModule && dropRowIndex == rowIndex) {
-            rowClone = this.deleteModule(rowClone, moduleIndex);
+        if(isMoveModule && dropRowIndex == rowIndex && dropSubRowIndex == subRowIndex) {
+            subRowClone = this.deleteModule(subRowClone, moduleIndex);
         }
 
         // 为空行的情况下
-        if (rowClone.length == 0) {
+        if (subRowClone.length == 0) {
             return {moduleIndex: 0, offset: firstCol, firstCol: firstCol}
         }
 
         // 非空行，放在第一个的情况下
-        if (firstCol + moduleWidth < rowClone[0].firstCol + 1) {
-            row[0].offset = row[0].firstCol - firstCol - moduleWidth;
+        if (firstCol + moduleWidth < subRowClone[0].firstCol + 1) {
+            subRow[0].offset = subRow[0].firstCol - firstCol - moduleWidth;
             return {moduleIndex: 0, offset: firstCol, firstCol: firstCol}
         }
 
         // 非空行，非第一个的情况下
-        for(let i = 0; i < rowClone.length; i++) {
-            let module = rowClone[i];
+        for(let i = 0; i < subRowClone.length; i++) {
+            let module = subRowClone[i];
             // 没有下一个组件，就算到行尾
-            let moduleNext = row[i+1] || {firstCol: data.col};
-            let moduleNextClone = rowClone[i+1] || {firstCol: data.col};
+            let moduleNext = subRow[i+1] || {firstCol: data.col};
+            let moduleNextClone = subRowClone[i+1] || {firstCol: data.col};
             if(module.firstCol + module.moduleWidth -1 < firstCol && firstCol + moduleWidth < moduleNextClone.firstCol + 1) {
-                rowClone[i+1] ? moduleNext.offset = moduleNext.firstCol - firstCol - moduleWidth : '';
+                subRowClone[i+1] ? moduleNext.offset = moduleNext.firstCol - firstCol - moduleWidth : '';
                 return {moduleIndex: i+1, offset: firstCol-module.firstCol-module.moduleWidth, firstCol: firstCol}
             }
         }
         return false;
     },
-    deleteModule(row, module_index) {
-        let module = row[module_index],
-            moduleNext = row[module_index+1];
-        row.splice(module_index, 1);
+    deleteModule(subRow, module_index) {
+        let module = subRow[module_index],
+            moduleNext = subRow[module_index+1];
+        subRow.splice(module_index, 1);
 
         if(moduleNext) {
             moduleNext.offset += module.offset + module.moduleWidth;
         }
-        return row;
+        return subRow;
     },
-    configModule(name, row_index, module_index) {
-        let ref = name + '_' + row_index + '_' + module_index,
+    configModule(name, row_index, subRow_index, module_index) {
+        let ref = name + '_' + row_index + '_' + subRow_index+ '_' + module_index,
             modRef = this.$refs[ref],
-            module = this.data.rows[row_index][module_index];
+            module = this.data.rows[row_index]['subRow'][subRow_index][module_index];
+            debugger
         // 首次会把 NEK 数据放到 module 里作持久化，故需先调用组件的 $$NEK() 方法
         module.NEK = module.NEK || modRef.$$NEK() || {};
         new ConfigModal({
@@ -199,34 +212,35 @@ const DropArea = Component.extend({
         data.rows.splice(row_index, 1);
     },
     exportJson() {
-        let data = this.data,
-            self = this,
-            res = {};
-        res.rows = [];
+        // let data = this.data,
+        //     self = this,
+        //     res = {};
+        // res.rows = [];
 
-        data.rows.forEach(function(row, rowIndex) {
-            res.rows.push({
-                clazz: '',
-                components: []
-            })
-            row.forEach(function(module, moduleIndex) {
-                let ref = module.name + '_' + rowIndex + '_' + moduleIndex,
-                    modRef = self.$refs[ref],
-                    NEK = module.NEK || modRef.$$NEK() || {};
-                res.rows[rowIndex].components.push({
-                    name: NEK.name,
-                    id: NEK.id,
-                    clazz: '',
-                    layout: NEK.layout,
-                    conf: NEK.conf
-                })
-            })
-        })
-        console.log(res);
-        console.log(JSON.stringify(res));
+        // data.rows.forEach(function(row, rowIndex) {
+        //     res.rows.push({
+        //         clazz: '',
+        //         components: []
+        //     })
+        //     row.forEach(function(module, moduleIndex) {
+        //         let ref = module.name + '_' + rowIndex + '_' + moduleIndex,
+        //             modRef = self.$refs[ref],
+        //             NEK = module.NEK || modRef.$$NEK() || {};
+        //         res.rows[rowIndex].components.push({
+        //             name: NEK.name,
+        //             id: NEK.id,
+        //             clazz: '',
+        //             layout: NEK.layout,
+        //             conf: NEK.conf
+        //         })
+        //     })
+        // })
+        // console.log(res);
+        // console.log(JSON.stringify(res));
+        console.log(this.data);
     }
-}).filter('uniq', function(name, row_index, module_index) {
-    return name + '_' + row_index + '_' + module_index;
+}).filter('uniq', function(name, row_index, subRow_index, module_index) {
+    return name + '_' + row_index + '_' + subRow_index + '_' + module_index;
 });
 
 export default DropArea;

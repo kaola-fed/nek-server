@@ -43,7 +43,7 @@ const categoryList = [{
   title: "模块",
   moduleList: [{
       desc: "模块",
-      name: 'modules',
+      name: 'container',
       cols: 12,
       icon: "http://placeholder.cn/80",
     }]

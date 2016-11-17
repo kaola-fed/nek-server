@@ -1,11 +1,26 @@
 $mainColor: #3c8dbc;
 .m-droparea {
+    .rowcontainer {
+        display: flex;
+        display: -webkit-box-flex
+    }
     .row {
-        box-sizing: content-box;
-        min-height: 34px;
         flex: 1;
         -webkit-box-flex: 1;
-        /*width: 960px;*/
+    }
+    .outline {
+        outline: dashed 1px $mainColor;
+        outline-offset: 10px;
+        &.row {
+            margin: 25px 0;
+        }
+        .subrowcontainer:last-child .subRow {
+            margin-bottom: 0;
+        }
+    }
+    .subRow {
+        box-sizing: content-box;
+        min-height: 34px;
         position: relative;
         border: solid 1px #ccc;
         margin-bottom: 5px;
@@ -44,7 +59,7 @@ $mainColor: #3c8dbc;
     }
     .option {
         display: none;
-        width: 115px;
+        width: 119px;
         position: absolute;
         right: 0;
         top: 0;
@@ -57,15 +72,18 @@ $mainColor: #3c8dbc;
         }
     }
     .rowaction {
-        line-height: 36px;
+        display: flex;
+        align-items: center;
         width: 80px;
-        margin-left: 5px;
+        margin-left: 10px;
         i {
             margin-left: 5px;
         }
     }
-    .rowcontainer {
-        display: flex;
-        display: -webkit-box;
+    .addsubrow {
+        i {
+            font-size: 20px;
+            color: $mainColor;
+        }
     }
 }
