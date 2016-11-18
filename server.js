@@ -7,6 +7,7 @@ const Koa = require('koa');
 const app = new Koa();
 const config = require('./config');
 
+mongoose.Promise = global.Promise;
 const connect = () => {
   mongoose.connect(config.db, {
     server: { socketOptions: { keepAlive: 120 } }

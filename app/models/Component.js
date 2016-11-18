@@ -3,12 +3,12 @@ const Schema = mongoose.Schema;
 
 const componentSchema = new Schema({
   id: Number,
-  name: String, // 组件名
+  name: { type: String, required: true }, // 组件名
   desc: String, // 描述
-  cols: Number, // 占栅格数
+  cols: { type: Number, default: 1 }, // 占栅格数
   conf: [{
     key: String, // 属性名
-    value: String, // 属性值
+    value: { type: String, default: '' }, // 属性值
     desc: String, // 属性描述
     // 属性类型，用于配置页和生成页
     // none: 配置页(checkbox) 生成页(attr)
@@ -17,13 +17,24 @@ const componentSchema = new Schema({
     // boolean: 配置页(checkbox) 生成页(attr=true)
     // select: 配置页(select) 生成页(attr="selected")
     // array: 配置页(checkbox-group) 生成页(attr={arr})
-    // expresion: 配置页(input-text) 生成页(attr={exp})
-    type: String,
+    // expression: 配置页(input-text) 生成页(attr={exp})
+    type: { type: String, default: 'string' },
     // 只有在 type 是 select/array 的时候才有意义
     selects: [String],
   }],
-  project: { type: Schema.Types.ObjectId, ref: 'Project' },
-  category: { type: Schema.Types.ObjectId, ref: 'Category' },
-});
+  project: { type: Schema.Types.ObjectId, required: true, ref: 'Project' },
+  category: { type: Schema.Types.ObjectId, required: true, ref: 'Category' },
+}, { timestamps: true, versionKey: false });
 
-mongoose.model('Module', componentSchema);
+componentSchema.statics = {
+  async upsert(_id, project, data) {
+    _id = _id || new mongoose.Types.ObjectId;
+    return await this.update({ _id, project }, data || {}, { upsert: true });
+  },
+
+  async getList(project) {
+    return await this.find({ project });
+  },
+};
+
+mongoose.model('Component', componentSchema);

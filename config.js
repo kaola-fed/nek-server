@@ -36,8 +36,8 @@ module.exports = {
     index.use('/project', require('project'));
     index.use('/page', require('page'));
     index.use('/component', require('component'));
-    index.use('/upload', require('upload'));
-    index.use('/test', require('test'));
+    index.use('/category', require('category'));
+    index.use('/template', require('template'));
     app.use(index.routes());
     app.use(index.allowedMethods());
   }
