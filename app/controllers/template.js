@@ -16,7 +16,7 @@ template.get('/', async ctx => {
   const { file, name } = ctx.query;
   if (!file) throw new Error('[file] is required');
   ctx.set('Content-Disposition', `inline;filename=${name || 'file'}`);
-  ctx.body = gfs.createReadStream({ file });
+  ctx.body = gfs.createReadStream({ _id: file });
 });
 
 template.post('/upload', upload, async ctx => {
