@@ -32,8 +32,8 @@ componentSchema.statics = {
     return await this.update({ _id, project }, data || {}, { upsert: true });
   },
 
-  async getList(project) {
-    return await this.find({ project });
+  async getList(project, category) {
+    return await this.find({ project, category });
   },
 };
 
