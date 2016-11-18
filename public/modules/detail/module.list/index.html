@@ -2,17 +2,17 @@
     {#list categoryList as cate}
     <div class="f-cb">
         <div class="titie f-tal" on-click={cate.show = !cate.show}>
-            {cate.title}
+            {cate.name}
             <i class="f-csp u-icon u-icon-lg {!cate.show?'u-icon-angle-up':'u-icon-angle-down'}" aria-hidden="true"></i>
         </div>
         {#if !cate.show}
-        {#list cate.moduleList as module}
-        <draggable name={module.name} width={module.cols}>
+        {#list cate.componentList as component}
+        <draggable name={component.name} width={component.cols}>
             <div class="module">
-                <span>{module.desc}</span>
+                <span>{component.desc}</span>
             </div>
             <draggable.proxy>
-                <div class="proxy-module" style="width: {module.cols*colWidth}px;height: 40px;line-height: 40px;">{module.name}</div>
+                <div class="proxy-module" style="width: {component.cols*colWidth}px;height: 40px;line-height: 40px;">{component.name}</div>
             </draggable.proxy>
         </draggable>
         {/list}

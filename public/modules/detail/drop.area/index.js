@@ -1,6 +1,7 @@
 import { Regular, Component } from 'nek-ui';
 import template from '!raw!./index.html';
 import ConfigModal from '../config.modal';
+import categoryList from '../../../categoryList';
 import _ from 'lodash'
 
 const DropArea = Component.extend({
@@ -172,12 +173,21 @@ const DropArea = Component.extend({
         }
         return subRow;
     },
+    $$NEK(name) {
+        let NEK = {};
+        categoryList.forEach(category => {
+            category.componentList.forEach(component => {
+                if (component.name === name) NEK = component;
+            });
+        });
+        return NEK;
+    },
     configModule(name, row_index, subRow_index, module_index) {
         let ref = name + '_' + row_index + '_' + subRow_index+ '_' + module_index,
             modRef = this.$refs[ref],
             module = this.data.rows[row_index]['subRow'][subRow_index][module_index];
         // 首次会把 NEK 数据放到 module 里作持久化，故需先调用组件的 $$NEK() 方法
-        module.NEK = module.NEK || modRef.$$NEK() || {};
+        module.NEK = module.NEK || this.$$NEK(name);
         new ConfigModal({
             data: {
                 modRef,
@@ -223,9 +233,7 @@ const DropArea = Component.extend({
             let isContainer = row.isContainer;
             if(!isContainer) {
                 row.subRow[0].forEach(function(module, moduleIndex) {
-                    let ref = module.name + '_' + rowIndex + '_0_' + moduleIndex,
-                        modRef = self.$refs[ref],
-                        NEK = module.NEK || modRef.$$NEK() || {};
+                    let NEK = module.NEK || self.$$NEK(module.name);
                     res.rows[rowIndex].components.push({
                         name: NEK.name,
                         id: NEK.id,
@@ -244,9 +252,7 @@ const DropArea = Component.extend({
                                     // debugger
                     res.rows[rowIndex].components[0].rows.push({clazz:'', components:[]});
                     subRow.forEach(function(module, moduleIndex) {
-                        let ref = module.name + '_' + rowIndex + '_' + subRowIndex + '_' + moduleIndex,
-                        modRef = self.$refs[ref],
-                        NEK = module.NEK || modRef.$$NEK() || {};
+                        let NEK = module.NEK || self.$$NEK(module.name);
                         res.rows[rowIndex].components[0].rows[subRowIndex]['components'].push({
                             name: NEK.name,
                             id: NEK.id,
