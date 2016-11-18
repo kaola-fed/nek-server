@@ -2,9 +2,16 @@ const Router = require('koa-router');
 const mongoose = require('mongoose');
 
 const page = new Router();
+const Page = mongoose.model('Page');
 
-page.get('/', async ctx => {
-  ctx.body = 'page';
+page.get('/list', async ctx => {
+  const { project } = ctx.query;
+  ctx.body = await Page.getList(project);
+});
+
+page.post('/upsert', async ctx => {
+  const { _id, project, name, url } = ctx.request.body;
+  ctx.body = await Page.upsert(_id, project, name, url);
 });
 
 module.exports = page.routes();

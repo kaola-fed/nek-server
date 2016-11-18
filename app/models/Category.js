@@ -3,14 +3,17 @@ const Schema = mongoose.Schema;
 
 const categorySchema = new Schema({
   name: String,
-  components: [{ type: Schema.Types.ObjectId, ref: 'Component' }],
-});
+}, { timestamps: true, versionKey: false });
 
 categorySchema.statics = {
-  async add(name) {
-    const category = new this({ name });
-    await category.save();
-  }
+  async upsert(_id, name) {
+    _id = _id || new mongoose.Types.ObjectId;
+    return await this.update({ _id }, { name }, { upsert: true });
+  },
+
+  async getList() {
+    return await this.find();
+  },
 };
 
 mongoose.model('Category', categorySchema);

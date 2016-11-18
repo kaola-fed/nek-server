@@ -242,12 +242,12 @@ const DropArea = Component.extend({
                 })
                 row.subRow.forEach(function(subRow, subRowIndex) {
                                     // debugger
-                    res.rows[rowIndex].components[0].rows.push([]);
+                    res.rows[rowIndex].components[0].rows.push({clazz:'', components:[]});
                     subRow.forEach(function(module, moduleIndex) {
                         let ref = module.name + '_' + rowIndex + '_' + subRowIndex + '_' + moduleIndex,
                         modRef = self.$refs[ref],
                         NEK = module.NEK || modRef.$$NEK() || {};
-                        res.rows[rowIndex].components[0].rows[subRowIndex].push({
+                        res.rows[rowIndex].components[0].rows[subRowIndex]['components'].push({
                             name: NEK.name,
                             id: NEK.id,
                             clazz: '',
