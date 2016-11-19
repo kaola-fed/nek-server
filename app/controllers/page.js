@@ -15,7 +15,7 @@ page.get('/list', async ctx => {
 });
 
 page.post('/upsert', async ctx => {
-  const { page, project, name, url } = ctx.request.body;
+  const { page, project, name, url, data } = ctx.request.body;
   ctx.body = await Page.upsert(page, project, name, url);
 });
 

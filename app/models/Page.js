@@ -13,9 +13,9 @@ pageSchema.statics = {
     return await this.findOne({ project, url });
   },
 
-  async upsert(_id, project, name, url) {
+  async upsert(_id, project, name, url, data) {
     _id = _id || new mongoose.Types.ObjectId;
-    return await this.update({ _id, project }, { name, url }, { upsert: true });
+    return await this.update({ _id, project }, { name, url, data }, { upsert: true });
   },
 
   async getList(project) {
