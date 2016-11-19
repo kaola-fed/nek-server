@@ -5,8 +5,8 @@ const project = new Router();
 const Project = mongoose.model('Project');
 
 project.get('/', async ctx => {
-  const { projectId } = ctx.query;
-  ctx.body = await Project.queryOne(projectId);
+  const { project } = ctx.query;
+  ctx.body = await Project.queryOne(project);
 });
 
 project.get('/list', async ctx => {
@@ -14,17 +14,17 @@ project.get('/list', async ctx => {
 });
 
 project.post('/upsert', async ctx => {
-  const { projectId, name, desc } = ctx.request.body;
-  ctx.body = await Project.upsert(projectId, name, desc);
+  const { project, name, desc } = ctx.request.body;
+  ctx.body = await Project.upsert(project, name, desc);
 });
 
 project.post('/tpl/upsert', async ctx => {
-  const { projectId, name, fileId } = ctx.request.body;
-  ctx.body = await Project.upsertTpl(projectId, name, fileId);
+  const { project, name, file } = ctx.request.body;
+  ctx.body = await Project.upsertTpl(project, name, file);
 });
 
 project.post('/tpl/delete', async ctx => {
-  const { projectId, name } = ctx.request.body;
+  const { project, name } = ctx.request.body;
 });
 
 module.exports = project.routes();
