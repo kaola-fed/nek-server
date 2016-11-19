@@ -27,7 +27,6 @@ module.exports = {
     app.use(morgan(':remote-addr [:date] ":method :url" - :status :response-time ms', { stream }));
     app.use(favicon(__dirname + '/public/images/favicon.ico'));
     app.use(mount('/', server(path.join(__dirname, 'dist'))));
-    app.use(mount('/project', server(path.join(__dirname, 'public/projects'))));
     app.use(bodyParser());
   },
 
