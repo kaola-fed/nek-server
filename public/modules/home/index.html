@@ -1,2 +1,4 @@
 <h1>这里是项目列表：</h1>
-<h1><a href="#!/detail">点我进入详情页</a></h1>
+{#list projects as project}
+<h1><a href={'app.detail' | encode: { projectId: project._id }}>{project.name}</a></h1>
+{/list}

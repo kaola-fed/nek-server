@@ -1,7 +1,6 @@
 import { Regular, Component } from 'nek-ui';
 import template from '!raw!./index.html';
 import ConfigModal from '../config.modal';
-import categoryList from '../../../categoryList';
 import _ from 'lodash'
 
 const DropArea = Component.extend({
@@ -9,6 +8,7 @@ const DropArea = Component.extend({
     template,
     config() {
         this.defaults({
+            categoryList: [],                               // 组件列表
             col: 12,                                        // drop区域一行有12格
             rows: [{subRow:[[]], isContainer: false}]       // 放组件
         });
@@ -175,7 +175,7 @@ const DropArea = Component.extend({
     },
     $$NEK(name) {
         let NEK = {};
-        categoryList.forEach(category => {
+        this.data.categoryList.forEach(category => {
             category.componentList.forEach(component => {
                 if (component.name === name) NEK = component;
             });
