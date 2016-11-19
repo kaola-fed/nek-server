@@ -7,6 +7,9 @@ const Category = mongoose.model('Category');
 
 component.get('/list', async ctx => {
   const { project } = ctx.query;
+  if (!project) {
+    throw new Error('[project] is required');
+  }
   let categories = await Category.getList();
   categories = JSON.parse(JSON.stringify(categories));
   for (let category of categories) {
@@ -17,6 +20,9 @@ component.get('/list', async ctx => {
 
 component.post('/upsert', async ctx => {
   const { component, project } = ctx.request.body;
+  if (!project) {
+    throw new Error('[project] is required');
+  }
   ctx.body = await Component.upsert(component, project, ctx.request.body);
 });
 

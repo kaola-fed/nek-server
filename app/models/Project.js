@@ -17,7 +17,6 @@ projectSchema.statics = {
 
   async upsert(_id, name, desc) {
     _id = _id || new mongoose.Types.ObjectId;
-    if (!name) throw new Error('[name] is required');
     return await this.update(
       { _id },
       JSON.parse(JSON.stringify({ name, desc })),
@@ -29,7 +28,6 @@ projectSchema.statics = {
   },
 
   async upsertTpl(_id, name, file) {
-    if (!_id || !name || !file) throw new Error('[_id & name & file] are required');
     const result = await this.find({ _id, 'templates.name': name });
     if (result.length) {
       return await this.update({ _id, 'templates.name': name }, {

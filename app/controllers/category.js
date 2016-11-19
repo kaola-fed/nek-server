@@ -10,6 +10,9 @@ category.get('/list', async ctx => {
 
 category.post('/upsert', async ctx => {
   const { category, name } = ctx.request.body;
+  if (!name) {
+    throw new Error('[name] is required');
+  }
   ctx.body = await Category.upsert(category, name);
 });
 
