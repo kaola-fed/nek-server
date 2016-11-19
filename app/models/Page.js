@@ -9,6 +9,10 @@ const pageSchema = new Schema({
 }, { timestamps: true, versionKey: false });
 
 pageSchema.statics = {
+  async queryOne(project, url) {
+    return await this.findOne({ project, url });
+  },
+
   async upsert(_id, project, name, url) {
     _id = _id || new mongoose.Types.ObjectId;
     return await this.update({ _id, project }, { name, url }, { upsert: true });

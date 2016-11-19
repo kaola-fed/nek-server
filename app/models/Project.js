@@ -12,7 +12,6 @@ const projectSchema = new Schema({
 
 projectSchema.statics = {
   async queryOne(_id) {
-    console.log(_id);
     return await this.findOne({ _id });
   },
 

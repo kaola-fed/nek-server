@@ -4,6 +4,11 @@ const mongoose = require('mongoose');
 const page = new Router();
 const Page = mongoose.model('Page');
 
+page.get('/', async ctx => {
+  const { project, url } = ctx.query;
+  ctx.body = await Page.queryOne(project, url);
+});
+
 page.get('/list', async ctx => {
   const { project } = ctx.query;
   ctx.body = await Page.getList(project);

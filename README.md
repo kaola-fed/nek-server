@@ -31,6 +31,7 @@ POST /api/project/upsert
 POST /api/project/tpl/upsert
 POST /api/project/tpl/delete
 
+GET /api/page
 GET /api/page/list
 POST /api/page/upsert
 
