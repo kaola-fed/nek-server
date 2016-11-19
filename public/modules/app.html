@@ -1,14 +1,14 @@
 <div class="g-hd">
-    <a href="/" class="logo">NEK</a>
+    <a href={'app.home' | encode} class="logo">NEK</a>
     <ul class="entries">
         <li class="entry">
-            <a href="#!/setting">项目设置</a>
+            <a href={'app.setting' | encode}>项目设置</a>
         </li>
         <li class="entry">
-            <a href="#!/setting">模块管理</a>
+            <a href={'app.setting' | encode}>模块管理</a>
         </li>
         <li class="entry">
-            <a href="#!/detail" {#if curPath == '/detail'}class="crt"{/if}>页面管理</a>
+            <a href={'app.detail' | encode}>页面管理</a>
         </li>
     </ul>
 </div>
