@@ -29,7 +29,10 @@ const componentSchema = new Schema({
 componentSchema.statics = {
   async upsert(_id, project, data) {
     _id = _id || new mongoose.Types.ObjectId;
-    return await this.update({ _id, project }, data || {}, { upsert: true });
+    return await this.update(
+      { _id, project },
+      JSON.parse(JSON.stringify(data || {})),
+      { upsert: true });
   },
 
   async getList(project, category) {

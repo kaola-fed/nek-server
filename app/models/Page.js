@@ -15,7 +15,10 @@ pageSchema.statics = {
 
   async upsert(_id, project, name, url, data) {
     _id = _id || new mongoose.Types.ObjectId;
-    return await this.update({ _id, project }, { name, url, data }, { upsert: true });
+    return await this.update(
+      { _id, project },
+      JSON.parse(JSON.stringify({ name, url, data })),
+      { upsert: true });
   },
 
   async getList(project) {

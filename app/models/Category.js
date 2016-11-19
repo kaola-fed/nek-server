@@ -8,7 +8,10 @@ const categorySchema = new Schema({
 categorySchema.statics = {
   async upsert(_id, name) {
     _id = _id || new mongoose.Types.ObjectId;
-    return await this.update({ _id }, { name }, { upsert: true });
+    return await this.update(
+      { _id },
+      JSON.parse(JSON.stringify({ name })),
+      { upsert: true });
   },
 
   async getList() {

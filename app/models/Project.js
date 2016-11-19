@@ -18,7 +18,10 @@ projectSchema.statics = {
   async upsert(_id, name, desc) {
     _id = _id || new mongoose.Types.ObjectId;
     if (!name) throw new Error('[name] is required');
-    return await this.update({ _id }, { name, desc }, { upsert: true });
+    return await this.update(
+      { _id },
+      JSON.parse(JSON.stringify({ name, desc })),
+      { upsert: true });
   },
 
   async getList() {
