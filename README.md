@@ -20,27 +20,35 @@ NEK 的服务端，包含了页面拖拽构建以及数据库交互
  - 返回都是直接可用对象，不会返回 code message 等冗余信息，如果错误会统一触发 HTTP status code 500
  - 请求的 Content-Type 同时支持 application/json 和 application/x-www-form-urlencoded，不过建议统一用前者
 
-API列表（其实都是些`增删改查`而已）：
-```
-GET /api/template
-POST /api/template/upload
+#### API列表（所以的接口都默认以 `/api` 开头）
 
-GET /api/project
-GET /api/project/list
-POST /api/project/upsert
-POST /api/project/tpl/upsert
-POST /api/project/tpl/delete
+> 注：文档写得略简陋，暂时将就看吧，有问题可以问我
 
-GET /api/page
-GET /api/page/list
-POST /api/page/upsert
+|接口|方法|描述|参数|返回|
+|--|--|--|--|--|
+|/template|GET|获取模板文件|file(文件的id),name(下载后显示的名字)|二进制文件|
+|/template/upload|POST|批量上传文件|随意|文件信息列表，主要是用里面的 id 和 originalname 字段|
+|/project|GET|获取项目信息|project(项目id)|项目信息|
+|/project/list|GET|所有项目|无|项目列表|
+|/project/upsert|POST|新增/更新项目|project(项目id，无则新增),name(项目名),desc(描述)||
+|/project/tpl/upsert|POST|新增/更新项目模板|project(项目id),name(模板文件名，不存在则新增),file(文件id)||
+|/project/tpl/delete|POST|删除项目模板|project(项目id),name(模板文件名)||
+|/page|GET|获取页面数据|project(项目id),|页面数据|
+|/page/list|GET|获取页面列表|project(项目id)|页面列表|
+|/page/upsert|POST|新增/更新页面|page(页面id，无则新增),project(项目id),name(页面名),url(页面url),data(页面组件数据)||
+|/component/list|GET|获取组件数据|project(项目id)|组件列表|
+|/component/upsert|POST|新增/更新组件|project(项目id),component(组件id，无则新增),...||
+|/category/list|GET|获取所有分类|project(项目id)|分类列表|
+|/category/upsert|POST|新增/更新类目信息|project(项目id),category(类目id)||
 
-GET /api/component/list
-POST /api/component/upsert
+#### NEK CLI 交互方式
 
-GET /api/category/list
-POST /api/category/upsert
-```
+ - 在 .nekrc 里加上 `projectId` 字段，接下来的请求会用到
+ - `GET /api/project?project={projectId}` 会得到项目的信息
+![](https://dn-getlink.qbox.me/aqlpdg8pkd38niwyrdx6r.png)
+ - 遍历`result.templates`里的 `file` 和 `name`，通过 `GET /api/template?fileId={file}&name={name}` 即可下载到模板文件
+ - 因为 nek 是通过 `nek -u <url>` 生成模板的，所以为了正确填充模板，需要 `GET /api/page?projectId={projectId}&url={url}` 获取页面的 JSON 数据，meta 放在 `result.data` 字段下的
+
 
 ## 目录
 
