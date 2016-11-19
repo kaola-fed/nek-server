@@ -47,8 +47,8 @@ NEK 的服务端，包含了页面拖拽构建以及数据库交互
  - 在 .nekrc 里加上 `projectId` 字段，接下来的请求会用到
  - `GET /api/project?project={projectId}` 会得到项目的信息
 ![](https://dn-getlink.qbox.me/aqlpdg8pkd38niwyrdx6r.png)
- - 遍历`result.templates`里的 `file` 和 `name`，通过 `GET /api/template?fileId={file}&name={name}` 即可下载到模板文件
- - 因为 nek 是通过 `nek -u <url>` 生成模板的，所以为了正确填充模板，需要 `GET /api/page?projectId={projectId}&url={url}` 获取页面的 JSON 数据，meta 放在 `result.data` 字段下的
+ - 遍历`result.templates`里的 `file` 和 `name`，通过 `GET /api/template?file={file}&name={name}` 即可下载到模板文件
+ - 因为 nek 是通过 `nek -u <url>` 生成模板的，所以为了正确填充模板，需要 `GET /api/page?project={projectId}&url={url}` 获取页面的 JSON 数据，meta 放在 `result.data` 字段下的
 
 
 ## 目录
