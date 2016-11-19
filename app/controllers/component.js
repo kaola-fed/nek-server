@@ -6,18 +6,18 @@ const Component = mongoose.model('Component');
 const Category = mongoose.model('Category');
 
 component.get('/list', async ctx => {
-  const { project } = ctx.query;
+  const { projectId } = ctx.query;
   let categories = await Category.getList();
   categories = JSON.parse(JSON.stringify(categories));
   for (let category of categories) {
-    category.componentList = await Component.getList(project, category._id);
+    category.componentList = await Component.getList(projectId, category._id);
   }
   ctx.body = categories;
 });
 
 component.post('/upsert', async ctx => {
-  const { _id, project } = ctx.request.body;
-  ctx.body = await Component.upsert(_id, project, ctx.request.body);
+  const { componentId, projectId } = ctx.request.body;
+  ctx.body = await Component.upsert(componentId, projectId, ctx.request.body);
 });
 
 module.exports = component.routes();

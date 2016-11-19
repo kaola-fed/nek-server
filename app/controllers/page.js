@@ -5,18 +5,18 @@ const page = new Router();
 const Page = mongoose.model('Page');
 
 page.get('/', async ctx => {
-  const { project, url } = ctx.query;
-  ctx.body = await Page.queryOne(project, url);
+  const { projectId, url } = ctx.query;
+  ctx.body = await Page.queryOne(projectId, url);
 });
 
 page.get('/list', async ctx => {
-  const { project } = ctx.query;
-  ctx.body = await Page.getList(project);
+  const { projectId } = ctx.query;
+  ctx.body = await Page.getList(projectId);
 });
 
 page.post('/upsert', async ctx => {
-  const { _id, project, name, url } = ctx.request.body;
-  ctx.body = await Page.upsert(_id, project, name, url);
+  const { pageId, projectId, name, url } = ctx.request.body;
+  ctx.body = await Page.upsert(pageId, projectId, name, url);
 });
 
 module.exports = page.routes();

@@ -27,7 +27,7 @@ const Detail = Component.extend({
 
   _getComponentList() {
     const { projectId } = this.data;
-    fetch(`/api/component/list?project=${projectId}`)
+    fetch(`/api/component/list?projectId=${projectId}`)
     .then(res => res.json())
     .then(json => {
       this.$update('categoryList', json);
@@ -38,7 +38,7 @@ const Detail = Component.extend({
 
   _getPageList() {
     const { projectId } = this.data;
-    fetch(`/api/page/list?project=${projectId}`)
+    fetch(`/api/page/list?projectId=${projectId}`)
     .then(res => res.json())
     .then(json => {
       this.$update('pageList', json);

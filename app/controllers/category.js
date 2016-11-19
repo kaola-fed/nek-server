@@ -9,8 +9,8 @@ category.get('/list', async ctx => {
 });
 
 category.post('/upsert', async ctx => {
-  const { _id, name } = ctx.request.body;
-  ctx.body = await Category.upsert(_id, name);
+  const { categoryId, name } = ctx.request.body;
+  ctx.body = await Category.upsert(categoryId, name);
 });
 
 module.exports = category.routes();

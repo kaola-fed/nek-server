@@ -13,10 +13,10 @@ storage.once('connection', function(_gfs, _db) {
 const template = new Router();
 
 template.get('/', async ctx => {
-  const { file, name } = ctx.query;
-  if (!file) throw new Error('[file] is required');
+  const { fileId, name } = ctx.query;
+  if (!fileId) throw new Error('[fileId] is required');
   ctx.set('Content-Disposition', `inline;filename=${name || 'file'}`);
-  ctx.body = gfs.createReadStream({ _id: file });
+  ctx.body = gfs.createReadStream({ _id: fileId });
 });
 
 template.post('/upload', upload, async ctx => {
