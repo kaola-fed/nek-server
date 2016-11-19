@@ -25,6 +25,7 @@ API列表（其实都是些`增删改查`而已）：
 GET /api/template
 POST /api/template/upload
 
+GET /api/project
 GET /api/project/list
 POST /api/project/upsert
 POST /api/project/tpl/upsert

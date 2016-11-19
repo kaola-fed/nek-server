@@ -4,6 +4,11 @@ const mongoose = require('mongoose');
 const project = new Router();
 const Project = mongoose.model('Project');
 
+project.get('/', async ctx => {
+  const { _id } = ctx.query;
+  ctx.body = await Project.queryOne(_id);
+});
+
 project.get('/list', async ctx => {
   ctx.body = await Project.getList();
 });

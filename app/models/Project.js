@@ -11,6 +11,11 @@ const projectSchema = new Schema({
 }, { timestamps: true, versionKey: false });
 
 projectSchema.statics = {
+  async queryOne(_id) {
+    console.log(_id);
+    return await this.findOne({ _id });
+  },
+
   async upsert(_id, name, desc) {
     _id = _id || new mongoose.Types.ObjectId;
     if (!name) throw new Error('[name] is required');
