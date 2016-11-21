@@ -5,9 +5,9 @@
         </div>
         <ul>
         <!-- TODO: Use pageList -->
-        {#list 1..30 as item}
+        {#list pageList as item}
         <li class="page f-toe">
-            <span>demo{item}</span>
+            <span>{item.name}</span>
         </li>
         {/list}
         </ul>
