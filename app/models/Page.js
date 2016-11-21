@@ -9,8 +9,8 @@ const pageSchema = new Schema({
 }, { timestamps: true, versionKey: false });
 
 pageSchema.statics = {
-  async queryOne(project, url) {
-    return await this.findOne({ project, url });
+  async queryOne(project, _id) {
+    return await this.findOne({ project, _id });
   },
 
   async upsert(_id, project, name, url, data) {

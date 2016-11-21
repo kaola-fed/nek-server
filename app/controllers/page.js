@@ -5,11 +5,11 @@ const page = new Router();
 const Page = mongoose.model('Page');
 
 page.get('/', async ctx => {
-  const { project, url } = ctx.query;
-  if (!project || !url) {
-    throw new Error('[project && url] are required');
+  const { project, page } = ctx.query;
+  if (!project || !page) {
+    throw new Error('[project && page] are required');
   }
-  ctx.body = await Page.queryOne(project, url);
+  ctx.body = await Page.queryOne(project, page);
 });
 
 page.get('/list', async ctx => {

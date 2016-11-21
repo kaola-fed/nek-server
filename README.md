@@ -15,8 +15,8 @@ NEK 的服务端，包含了页面拖拽构建以及数据库交互
 
 ## 接口
 
- - 具体参数暂时不想写，看 app/controllers 或者问我吧
  - upsert = update + insert，通常由是否有 _id 来决定行为
+ - 所有的 upsert 接口在**更新**的时候，不传的字段是**不会被更新**的，其实这更符合使用逻辑
  - 返回都是直接可用对象，不会返回 code message 等冗余信息，如果错误会统一触发 HTTP status code 500
  - 请求的 Content-Type 同时支持 application/json 和 application/x-www-form-urlencoded，不过建议统一用前者
 
@@ -34,7 +34,7 @@ NEK 的服务端，包含了页面拖拽构建以及数据库交互
 |/project/upsert|POST|新增/更新项目|project(项目id，无则新增),name(项目名),desc(描述)||
 |/project/tpl/upsert|POST|新增/更新项目模板|project(项目id),name(模板文件名，不存在则新增),file(文件id)||
 |/project/tpl/delete|POST|删除项目模板|project(项目id),name(模板文件名)||
-|/page|GET|获取页面数据|project(项目id),|页面数据|
+|/page|GET|获取页面数据|project(项目id),page(页面id)|页面数据|
 |/page/list|GET|获取页面列表|project(项目id)|页面列表|
 |/page/upsert|POST|新增/更新页面|page(页面id，无则新增),project(项目id),name(页面名),url(页面url),data(页面组件数据)||
 |/component/list|GET|获取组件数据|project(项目id)|组件列表|
@@ -48,7 +48,7 @@ NEK 的服务端，包含了页面拖拽构建以及数据库交互
  - `GET /api/project?project={projectId}` 会得到项目的信息
 ![](https://dn-getlink.qbox.me/aqlpdg8pkd38niwyrdx6r.png)
  - 遍历`result.templates`里的 `file` 和 `name`，通过 `GET /api/template?file={file}&name={name}` 即可下载到模板文件
- - 因为 nek 是通过 `nek -u <url>` 生成模板的，所以为了正确填充模板，需要 `GET /api/page?project={projectId}&url={url}` 获取页面的 JSON 数据，meta 放在 `result.data` 字段下的
+ - 为了正确填充模板，需要 `GET /api/page?project={projectId}&page={pageId}` 获取页面的 JSON 数据，meta 放在 `result.data` 字段下的
 
 
 ## 目录
