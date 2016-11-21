@@ -1,16 +1,13 @@
 $mainColor: #3c8dbc;
 .m-droparea {
     .rowcontainer {
-        display: flex;
-        display: -webkit-box-flex
+        display: flex;display: -webkit-box-flex
     }
     .row {
-        flex: 1;
-        -webkit-box-flex: 1;
+        flex: 1;-webkit-box-flex: 1;
     }
     .outline {
-        outline: dashed 1px $mainColor;
-        outline-offset: 10px;
+        outline: dashed 1px $mainColor;outline-offset: 10px;
         &.row {
             margin: 25px 0;
         }
@@ -19,16 +16,16 @@ $mainColor: #3c8dbc;
         }
     }
     .subRow {
-        box-sizing: content-box;
-        min-height: 34px;
         position: relative;
-        border: solid 1px #ccc;
-        margin-bottom: 5px;
+        box-sizing: content-box;min-height: 34px;margin-bottom: 5px;border: solid 1px #ccc;
         .line {
             position: absolute;
-            width: 2;
-            height: 100%;
-            z-index: 10;
+            width: 2;height: 100%;z-index: 10;
+        }
+    }
+    @for $i from 1 to 12 {
+        .line:nth-child(#{$i}) {
+            left:  $i / 12 * 100%;
         }
     }
     .borderleft {
@@ -41,14 +38,9 @@ $mainColor: #3c8dbc;
         margin-top: 20px;
     }
     .addrow {
-        padding: 0 15px;
-        height: 40px;
-        background-color: $mainColor;
         display: inline-block;
-        line-height: 40px;
-        color: #fff;
-        border-radius: 5px;
-        margin-right: 10px;
+        height: 40px;padding: 0 15px;margin-right: 10px;border-radius: 5px;
+        line-height: 40px;color: #fff;background-color: $mainColor;
     }
     .module {
         &:hover {
@@ -58,32 +50,23 @@ $mainColor: #3c8dbc;
         }
     }
     .option {
-        display: none;
-        width: 88px;
-        position: absolute;
-        right: 0;
-        top: 0;
-        background-color: rgba(0,0,0,0.4);
-        padding: 5px;
-        color: #fff;
-        border-bottom-left-radius: 5px;
+        display: none;position: absolute;right: 0;top: 0;
+        width: 88px;padding: 5px;border-bottom-left-radius: 5px;
+        color: #fff;background-color: rgba(0,0,0,0.4);
         i {
             margin: 0 7px;
         }
     }
     .rowaction {
-        display: flex;
-        align-items: center;
-        width: 80px;
-        margin-left: 10px;
+        display: flex;align-items: center;
+        width: 26px;margin-left: 10px;
         i {
             margin-left: 5px;
         }
     }
     .addsubrow {
         i {
-            font-size: 20px;
-            color: $mainColor;
+            font-size: 20px;color: $mainColor;
         }
     }
 }

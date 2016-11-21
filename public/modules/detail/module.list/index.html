@@ -1,22 +1,22 @@
 <div class="m-modules">
     {#list categoryList as cate}
-    <div class="f-cb">
-        <div class="titie f-tal" on-click={cate.show = !cate.show}>
+    <ul>
+        <li class="titie f-tal" on-click={cate.show = !cate.show}>
             {cate.name}
             <i class="f-csp u-icon u-icon-lg {!cate.show?'u-icon-angle-up':'u-icon-angle-down'}" aria-hidden="true"></i>
-        </div>
+        </li>
         {#if !cate.show}
         {#list cate.componentList as component}
         <draggable name={component.name} width={component.cols}>
-            <div class="module">
-                <span>{component.desc}</span>
-            </div>
+            <li class="module">
+                {component.desc}
+            </li>
             <draggable.proxy>
                 <div class="proxy-module" style="width: {component.cols*colWidth}px;height: 40px;line-height: 40px;">{component.name}</div>
             </draggable.proxy>
         </draggable>
         {/list}
         {/if}
-        </div>
+    </ul>
     {/list}
 </div>

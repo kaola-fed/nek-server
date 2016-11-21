@@ -1,23 +1,17 @@
 .m-modules {
-    background-color: #fff;
     overflow: auto;
+    background-color: #fff;
     .titie {
-        height: 40px;
-        line-height: 40px;
-        padding: 0 15px;
-        cursor: pointer;
         position: relative;
-        font-weight: bold;
-        color:$themeColor;
+        height: 40px;padding: 0 15px;line-height: 40px;
+        font-weight: bold;color:$themeColor;cursor: pointer;
         i {
-            position: absolute;
-            right: 20px;
+            position: absolute;right: 20px;
         }
     }
     .module {
-        background-color: #fff;
         padding: 10px 35px;
-        cursor: pointer;
+        background-color: #fff;cursor: pointer;
         &:hover {
             background-color: #eaf8fe;
         }
@@ -27,12 +21,10 @@
         border:1px solid $themeColor; color:$themeColor;
     }
     img {
-        width: 80px;
-        height: 80px;
+        width: 80px;height: 80px;
     }
 }
 .proxy-module {
     border: solid 1px #3c8dbc;
-    text-align: center;
-    color: #3c8dbc;
+    text-align: center;color: #3c8dbc;
 }

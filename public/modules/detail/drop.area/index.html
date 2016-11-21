@@ -1,56 +1,57 @@
 <div class="m-droparea">
+<ul>
 {#list rows as row}
-<div class="rowcontainer">
-<div class="row {row.isContainer?'outline':''}">
-    {#list row.subRow as subRow}
-    <div class="f-cb subrowcontainer">
-        <droppable on-dragover={this.dragOver($event)} on-dragleave={this.dragLeave($event)} on-drop={this.drop($event, row_index, subRow_index)}>
-            <div class="subRow f-cb">
-                <!-- 行内的参考线 -->
-                {#list 1..11 as itm}
-                <div class="line" style="left: {100*itm/12}%"></div>
-                {/list}
-
-                <!-- 输出每行的组件 -->
-                {#if subRow && subRow.length > 0}
-                {#list subRow as module by module_index}
-                <div class="f-fl f-pr g-offset-{module.offset} g-col-{module.moduleWidth} module">
-                    <r-component is={module.name} NEK={module.NEK} ref={module.name | uniq: row_index, subRow_index, module_index}></r-component><!-- 去掉行内元素带来的间隙
-                    --><div class="option">
-                        <i class="f-csp u-icon u-icon-trash-o" aria-hidden="true" on-click={this.deleteModule(subRow, module_index)}></i>
-                        <i class="f-csp u-icon u-icon-pencil" aria-hidden="true" on-click={this.configModule(module.name, row_index, subRow_index, module_index)}></i>
-                        <!-- 组件亦可拖拽 -->
-                        <draggable name={module.name} width={module.moduleWidth} isMoveModule=true rowIndex={row_index} subRowIndex={subRow_index} moduleIndex={module_index}>
-                            <i class="f-csp u-icon u-icon-arrows" aria-hidden="true"></i>
-                            <draggable.proxy>
-                                <div class="proxy-module" style="width: {module.moduleWidth*80}px;height: 40px;line-height: 40px;">{module.name}</div>
-                            </draggable.proxy>
-                        </draggable>
+    <li class="rowcontainer">
+        <div class="row {row.isContainer?'outline':''}">
+            {#list row.subRow as subRow}
+            <div class="f-cb subrowcontainer">
+                <droppable on-dragover={this.dragOver($event)} on-dragleave={this.dragLeave($event)} on-drop={this.drop($event, row_index, subRow_index)}>
+                    <div class="subRow f-cb">
+                        <!-- 行内的参考线 -->
+                        {#list 1..11 as itm}
+                        <div class="line"></div>
+                        {/list}
+                        <!-- 输出每行的组件 -->
+                        {#if subRow && subRow.length > 0}
+                        {#list subRow as module by module_index}
+                        <div class="f-fl f-pr g-offset-{module.offset} g-col-{module.moduleWidth} module">
+                            <r-component is={module.name} NEK={module.NEK} ref={module.name | uniq: row_index, subRow_index, module_index}></r-component><!-- 去掉行内元素带来的间隙
+                            --><div class="option">
+                                <i class="f-csp u-icon u-icon-trash-o" aria-hidden="true" on-click={this.deleteModule(subRow, module_index)}></i>
+                                <i class="f-csp u-icon u-icon-pencil" aria-hidden="true" on-click={this.configModule(module.name, row_index, subRow_index, module_index)}></i>
+                                <!-- 组件亦可拖拽 -->
+                                <draggable name={module.name} width={module.moduleWidth} isMoveModule=true rowIndex={row_index} subRowIndex={subRow_index} moduleIndex={module_index}>
+                                    <i class="f-csp u-icon u-icon-arrows" aria-hidden="true"></i>
+                                    <draggable.proxy>
+                                        <div class="proxy-module" style="width: {module.moduleWidth*80}px;height: 40px;line-height: 40px;">{module.name}</div>
+                                    </draggable.proxy>
+                                </draggable>
+                            </div>
+                        </div>
+                        {/list}
+                        {/if}
                     </div>
-                </div>
-                {/list}
-                {/if}
+                </droppable>
             </div>
-        </droppable>
-    </div>
-    {/list}
-    {#if row.isContainer}
-    <div class="f-tac addsubrow">
-        <i class="f-csp u-icon u-icon-plus-circle" aria-hidden="true" on-click={this.addSubRow(row)}></i>
-    </div>
-    {/if}
-</div>
-<div class="rowaction">
-    {#if row_index != 0}
-    <i class="f-csp u-icon u-icon-arrow-up" aria-hidden="true" on-click={this.moveRowUp(row_index)}></i>
-    {/if}{#if row_index != rows.length - 1}
-    <i class="f-csp u-icon u-icon-arrow-down" aria-hidden="true" on-click={this.moveRowDown(row_index)}></i>
-    {/if}{#if rows.length > 1}
-    <i class="f-csp u-icon u-icon-trash-o" aria-hidden="true" on-click={this.deleteRow(row_index)}></i>
-    {/if}
-</div>
-</div>
+            {/list}
+            {#if row.isContainer}
+            <div class="f-tac addsubrow">
+                <i class="f-csp u-icon u-icon-plus-circle" aria-hidden="true" on-click={this.addSubRow(row)}></i>
+            </div>
+            {/if}
+        </div>
+        <div class="rowaction">
+            {#if row_index != 0}
+            <i class="f-csp u-icon u-icon-arrow-up" aria-hidden="true" on-click={this.moveRowUp(row_index)}></i>
+            {/if}{#if row_index != rows.length - 1}
+            <i class="f-csp u-icon u-icon-arrow-down" aria-hidden="true" on-click={this.moveRowDown(row_index)}></i>
+            {/if}{#if rows.length > 1}
+            <i class="f-csp u-icon u-icon-trash-o" aria-hidden="true" on-click={this.deleteRow(row_index)}></i>
+            {/if}
+        </div>
+    </li>
 {/list}
+</ul>
 <div class="f-tac addrowcontainer">
     <a href="javascript:;" class="u-btn u-btn-primary" on-click={this.addRow()}>添加行</a>
     <a href="javascript:;" class="u-btn u-btn-primary" on-click={this.exportJson()}>导出JSON</a>
