@@ -5,14 +5,14 @@ import Home from './modules/home';
 import Detail from './modules/detail';
 import Setting from './modules/setting';
 
-const stateman = restate({ Component: Component });
+const stateman = restate({ Component });
 
 stateman
   .state('app', App, '')
   .state('app.home', Home, '')
   .state('app.detail', Detail, 'detail')
   .state('app.setting', Setting, 'setting')
-  .on("notfound", function(){
-    this.go("app.home", {replace: true})
+  .on('notfound', () => {
+    this.go('app.home', { replace: true });
   })
   .start({ html5: false, root: '/', prefix: '!' });
