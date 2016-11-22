@@ -22,6 +22,9 @@
     .subRow {
         position: relative;
         box-sizing: content-box;min-height: 34px;margin-bottom: 5px;border-bottom: solid 1px #dedede;
+        &:hover {
+            border-bottom-color: #dedede;
+        }
         .line {
             position: absolute;
             width: calc((1/12)*100% - 2px);height: 100%;

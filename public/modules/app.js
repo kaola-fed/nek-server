@@ -16,6 +16,9 @@ const App = Component.extend({
   enter(options) {
     this.$update('curPath', options.current.name);
   },
+  update(options) {
+    this.$update('curPath', options.current.name);
+  },
 });
 
 export default App;
