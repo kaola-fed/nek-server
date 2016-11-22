@@ -17,11 +17,9 @@ const Detail = Component.extend({
   },
 
   enter(options) {
-    this.update(options);
-  },
-
-  update(options) {
-    this.data.projectId = options.param.projectId;
+    const { projects = [], param } = this.$state;
+    this.$state.curProj = projects.find(d => d._id === param.projectId);
+    this.data.projectId = param.projectId;
     this._getComponentList();
     this._getPageList();
   },

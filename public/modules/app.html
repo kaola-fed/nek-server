@@ -1,14 +1,11 @@
 <div class="g-hd">
     <a href={'app.home' | encode} class="logo">NEK</a>
-    <ul class="entries">
+    <ul class="entries" r-hide={hideEntries}>
         <li class="entry">
-            <a href={'app.setting' | encode}>项目设置</a>
+            <a href={'app.setting' | encode: { projectId: projectId }} r-class={{'crt': curName === 'setting'}}>项目设置</a>
         </li>
         <li class="entry">
-            <a href={'app.setting' | encode}>模块管理</a>
-        </li>
-        <li class="entry">
-            <a href={'app.detail' | encode} r-class={{'crt': curPath === 'app.detail'}}>页面管理</a>
+            <a href={'app.detail' | encode: { projectId: projectId }} r-class={{'crt': curName === 'detail'}}>页面管理</a>
         </li>
     </ul>
 </div>

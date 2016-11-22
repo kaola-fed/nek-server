@@ -11,10 +11,22 @@ const App = Component.extend({
     this.defaults({
       text: 'NEK',
     });
+    this.$state.on('end', () => {
+      this.$update('curName', this.$state.current.currentName);
+      this.$update('projectId', this.$state.param.projectId);
+      if (!this.$state.is('app.home') && !this.$state.param.projectId) {
+        setTimeout(() => {
+          this.$state.go('app.home');
+        }, 0);
+      }
+    });
     this.supr();
   },
-  enter(options) {
-    this.$update('curPath', options.current.name);
+
+  computed: {
+    hideEntries(data) {
+      return ['setting', 'detail'].indexOf(data.curName) < 0;
+    },
   },
 });
 
