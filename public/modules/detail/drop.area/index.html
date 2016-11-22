@@ -14,20 +14,20 @@
                         <!-- 输出每行的组件 -->
                         {#if subRow && subRow.length > 0}
                         {#list subRow as module by module_index}
-                        <div class="f-fl f-pr g-offset-{module.offset} g-col-{module.moduleWidth} module">
-                            <r-component is={module.name} NEK={module.NEK} ref={module.name | uniq: row_index, subRow_index, module_index}></r-component><!-- 去掉行内元素带来的间隙
-                            --><div class="option">
-                                <i class="f-csp u-icon u-icon-trash-o" aria-hidden="true" on-click={this.deleteModule(subRow, module_index)}></i>
-                                <i class="f-csp u-icon u-icon-pencil" aria-hidden="true" on-click={this.configModule(module.name, row_index, subRow_index, module_index)}></i>
-                                <!-- 组件亦可拖拽 -->
-                                <draggable name={module.name} width={module.moduleWidth} isMoveModule=true rowIndex={row_index} subRowIndex={subRow_index} moduleIndex={module_index}>
-                                    <i class="f-csp u-icon u-icon-arrows" aria-hidden="true"></i>
-                                    <draggable.proxy>
-                                        <div class="proxy-module" style="width: {module.moduleWidth*80}px;height: 40px;line-height: 40px;">{module.name}</div>
-                                    </draggable.proxy>
-                                </draggable>
+                        <draggable name={module.name} width={module.moduleWidth} isMoveModule=true rowIndex={row_index} subRowIndex={subRow_index} moduleIndex={module_index}>
+                            <div class="f-fl f-pr g-offset-{module.offset} g-col-{module.moduleWidth} module m-form">
+                            <ui.field cols="12" title="用户名" hint="用户名的用途">
+                                <r-component is={module.name} NEK={module.NEK} ref={module.name | uniq: row_index, subRow_index, module_index}></r-component><!-- 去掉行内元素带来的间隙
+                                --><div class="option">
+                                    <i class="f-csp u-icon u-icon-trash-o" aria-hidden="true" on-click={this.deleteModule(subRow, module_index)}></i>
+                                    <i class="f-csp u-icon u-icon-pencil" aria-hidden="true" on-click={this.configModule(module.name, row_index, subRow_index, module_index)}></i>
+                                </div>
+                            </ui.field>
                             </div>
-                        </div>
+                            <draggable.proxy>
+                                <div class="proxy-module" style="width: {module.moduleWidth*80}px;height: 40px;line-height: 40px;">{module.name}</div>
+                            </draggable.proxy>
+                        </draggable>
                         {/list}
                         {/if}
                     </div>
