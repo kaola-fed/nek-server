@@ -28,9 +28,6 @@ const App = Component.extend({
       return ['setting', 'detail'].indexOf(data.curName) < 0;
     },
   },
-  update(options) {
-    this.$update('curPath', options.current.name);
-  },
 });
 
 export default App;

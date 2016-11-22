@@ -1,0 +1,39 @@
+<p><i class="u-icon u-icon-hand-o-right"></i>基础信息</p>
+<ui.form>
+  <ui.field title="组件名" cols=12 required>
+    <ui.input value={params.name} />
+  </ui.field>
+  <ui.field title="描述" cols=12 required>
+    <ui.input value={params.desc} />
+  </ui.field>
+  <ui.field title="栅格数" cols=12 required>
+    <numberInput value={params.cols} />
+  </ui.field>
+  <ui.field title="所属类目" cols=12 required>
+    <ui.select value={params.category} key="_id" source={categoryList} />
+  </ui.field>
+</ui.form>
+<p><i class="u-icon u-icon-hand-o-right"></i>配置信息</p>
+{#list params.conf as c}
+<ui.form>
+  <ui.field title="属性名" cols=12 required>
+    <ui.input value={c.key} />
+  </ui.field>
+  <ui.field title="描述" cols=12 required>
+    <ui.input value={c.desc} />
+  </ui.field>
+  <ui.field title="默认值" cols=12>
+    <ui.input value={c.value} />
+  </ui.field>
+  <ui.field title="值类型" cols=12 required>
+    <ui.select value={c.type} key="name" source={typeList} />
+  </ui.field>
+  <ui.field r-hide={c.type === 'select' || c.type === 'array'} title="选择列表" cols=12>
+    <ui.input value={c.selects | arr2str} placeholder="多个值用空格分开" />
+  </ui.field>
+</ui.form>
+<a class="u-btn u-btn-error" on-click={this.remove(c_index)}>删除</a>
+<div style="border-bottom: solid 1px #dedede; margin: 10px 0;"></div>
+{/list}
+<a class="u-btn" on-click={this.add()}>增加</a>
+

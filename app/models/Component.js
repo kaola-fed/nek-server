@@ -29,6 +29,9 @@ const componentSchema = new Schema({
 componentSchema.statics = {
   async upsert(_id, project, data) {
     _id = _id || new mongoose.Types.ObjectId;
+    delete data._id;
+    delete data.createdAt;
+    delete data.updatedAt;
     return await this.update(
       { _id, project },
       JSON.parse(JSON.stringify(data || {})),

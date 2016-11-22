@@ -53,3 +53,9 @@ table {
     outline-offset: -2px;
     border: 2px solid #fff;
 }
+
+// Reset for nek-ui
+.m-modal .modal_bd {
+    max-height: 400px;
+    overflow-y: auto;
+}

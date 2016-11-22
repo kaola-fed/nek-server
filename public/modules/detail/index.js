@@ -14,6 +14,14 @@ const Detail = Component.extend({
       categoryList: [],
       pageList: [],
     });
+    this.supr();
+  },
+
+  init() {
+    this.$refs.moduleList.$on('upsertComponentList', (params) => {
+      this._upsertComponent(params);
+    });
+    this.supr();
   },
 
   enter(options) {
@@ -41,6 +49,26 @@ const Detail = Component.extend({
     .then(res => res.json())
     .then((json) => {
       this.$update('pageList', json);
+    }).catch((err) => {
+      console.error(err.message);
+    });
+  },
+
+  _upsertComponent(params) {
+    const { projectId } = this.data;
+    fetch('/api/component/upsert', {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify(Object.assign(params, {
+        project: projectId,
+        component: params._id,
+      })),
+    })
+    .then(res => res.json())
+    .then((json) => {
+      this._getComponentList();
     }).catch((err) => {
       console.error(err.message);
     });
