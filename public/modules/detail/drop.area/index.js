@@ -44,12 +44,12 @@ const DropArea = Component.extend({
 
     let res = this.getIndexAndOffset(subRow, data.firstCol, moduleWidth, row_index, subRow_index, isMoveModule, rowIndex, subRowIndex, moduleIndex);
     if (moduleName === 'container') {
-    // 只有drop行不是container，且为空行才能放置container
+      // 只有drop行不是container，且为空行才能放置container
       if (!data.rows[row_index].isContainer && data.rows[row_index].subRow.length === 1 && data.rows[row_index].subRow[0].length === 0) {
         data.rows[row_index].isContainer = true;
       }
     } else if (res) {
-        // 移动组件
+      // 移动组件
       if (isMoveModule) {
         let module = _.cloneDeep(data.rows[rowIndex].subRow[subRowIndex][moduleIndex]);
         module.firstCol = res.firstCol;
@@ -88,7 +88,6 @@ const DropArea = Component.extend({
     // 处理边界情况
     firstCol ? '' : firstCol = 0;
     firstCol + moduleWidth > data.col ? firstCol = data.col - moduleWidth : '';
-
     return firstCol;
   },
   // 设置模块所属dropArea的格子边框
@@ -161,6 +160,17 @@ const DropArea = Component.extend({
     }
     return subRow;
   },
+  trash(param) {
+    let data = this.data;
+    let subRow = data.rows[param.rowIndex].subRow[param.subRowIndex];
+    let module = subRow[param.moduleIndex];
+    let moduleNext = subRow[param.moduleIndex + 1];
+    subRow.splice(param.moduleIndex, 1);
+    if (moduleNext) {
+      moduleNext.offset += module.offset + module.moduleWidth;
+    }
+    return subRow;
+  },
   $$NEK(name) {
     let NEK = {};
     this.data.categoryList.forEach((category) => {
@@ -206,17 +216,6 @@ const DropArea = Component.extend({
   deleteRow(row_index) {
     let data = this.data;
     data.rows.splice(row_index, 1);
-  },
-  trash(event) {
-    let data = this.data;
-    let isMoveModule = event.origin.data.isMoveModule;
-    let rowIndex = event.origin.data.rowIndex;
-    let subRowIndex = event.origin.data.subRowIndex;
-    let moduleIndex = event.origin.data.moduleIndex;
-    if (isMoveModule) {
-      this.deleteModule(data.rows[rowIndex][subRowIndex], moduleIndex);
-      console.log(data.rows[rowIndex].subRow[subRowIndex]);
-    }
   },
   exportJson() {
     let data = this.data;

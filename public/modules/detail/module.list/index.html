@@ -1,3 +1,4 @@
+<droppable on-drop={this.trash($event)}>
 <div class="m-modules">
     {#list categoryList as cate}
     <ul>
@@ -24,3 +25,4 @@
         <a class="u-btn u-btn-primary" on-click={this.edit()}>添加组件</a>
     </div>
 </div>
+</droppable>

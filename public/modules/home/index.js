@@ -9,6 +9,7 @@ const Home = Component.extend({
     this.defaults({
       projects: [],
     });
+
     this.supr();
   },
 

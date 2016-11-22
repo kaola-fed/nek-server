@@ -1,4 +1,16 @@
-<h1>这里是项目列表：</h1>
-{#list projects as project}
-<h1><a href={'app.detail' | encode: { projectId: project._id }}>{project.name}</a></h1>
-{/list}
+<div class="m-home">
+    <h1 class="title">Projects：</h1>
+    <ul class="m-projects f-cb">
+        {#list projects as project}
+        <li class="project">
+            <div class="logo logo-{project_index%4}">{#if project.name}{project.name.substring(0,1)}{/if}</div>
+            <p class="name f-toe">{project.name}</p>
+            <p class="settings">
+                <a href={'app.detail' | encode: { projectId: project._id }}>页面管理</a>
+                &emsp;
+                <a href={'app.detail' | encode: { projectId: project._id }}>工程管理</a>
+            </p>
+        </li>
+        {/list} 
+    </ul>
+</div>

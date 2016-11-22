@@ -21,9 +21,11 @@ const Detail = Component.extend({
     this.$refs.moduleList.$on('upsertComponentList', (params) => {
       this._upsertComponent(params);
     });
+    this.$on('deleteModule', (param) => {
+      this.$refs.dropArea.trash(param);
+    });
     this.supr();
   },
-
   enter(options) {
     const { projects = [], param } = this.$state;
     this.$state.curProj = projects.find(d => d._id === param.projectId);
