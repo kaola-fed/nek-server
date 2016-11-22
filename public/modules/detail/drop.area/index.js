@@ -1,93 +1,92 @@
 import { Regular, Component } from 'nek-ui';
 import template from '!raw!./index.html';
 import ConfigModal from '../config.modal';
-import _ from 'lodash'
+import _ from 'lodash';
 
 const DropArea = Component.extend({
-    name: 'drop.area',
-    template,
-    config() {
-        this.defaults({
-            categoryList: [],                               // 组件列表
-            col: 12,                                        // drop区域一行有12格
-            rows: [{subRow:[[]], isContainer: false}]       // 放组件
-        });
-        this.supr();
-    },
-    dragOver(event) {
-        let data = this.data,
-            moduleId = event.origin.data.moduleId,
-            moudleWidth = event.origin.data.width,
-            dropArea = event.target,
-            dropAreaRect = event.target.getBoundingClientRect(),
-            proxy = event.proxy,
-            proxyRect = event.proxy.getBoundingClientRect();
-
-        data.firstCol = this.getDropLattice(dropAreaRect, proxyRect, moudleWidth);
-        this.setDropLatticeBorder(data.firstCol, moudleWidth, dropArea);
-    },
-    dragLeave(event) {
-        let dropArea = event.target;
-        this.clearBorder(dropArea);
-    },
+  name: 'drop.area',
+  template,
+  config() {
+    this.defaults({
+      categoryList: [],                               // 组件列表
+      col: 12,                                        // drop区域一行有12格
+      rows: [{ subRow: [[]], isContainer: false }],   // 放组件
+    });
+    this.supr();
+  },
+  dragOver(event) {
+    let data = this.data;
+    let moduleId = event.origin.data.moduleId;
+    let moudleWidth = event.origin.data.width;
+    let dropArea = event.target;
+    let dropAreaRect = event.target.getBoundingClientRect();
+    let proxy = event.proxy;
+    let proxyRect = event.proxy.getBoundingClientRect();
+    data.firstCol = this.getDropLattice(dropAreaRect, proxyRect, moudleWidth);
+    this.setDropLatticeBorder(data.firstCol, moudleWidth, dropArea);
+  },
+  dragLeave(event) {
+    const dropArea = event.target;
+    this.clearBorder(dropArea);
+  },
     // row_index 表示放入的行， subRow_index 表示放入的子行
-    drop(event, row_index, subRow_index) {
-        let data = this.data,
-            moduleName = event.origin.data.name,
-            moudleWidth = event.origin.data.width,
-            dropArea = event.target,
-            subRow = data.rows[row_index]['subRow'][subRow_index],
-            // 移动组件时才有的参数
-            isMoveModule = event.origin.data.isMoveModule,   // 是否为移动组件
-            rowIndex = event.origin.data.rowIndex,           // 组件原先所在行的index
-            subRowIndex = event.origin.data.subRowIndex,     // 组件原先所在子行的index
-            moduleIndex = event.origin.data.moduleIndex;     // 组件原先所在的moduleIndex
+  drop(event, row_index, subRow_index) {
+    let data = this.data;
+    let moduleName = event.origin.data.name;
+    let moudleWidth = event.origin.data.width;
+    let dropArea = event.target;
+    let subRow = data.rows[row_index].subRow[subRow_index];
+    // 移动组件时才有的参数
+    let isMoveModule = event.origin.data.isMoveModule;   // 是否为移动组件
+    let rowIndex = event.origin.data.rowIndex;           // 组件原先所在行的index
+    let subRowIndex = event.origin.data.subRowIndex;     // 组件原先所在子行的index
+    let moduleIndex = event.origin.data.moduleIndex;     // 组件原先所在的moduleIndex
 
-        let res = this.getIndexAndOffset(subRow, data.firstCol, moudleWidth, row_index, subRow_index, isMoveModule, rowIndex, subRowIndex, moduleIndex);
-        if(moduleName == 'container') {
-            // 只有drop行不是container，且为空行才能放置container
-            if(!data.rows[row_index]['isContainer'] && data.rows[row_index].subRow.length == 1 && data.rows[row_index].subRow[0].length == 0) {
-                data.rows[row_index]['isContainer'] = true;
-            }
+    let res = this.getIndexAndOffset(subRow, data.firstCol, moudleWidth, row_index, subRow_index, isMoveModule, rowIndex, subRowIndex, moduleIndex);
+    if (moduleName === 'container') {
+    // 只有drop行不是container，且为空行才能放置container
+      if (!data.rows[row_index].isContainer && data.rows[row_index].subRow.length === 1 && data.rows[row_index].subRow[0].length === 0) {
+        data.rows[row_index].isContainer = true;
+      }
+    } else {
+      if (res) {
+        // 移动组件
+        if (isMoveModule) {
+          let module = _.cloneDeep(data.rows[rowIndex].subRow[subRowIndex][moduleIndex]);
+          module.firstCol = res.firstCol;
+          module.offset = res.offset;
+          this.deleteModule(data.rows[rowIndex].subRow[subRowIndex], moduleIndex);
+          data.rows[row_index].subRow[subRow_index] = [
+            ...subRow.slice(0, res.moduleIndex),
+            module,
+            ...subRow.slice(res.moduleIndex),
+          ];
         } else {
-            if(res) {
-                // 移动组件
-                if(isMoveModule) {
-                    let module = _.cloneDeep(data.rows[rowIndex]['subRow'][subRowIndex][moduleIndex]);
-                    module.firstCol = res.firstCol;
-                    module.offset = res.offset;
-                    this.deleteModule(data.rows[rowIndex]['subRow'][subRowIndex], moduleIndex);
-                    data.rows[row_index]['subRow'][subRow_index] = [
-                        ...subRow.slice(0, res.moduleIndex),
-                        module,
-                        ...subRow.slice(res.moduleIndex)
-                    ]
-                } else {
-                    data.rows[row_index]['subRow'][subRow_index] = [
-                        ...subRow.slice(0, res.moduleIndex),
-                        {name: moduleName, moduleWidth: moudleWidth, offset: res.offset, firstCol: res.firstCol},
-                        ...subRow.slice(res.moduleIndex)
-                    ]
-                }
-            }
+          data.rows[row_index].subRow[subRow_index] = [
+            ...subRow.slice(0, res.moduleIndex),
+            { name: moduleName, moduleWidth: moudleWidth, offset: res.offset, firstCol: res.firstCol },
+            ...subRow.slice(res.moduleIndex),
+          ];
         }
-        this.clearBorder(dropArea);
-    },
-    // 计算move过程中，模块左侧所属的格子
-    getDropLattice(dropAreaRect, proxyRect, moudleWidth) {
-        let data = this.data,
-            dropAreaLeft = dropAreaRect.left,
-            dropAreaWidth = dropAreaRect.width,
-            colWidth = (dropAreaWidth-2)/12,
-            proxyLeft = proxyRect.left,
-            firstCol;
-        for(let i = 0; i < data.col; i++) {
-            if (proxyLeft > (dropAreaLeft -1 + i * colWidth) && proxyLeft < (dropAreaLeft + (i+1) * colWidth)) {
-                firstCol = i;
-                break;
-            }
-        }
-        
+      }
+    }
+    this.clearBorder(dropArea);
+  },
+  // 计算move过程中，模块左侧所属的格子
+  getDropLattice(dropAreaRect, proxyRect, moudleWidth) {
+    let data = this.data;
+    let dropAreaLeft = dropAreaRect.left;
+    let dropAreaWidth = dropAreaRect.width;
+    let colWidth = (dropAreaWidth - 2) / 12;
+    let proxyLeft = proxyRect.left;
+    let firstCol;
+    for (let i = 0; i < data.col; i++) {
+      if (proxyLeft > (dropAreaLeft -1 + i * colWidth) && proxyLeft < (dropAreaLeft + (i + 1) * colWidth)) {
+        firstCol = i;
+        break;
+      }
+    }
+
         // 处理边界情况
         firstCol ? '': firstCol = 0;
         firstCol + moudleWidth > data.col ? firstCol = data.col - moudleWidth : '';
@@ -211,6 +210,17 @@ const DropArea = Component.extend({
         let data = this.data;
         data.rows.splice(row_index, 1);
     },
+    trash(event) {
+        let data = this.data,
+        isMoveModule = event.origin.data.isMoveModule,
+        rowIndex = event.origin.data.rowIndex,
+        subRowIndex = event.origin.data.subRowIndex,
+        moduleIndex = event.origin.data.moduleIndex;
+        if (isMoveModule) {
+            this.deleteModule(data.rows[rowIndex][subRowIndex], moduleIndex);
+            console.log(data.rows[rowIndex]['subRow'][subRowIndex]);
+        }
+    },
     exportJson() {
         let data = this.data,
             self = this,
@@ -254,7 +264,7 @@ const DropArea = Component.extend({
                     })
                 })
             }
-            
+
         })
         console.log(this.data);
         console.log(res);
