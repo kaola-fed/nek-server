@@ -163,13 +163,7 @@ const DropArea = Component.extend({
   trash(param) {
     let data = this.data;
     let subRow = data.rows[param.rowIndex].subRow[param.subRowIndex];
-    let module = subRow[param.moduleIndex];
-    let moduleNext = subRow[param.moduleIndex + 1];
-    subRow.splice(param.moduleIndex, 1);
-    if (moduleNext) {
-      moduleNext.offset += module.offset + module.moduleWidth;
-    }
-    return subRow;
+    this.deleteModule(subRow, param.moduleIndex);
   },
   $$NEK(name) {
     let NEK = {};
