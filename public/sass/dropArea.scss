@@ -1,6 +1,11 @@
 .m-droparea {
     .rowcontainer {
-        display: flex;display: -webkit-box-flex
+        display: flex;display: -webkit-box-flex;
+        &:hover {
+            .rowaction {
+                visibility: visible;
+            }
+        }
     }
     .row {
         flex: 1;-webkit-box-flex: 1;
@@ -55,6 +60,7 @@
     }
     .rowaction {
         display: flex;align-items: center;
+        visibility: hidden;
         width: 26px;margin-left: 10px;
         i {
             margin-left: 5px;

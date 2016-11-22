@@ -241,7 +241,6 @@ const DropArea = Component.extend({
                     rows: []
                 })
                 row.subRow.forEach(function(subRow, subRowIndex) {
-                                    // debugger
                     res.rows[rowIndex].components[0].rows.push({clazz:'', components:[]});
                     subRow.forEach(function(module, moduleIndex) {
                         let NEK = module.NEK || self.$$NEK(module.name);
