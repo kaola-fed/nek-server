@@ -1,9 +1,9 @@
 <div class="m-droparea">
 <ul>
-{#list rows as row}
+{#list rows as row by row_index}
     <li class="rowcontainer">
         <div class="row {row.isContainer?'outline':''}">
-            {#list row.subRow as subRow}
+            {#list row.subRow as subRow by subRow_index}
             <div class="f-cb subrowcontainer">
                 <droppable on-dragover={this.dragOver($event)} on-dragleave={this.dragLeave($event)} on-drop={this.drop($event, row_index, subRow_index)}>
                     <div class="subRow f-cb">
