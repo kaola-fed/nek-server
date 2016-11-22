@@ -13,6 +13,9 @@
     .module {
         padding: 10px 35px;
         background-color: #fff;cursor: pointer;
+        .module-edit {
+            display: none;
+        }
         &:hover {
             background-color: #eaf8fe;
             .module-edit {
