@@ -8,6 +8,10 @@
     "camelcase": 0,
     "consistent-return": 0,
     "global-require": 0,
-    "import/no-dynamic-require": 0
+    "import/no-dynamic-require": 0,
+    "import/no-unresolved": 0,
+    "import/imports-first": 0,
+    "no-unused-vars": 0,
+    "import/no-extraneous-dependencies": 0
   }
 }

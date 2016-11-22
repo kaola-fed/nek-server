@@ -1,3 +1,4 @@
+/* global fetch: false */
 import { Component } from 'nek-ui';
 import template from '!raw!./index.html';
 
@@ -17,12 +18,12 @@ const Home = Component.extend({
   },
 
   _getProjects() {
-    fetch('/api/project/list').then(res => res.json()).then(json => {
+    fetch('/api/project/list').then(res => res.json()).then((json) => {
       this.$update('projects', json);
-    }).catch(err => {
+    }).catch((err) => {
       console.error(err.message);
     });
-  }
+  },
 });
 
 export default Home;

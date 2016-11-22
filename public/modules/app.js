@@ -13,7 +13,7 @@ const App = Component.extend({
       curPath: this.$state.history.curPath,
     });
     this.supr();
-  }
+  },
 });
 
 export default App;

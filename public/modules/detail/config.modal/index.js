@@ -17,26 +17,26 @@ const ConfigModal = Modal.extend({
   },
   _ok() {
     const { conf, curConf } = this.data;
-    curConf.forEach(function(d, i) {
+    curConf.forEach((d, i) => {
       conf[i].value = curConf[i].value;
     });
     this.data.modRef.$emit('update', conf);
-  }
+  },
 }).filter('name2id', {
-    get(name, selects) {
-      const source = selects.map(function(d) {
-        if (typeof d === 'object') return d.name;
-        return d;
-      })
-      return source.indexOf(name) + '';
-    },
-    set(id, selects) {
-      const source = selects.map(function(d) {
-        if (typeof d === 'object') return d.name;
-        return d;
-      })
-      return source[id/1];
-    }
+  get(name, selects) {
+    const source = selects.map((d) => {
+      if (typeof d === 'object') return d.name;
+      return d;
+    });
+    return `${source.indexOf(name)}`;
+  },
+  set(id, selects) {
+    const source = selects.map((d) => {
+      if (typeof d === 'object') return d.name;
+      return d;
+    });
+    return source[id / 1];
+  },
 });
 
 export default ConfigModal;

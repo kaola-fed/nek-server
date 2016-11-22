@@ -2,3 +2,5 @@ node_modules
 dist
 logs
 app
+server.js
+config.js

@@ -1,3 +1,4 @@
+/* global fetch: false */
 import { Component } from 'nek-ui';
 import ModuleList from './module.list';
 import PageList from './page.list';
@@ -12,7 +13,7 @@ const Detail = Component.extend({
       projectId: '',
       categoryList: [],
       pageList: [],
-    })
+    });
   },
 
   enter(options) {
@@ -29,9 +30,9 @@ const Detail = Component.extend({
     const { projectId } = this.data;
     fetch(`/api/component/list?project=${projectId}`)
     .then(res => res.json())
-    .then(json => {
+    .then((json) => {
       this.$update('categoryList', json);
-    }).catch(err => {
+    }).catch((err) => {
       console.error(err.message);
     });
   },
@@ -40,12 +41,12 @@ const Detail = Component.extend({
     const { projectId } = this.data;
     fetch(`/api/page/list?project=${projectId}`)
     .then(res => res.json())
-    .then(json => {
+    .then((json) => {
       this.$update('pageList', json);
-    }).catch(err => {
+    }).catch((err) => {
       console.error(err.message);
     });
-  }
+  },
 });
 
 export default Detail;
