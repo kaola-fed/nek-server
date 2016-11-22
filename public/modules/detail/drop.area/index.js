@@ -100,25 +100,17 @@ const DropArea = Component.extend({
         let lines = Array.prototype.slice.call(dropArea.getElementsByClassName('line'));
         this.clearBorder(dropArea);
 
-        for(let i = 0; i < moduleWidth + 1; i++) {
-            if(firstCol + i - 1 == -1) {
-                Regular.dom.addClass(dropArea, 'borderleft');
-            }
-            if(firstCol + i - 1 == data.col - 1) {
-                Regular.dom.addClass(dropArea, 'borderright');
-            }
-            if(firstCol + i - 1 > -1 && firstCol + i - 1 < data.col - 1) {
-                Regular.dom.addClass(lines[firstCol + i - 1], 'borderleft');
+        for(let i = 0; i < moduleWidth; i++) {
+            if(firstCol + i > -1 && firstCol + i < data.col) {
+                Regular.dom.addClass(lines[firstCol + i], 'linecolor');
             }
         }
     },
     // 清除所有border
     clearBorder(row) {
         let lines = Array.prototype.slice.call(row.getElementsByClassName('line'));
-        Regular.dom.delClass(row, 'borderleft');
-        Regular.dom.delClass(row, 'borderright');
         lines.forEach(function(line) {
-            Regular.dom.delClass(line, 'borderleft');
+            Regular.dom.delClass(line, 'linecolor');
         })
     },
     // 添加一行
