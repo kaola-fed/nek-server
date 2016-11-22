@@ -14,8 +14,10 @@ const Detail = Component.extend({
       categoryList: [],
       pageList: [],
     });
+    this.$on('deleteModule', (param) => {
+      this.$refs.dropArea.trash(param)
+    })
   },
-
   enter(options) {
     const { projects = [], param } = this.$state;
     this.$state.curProj = projects.find(d => d._id === param.projectId);

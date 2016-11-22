@@ -13,6 +13,15 @@ const ModuleList = Component.extend({
     });
     this.supr();
   },
+  trash(event) {
+    let isMoveModule = event.origin.data.isMoveModule;
+    let rowIndex = event.origin.data.rowIndex;
+    let subRowIndex = event.origin.data.subRowIndex;
+    let moduleIndex = event.origin.data.moduleIndex;
+    if (isMoveModule) {
+        this.$parent.$emit('deleteModule', { rowIndex, subRowIndex, moduleIndex });
+    }
+  },
 });
 
 export default ModuleList;
