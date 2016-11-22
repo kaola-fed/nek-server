@@ -10,9 +10,11 @@ const App = Component.extend({
   config() {
     this.defaults({
       text: 'NEK',
-      curPath: this.$state.history.curPath,
     });
     this.supr();
+  },
+  enter(options) {
+    this.$update('curPath', options.current.name);
   },
 });
 
