@@ -17,13 +17,13 @@ const DropArea = Component.extend({
   dragOver(event) {
     let data = this.data;
     let moduleId = event.origin.data.moduleId;
-    let moudleWidth = event.origin.data.width;
+    let moduleWidth = event.origin.data.width;
     let dropArea = event.target;
     let dropAreaRect = event.target.getBoundingClientRect();
     let proxy = event.proxy;
     let proxyRect = event.proxy.getBoundingClientRect();
-    data.firstCol = this.getDropLattice(dropAreaRect, proxyRect, moudleWidth);
-    this.setDropLatticeBorder(data.firstCol, moudleWidth, dropArea);
+    data.firstCol = this.getDropLattice(dropAreaRect, proxyRect, moduleWidth);
+    this.setDropLatticeBorder(data.firstCol, moduleWidth, dropArea);
   },
   dragLeave(event) {
     const dropArea = event.target;
@@ -33,7 +33,7 @@ const DropArea = Component.extend({
   drop(event, row_index, subRow_index) {
     let data = this.data;
     let moduleName = event.origin.data.name;
-    let moudleWidth = event.origin.data.width;
+    let moduleWidth = event.origin.data.width;
     let dropArea = event.target;
     let subRow = data.rows[row_index].subRow[subRow_index];
     // 移动组件时才有的参数
@@ -42,7 +42,7 @@ const DropArea = Component.extend({
     let subRowIndex = event.origin.data.subRowIndex;     // 组件原先所在子行的index
     let moduleIndex = event.origin.data.moduleIndex;     // 组件原先所在的moduleIndex
 
-    let res = this.getIndexAndOffset(subRow, data.firstCol, moudleWidth, row_index, subRow_index, isMoveModule, rowIndex, subRowIndex, moduleIndex);
+    let res = this.getIndexAndOffset(subRow, data.firstCol, moduleWidth, row_index, subRow_index, isMoveModule, rowIndex, subRowIndex, moduleIndex);
     if (moduleName === 'container') {
     // 只有drop行不是container，且为空行才能放置container
       if (!data.rows[row_index].isContainer && data.rows[row_index].subRow.length === 1 && data.rows[row_index].subRow[0].length === 0) {
@@ -63,7 +63,7 @@ const DropArea = Component.extend({
       } else {
         data.rows[row_index].subRow[subRow_index] = [
           ...subRow.slice(0, res.moduleIndex),
-          { name: moduleName, moduleWidth: moudleWidth, offset: res.offset, firstCol: res.firstCol },
+          { name: moduleName, moduleWidth: moduleWidth, offset: res.offset, firstCol: res.firstCol },
           ...subRow.slice(res.moduleIndex),
         ];
       }
@@ -71,7 +71,7 @@ const DropArea = Component.extend({
     this.clearBorder(dropArea);
   },
   // 计算move过程中，模块左侧所属的格子
-  getDropLattice(dropAreaRect, proxyRect, moudleWidth) {
+  getDropLattice(dropAreaRect, proxyRect, moduleWidth) {
     let data = this.data;
     let dropAreaLeft = dropAreaRect.left;
     let dropAreaWidth = dropAreaRect.width;
@@ -87,7 +87,7 @@ const DropArea = Component.extend({
 
     // 处理边界情况
     firstCol ? '' : firstCol = 0;
-    firstCol + moudleWidth > data.col ? firstCol = data.col - moudleWidth : '';
+    firstCol + moduleWidth > data.col ? firstCol = data.col - moduleWidth : '';
 
     return firstCol;
   },
