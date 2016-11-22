@@ -1,30 +1,27 @@
-<div class="m-form">
+<ui.form>
   {#list curConf as item}
-  <div class="u-formitem">
-    <label class="formitem_tt">{item.desc}{#if item.isRequired}<span class="formitem_rqr">*</span>{/if}</label>
-    <span class="formitem_ct">
-      {#if item.type == 'string'}
-      <input2 value={item.value} />
-      {/if}
-      {#if item.type == 'select'}
-      <select2 source={item.selects} value={item.value | name2id : item.selects} />
-      {/if}
-      {#if item.type == 'number'}
-      <numberInput value={item.value} />
-      {/if}
-      {#if item.type == 'boolean'}
-      <check2 checked={item.value} />
-      {/if}
-      {#if item.type == 'none'}
-      <check2 checked={item.value} />
-      {/if}
-      {#if item.type == 'array'}
-      <check2Group source={item.selects} />
-      {/if}
-      {#if item.type == 'expression'}
-      <input2 value={item.value} />
-      {/if}
-    </span>
-  </div>
+  <ui.field title={item.desc} cols=12 required={item.isRequired}>
+    {#if item.type == 'string'}
+    <ui.input value={item.value} />
+    {/if}
+    {#if item.type == 'select'}
+    <ui.select source={item.selects} value={item.value | name2id : item.selects} />
+    {/if}
+    {#if item.type == 'number'}
+    <numberInput value={item.value} />
+    {/if}
+    {#if item.type == 'boolean'}
+    <ui.check checked={item.value} />
+    {/if}
+    {#if item.type == 'none'}
+    <ui.check checked={item.value} />
+    {/if}
+    {#if item.type == 'array'}
+    <checkGroup source={item.selects} />
+    {/if}
+    {#if item.type == 'expression'}
+    <ui.input value={item.value} />
+    {/if}
+  </ui.field>
   {/list}
-</div>
+</ui.form>
