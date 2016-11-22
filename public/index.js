@@ -13,6 +13,6 @@ stateman
   .state('app.detail', Detail, 'detail')
   .state('app.setting', Setting, 'setting')
   .on('notfound', () => {
-    this.go('app.home', { replace: true });
+    stateman.go('app.home', { replace: true });
   })
   .start({ html5: false, root: '/', prefix: '!' });
