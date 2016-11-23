@@ -21,7 +21,7 @@ page.get('/list', async ctx => {
 });
 
 page.post('/upsert', async ctx => {
-  const { page, project, name, url, data } = ctx.request.body;
+  const { page, project, name, url, data, sync } = ctx.request.body;
   if (!project) {
     throw new Error('[project] is required');
   }

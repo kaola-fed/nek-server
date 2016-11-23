@@ -36,7 +36,7 @@ NEK 的服务端，包含了页面拖拽构建以及数据库交互
 |/project/tpl/delete|POST|删除项目模板|project(项目id),name(模板文件名)||
 |/page|GET|获取页面数据|project(项目id),page(页面id)|页面数据|
 |/page/list|GET|获取页面列表|project(项目id)|页面列表|
-|/page/upsert|POST|新增/更新页面|page(页面id，无则新增),project(项目id),name(页面名),url(页面url),data(页面组件数据)||
+|/page/upsert|POST|新增/更新页面|page(页面id，无则新增),project(项目id),name(页面名),url(页面url),data(页面组件数据),sync(页面数据，用于恢复页面)||
 |/component/list|GET|获取组件数据|project(项目id)|组件列表|
 |/component/upsert|POST|新增/更新组件|project(项目id),component(组件id，无则新增),...||
 |/category/list|GET|获取所有分类|project(项目id)|分类列表|

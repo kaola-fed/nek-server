@@ -5,6 +5,7 @@ const pageSchema = new Schema({
   url: String,
   name: String,
   data: Schema.Types.Mixed,
+  sync: Schema.Types.Mixed,
   project: { type: Schema.Types.ObjectId, ref: 'Project' },
 }, { timestamps: true, versionKey: false });
 
@@ -13,11 +14,11 @@ pageSchema.statics = {
     return await this.findOne({ project, _id });
   },
 
-  async upsert(_id, project, name, url, data) {
+  async upsert(_id, project, name, url, data, sync) {
     _id = _id || new mongoose.Types.ObjectId;
     return await this.update(
       { _id, project },
-      JSON.parse(JSON.stringify({ name, url, data })),
+      JSON.parse(JSON.stringify({ name, url, data, sync })),
       { upsert: true });
   },
 
