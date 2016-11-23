@@ -174,7 +174,17 @@ const DropArea = Component.extend({
     });
     return NEK;
   },
+  getAvailableCols(row_index, subRow_index, module_index) {
+    let subRow = this.data.rows[row_index].subRow[subRow_index];
+    let module = subRow[module_index];
+    let cols = 0;
+    subRow.forEach((item) => {
+      cols += item.moduleWidth + item.offset;
+    })
+    return module.moduleWidth + 12 - cols;
+  },
   configModule(name, row_index, subRow_index, module_index) {
+    console.log(this.getAvailableCols(row_index, subRow_index, module_index));
     let ref = `name_${row_index}_${subRow_index}_${module_index}`;
     let modRef = this.$refs[ref];
     let module = this.data.rows[row_index].subRow[subRow_index][module_index];

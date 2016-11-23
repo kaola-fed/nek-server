@@ -24,6 +24,7 @@ const Detail = Component.extend({
     this.$on('deleteModule', (param) => {
       this.$refs.dropArea.trash(param);
     });
+    this._ctrlS();
     this.supr();
   },
   enter(options) {
@@ -75,6 +76,20 @@ const Detail = Component.extend({
       console.error(err.message);
     });
   },
+
+  _ctrlS() {
+    let isCtrl = false;
+    document.onkeyup = function(e){
+      if(e.keyCode == 17) isCtrl=false;
+    }
+    document.onkeydown=function(e){
+      if(e.keyCode == 17) isCtrl=true;
+      if(e.keyCode == 83 && isCtrl == true) {
+        alert("Ctrl-S pressed");
+        return false;
+      }
+    }
+  }
 });
 
 export default Detail;

@@ -6,7 +6,7 @@ body { background-color: $bgColor; font-size: 12px; font-family: Lato, -apple-sy
     border-bottom:1px solid #eee;
     background: #262626; overflow:hidden;
     .logo {
-        float:left; height:$hdHeight; line-height:$hdHeight; padding:0 25px;
+        float:left; height:$hdHeight; line-height:42px; padding:0 25px;
         color:#fefefe; background: #238759;
         font-size: 26px; font-weight: lighter;
         &:hover { text-decoration:none; }
