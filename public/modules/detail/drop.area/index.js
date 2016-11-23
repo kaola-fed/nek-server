@@ -180,11 +180,17 @@ const DropArea = Component.extend({
     let module = this.data.rows[row_index].subRow[subRow_index][module_index];
     // 首次会把 NEK 数据放到 module 里作持久化，故需先调用组件的 $$NEK() 方法
     module.NEK = module.NEK || this.$$NEK(name);
-    new ConfigModal({
+    // TODO: 用文天给的数据
+    let maxCols = module.NEK.cols;
+    let modal = new ConfigModal({
       data: {
         modRef,
-        conf: module.NEK.conf || [],
+        maxCols,
+        NEK: module.NEK,
       },
+    });
+    modal.$on('update_cols', (cols) => {
+      // TODO: 文天更新逻辑
     });
   },
   moveRowUp(row_index) {

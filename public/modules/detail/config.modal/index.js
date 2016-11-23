@@ -7,21 +7,25 @@ const ConfigModal = Modal.extend({
     this.defaults({
       contentTemplate,
       title: '组件配置',
+      maxCols: 1,
+      colArr: [],
       class: 'm-modal-autoflow',
       cancelButton: true,
-      conf: [],
+      NEK: {},
     });
     // 深度复制，只有在确定的时候才真实写回
-    this.data.curConf = JSON.parse(JSON.stringify(this.data.conf));
+    this.data.curConf = JSON.parse(JSON.stringify(this.data.NEK.conf));
+    this.data.colArr = Array(this.data.maxCols).fill().map((e, i) => i + 1);
     this.$on('ok', this._ok);
     this.supr();
   },
   _ok() {
-    const { conf, curConf } = this.data;
+    const { NEK, curConf } = this.data;
     curConf.forEach((d, i) => {
-      conf[i].value = curConf[i].value;
+      NEK.conf[i].value = curConf[i].value;
     });
-    this.data.modRef.$emit('update_nek', conf);
+    this.$emit('update_cols', NEK.cols);
+    this.data.modRef.$emit('update_nek', NEK.conf);
   },
 }).filter('name2id', {
   get(name, selects) {
