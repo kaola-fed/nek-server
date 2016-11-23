@@ -1,7 +1,7 @@
 import { Regular, Component } from 'nek-ui';
 import template from '!raw!./index.html';
 import ConfigModal from '../config.modal';
-import Dnd from './mixins/dnd'
+import Dnd from './mixins/dnd';
 import _ from 'lodash';
 
 const DropArea = Component.extend({
@@ -53,8 +53,8 @@ const DropArea = Component.extend({
     let cols = 0;
     subRow.forEach((item) => {
       cols += item.moduleWidth + item.offset;
-    })
-    return module.moduleWidth + 12 - cols;
+    });
+    return (module.moduleWidth + 12) - cols;
   },
   configModule(name, row_index, subRow_index, module_index) {
     let maxCols = this.getAvailableCols(row_index, subRow_index, module_index);
@@ -146,8 +146,11 @@ const DropArea = Component.extend({
     console.log(res);
     console.log(JSON.stringify(res));
   },
-}).filter('uniq', (name, row_index, subRow_index, module_index) => {
-  return `name_${row_index}_${subRow_index}_${module_index}`;
-}).use(Dnd);
+}).filter('uniq', (
+  name,
+  row_index,
+  subRow_index,
+  module_index
+) => `name_${row_index}_${subRow_index}_${module_index}`).use(Dnd);
 
 export default DropArea;
