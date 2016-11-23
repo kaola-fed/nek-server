@@ -11,10 +11,10 @@
     <numberInput value={item.value} />
     {/if}
     {#if item.type == 'boolean'}
-    <ui.check checked={item.value} />
+    <check checked={item.value | str2bool} />
     {/if}
     {#if item.type == 'none'}
-    <ui.check checked={item.value} />
+    <check checked={item.value | str2bool} />
     {/if}
     {#if item.type == 'array'}
     <checkGroup source={item.selects} />

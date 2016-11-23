@@ -7,6 +7,7 @@ const ConfigModal = Modal.extend({
     this.defaults({
       contentTemplate,
       title: '组件配置',
+      class: 'm-modal-autoflow',
       cancelButton: true,
       conf: [],
     });
@@ -20,7 +21,7 @@ const ConfigModal = Modal.extend({
     curConf.forEach((d, i) => {
       conf[i].value = curConf[i].value;
     });
-    this.data.modRef.$emit('update', conf);
+    this.data.modRef.$emit('update_nek', conf);
   },
 }).filter('name2id', {
   get(name, selects) {
@@ -36,6 +37,13 @@ const ConfigModal = Modal.extend({
       return d;
     });
     return source[id / 1];
+  },
+}).filter('str2bool', {
+  get(str = 'false') {
+    return str === 'true';
+  },
+  set(bool = false) {
+    return bool.toString();
   },
 });
 
