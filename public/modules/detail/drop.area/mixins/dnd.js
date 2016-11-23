@@ -1,4 +1,4 @@
-import { Regular} from 'nek-ui';
+import { Regular } from 'nek-ui';
 
 const Dnd = (Comp) => {
   Comp.implement({
@@ -27,12 +27,14 @@ const Dnd = (Comp) => {
       let isMoveModule = event.origin.data.isMoveModule;   // 是否为移动组件
       let rowIndex = event.origin.data.rowIndex;           // 组件原先所在行的index
       let subRowIndex = event.origin.data.subRowIndex;     // 组件原先所在子行的index
-      let moduleIndex = event.origin.data.moduleIndex;     // 组件原先所在的moduleIndex  
+      let moduleIndex = event.origin.data.moduleIndex;     // 组件原先所在的moduleIndex
       let res = this.getIndexAndOffset(subRow, data.firstCol, moduleWidth, row_index, subRow_index, isMoveModule, rowIndex, subRowIndex, moduleIndex);
       if (moduleName === 'container') {
         // 只有drop行不是container，且为空行才能放置container
         if (!data.rows[row_index].isContainer && data.rows[row_index].subRow.length === 1 && data.rows[row_index].subRow[0].length === 0) {
           data.rows[row_index].isContainer = true;
+          // 弹窗填写模块名字
+          this.prompContainerModal(row_index, '');
         }
       } else if (res) {
         // 移动组件
@@ -80,7 +82,7 @@ const Dnd = (Comp) => {
       let data = this.data;
       let lines = Array.prototype.slice.call(dropArea.getElementsByClassName('line'));
       this.clearBorder(dropArea);
-  
+
       for (let i = 0; i < moduleWidth; i++) {
         if (firstCol + i > -1 && firstCol + i < data.col) {
           Regular.dom.addClass(lines[firstCol + i], 'linecolor');
@@ -102,18 +104,15 @@ const Dnd = (Comp) => {
       if (isMoveModule && dropRowIndex === rowIndex && dropSubRowIndex === subRowIndex) {
         subRowClone = this.deleteModule(subRowClone, moduleIndex);
       }
-  
       // 为空行的情况下
       if (subRowClone.length === 0) {
         return { moduleIndex: 0, offset: firstCol, firstCol };
       }
-  
       // 非空行，放在第一个的情况下
       if (firstCol + moduleWidth < subRowClone[0].firstCol + 1) {
         subRow[0].offset = subRow[0].firstCol - firstCol - moduleWidth;
         return { moduleIndex: 0, offset: firstCol, firstCol };
       }
-  
       // 非空行，非第一个的情况下
       for (let i = 0; i < subRowClone.length; i++) {
         let module = subRowClone[i];
@@ -127,6 +126,6 @@ const Dnd = (Comp) => {
       }
       return false;
     },
-  })
-}
+  });
+};
 export default Dnd;

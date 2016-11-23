@@ -1,6 +1,10 @@
 <div class="m-droparea">
 <ul>
 {#list rows as row by row_index}
+    {#if row.isContainer}
+        模块名：{row.containerName ? row.containerName : '--'}
+        <i class="f-csp u-icon u-icon-pencil" on-click={this.prompContainerModal(row_index, row.containerName || '')}></i>
+    {/if}
     <li class="rowcontainer">
         <div class="row {row.isContainer?'outline':''}">
             {#list row.subRow as subRow by subRow_index}

@@ -2,6 +2,7 @@ import { Regular, Component } from 'nek-ui';
 import template from '!raw!./index.html';
 import ConfigModal from '../config.modal';
 import Dnd from './mixins/dnd';
+import ContainerModal from './modal/containerModal';
 import _ from 'lodash';
 
 const DropArea = Component.extend({
@@ -37,6 +38,15 @@ const DropArea = Component.extend({
     let data = this.data;
     let subRow = data.rows[param.rowIndex].subRow[param.subRowIndex];
     this.deleteModule(subRow, param.moduleIndex);
+  },
+  prompContainerModal(row_index, name) {
+    let containerModal = new ContainerModal({
+      name: name
+    });
+    containerModal.$on('confirm', (name) => {
+      this.data.rows[row_index].containerName = name;
+      this.$update();
+    })
   },
   $$NEK(name) {
     let NEK = {};
