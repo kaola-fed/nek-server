@@ -28,8 +28,16 @@
         }
     }
     .page {
+        .page-edit {
+            display: none;
+        }
         padding:30px; margin:10px;
         border:1px solid $themeColor; color:$themeColor;
+        &:hover {
+            .page-edit {
+                display: block;
+            }
+        }
     }
     img {
         width: 80px;height: 80px;

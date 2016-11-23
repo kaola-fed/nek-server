@@ -21,6 +21,9 @@ const Detail = Component.extend({
     this.$refs.moduleList.$on('upsertComponentList', (params) => {
       this._upsertComponent(params);
     });
+    this.$refs.pageList.$on('upsertPageList', (params) => {
+      this._upsertPage(params);
+    });
     this.$on('deleteModule', (param) => {
       this.$refs.dropArea.trash(param);
     });
@@ -72,6 +75,26 @@ const Detail = Component.extend({
     .then(res => res.json())
     .then((json) => {
       this._getComponentList();
+    }).catch((err) => {
+      console.error(err.message);
+    });
+  },
+
+  _upsertPage(params) {
+    const { projectId } = this.data;
+    fetch('/api/page/upsert', {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify(Object.assign(params, {
+        project: projectId,
+        page: params._id,
+      })),
+    })
+    .then(res => res.json())
+    .then((json) => {
+      this._getPageList();
     }).catch((err) => {
       console.error(err.message);
     });

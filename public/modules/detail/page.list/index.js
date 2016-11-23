@@ -1,4 +1,5 @@
 import { Component } from 'nek-ui';
+import EditModal from './edit.modal';
 import template from '!raw!./index.html';
 
 const PageList = Component.extend({
@@ -9,6 +10,13 @@ const PageList = Component.extend({
       pageList: [],
     });
     this.supr();
+  },
+
+  edit(page = {}) {
+    const modal = new EditModal({ data: { page } });
+    modal.$on('upsertPageList', (params) => {
+      this.$emit('upsertPageList', params);
+    });
   },
 });
 

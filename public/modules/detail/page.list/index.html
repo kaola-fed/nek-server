@@ -8,8 +8,12 @@
         {#list pageList as item}
         <li class="page f-toe">
             <span>{item.name}</span>
+            <i class="page-edit f-dn f-fr f-csp u-icon u-icon-pencil" on-click={this.edit(item)}></i>
         </li>
         {/list}
         </ul>
+        <div class="add">
+            <a class="u-btn u-btn-primary" on-click={this.edit()}>添加页面</a>
+        </div>
     </div>
 </div>
