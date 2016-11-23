@@ -28,9 +28,11 @@
   <ui.field title="值类型" cols=12 required>
     <ui.select value={c.type} key="name" source={typeList} />
   </ui.field>
-  <ui.field r-hide={c.type === 'select' || c.type === 'array'} title="选择列表" cols=12>
+  {#if c.type === 'select' || c.type === 'array'}
+  <ui.field title="选择列表" cols=12>
     <ui.input value={c.selects | arr2str} placeholder="多个值用空格分开" />
   </ui.field>
+  {/if}
 </ui.form>
 <a class="u-btn u-btn-error" on-click={this.remove(c_index)}>删除</a>
 <div style="border-bottom: solid 1px #dedede; margin: 10px 0;"></div>
