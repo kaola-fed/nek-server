@@ -19,12 +19,9 @@
                         {#if subRow && subRow.length > 0}
                         {#list subRow as module by module_index}
                         <draggable name={module.name} width={module.moduleWidth} isMoveModule=true rowIndex={row_index} subRowIndex={subRow_index} moduleIndex={module_index}>
-                            <div class="f-fl f-pr g-offset-{module.offset} g-col-{module.moduleWidth} module m-form">
+                            <div class="f-fl f-pr g-offset-{module.offset} g-col-{module.moduleWidth} module m-form" on-dblclick={this.configModule(module.name, row_index, subRow_index, module_index)}>
                             <ui.field cols="12" title="用户名" hint="用户名的用途">
-                                <r-component is={module.name} NEK={module.NEK} ref={module.name | uniq: row_index, subRow_index, module_index}></r-component><!-- 去掉行内元素带来的间隙
-                                --><div class="option">
-                                    <i class="f-csp u-icon u-icon-pencil" aria-hidden="true" on-click={this.configModule(module.name, row_index, subRow_index, module_index)}></i>
-                                </div>
+                                <r-component is={module.name} NEK={module.NEK} ref={module.name | uniq: row_index, subRow_index, module_index}></r-component>
                             </ui.field>
                             </div>
                             <draggable.proxy>
