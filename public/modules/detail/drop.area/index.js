@@ -71,7 +71,6 @@ const DropArea = Component.extend({
       },
     });
     modal.$on('update_cols', (cols) => {
-      // TODO: 文天更新逻辑
       module.moduleWidth = cols;
       this.$update();
     });
