@@ -54,6 +54,9 @@ table {
     border: 2px solid #fff;
 }
 
+.f-cb:after, .f-cbli li:after { display: block; clear: both; visibility: hidden; height: 0; overflow: hidden; content: "."; }
+.f-cb, .f-cbli li { zoom: 1; }
+
 // Reset for nek-ui
 .m-modal-autoflow .modal_bd {
     max-height: 400px;

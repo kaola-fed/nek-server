@@ -19,7 +19,6 @@
                             <ui.field cols="12" title="用户名" hint="用户名的用途">
                                 <r-component is={module.name} NEK={module.NEK} ref={module.name | uniq: row_index, subRow_index, module_index}></r-component><!-- 去掉行内元素带来的间隙
                                 --><div class="option">
-                                    <i class="f-csp u-icon u-icon-trash-o" aria-hidden="true" on-click={this.deleteModule(subRow, module_index)}></i>
                                     <i class="f-csp u-icon u-icon-pencil" aria-hidden="true" on-click={this.configModule(module.name, row_index, subRow_index, module_index)}></i>
                                 </div>
                             </ui.field>

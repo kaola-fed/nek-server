@@ -21,7 +21,7 @@
     }
     .subRow {
         position: relative;
-        box-sizing: content-box;min-height: 34px;margin-bottom: 5px;border-bottom: solid 1px #dedede;
+        min-height: 34px;margin-bottom: 5px;border-bottom: solid 1px #dedede;
         &:hover {
             border-bottom-color: #dedede;
         }
@@ -55,7 +55,7 @@
     }
     .option {
         display: none;position: absolute;right: 0;top: 0;
-        width: 60px;padding: 5px;border-bottom-left-radius: 5px;
+        width: 37px;padding: 5px;border-bottom-left-radius: 5px;
         color: #fff;background-color: rgba(0,0,0,0.4);
         i {
             margin: 0 7px;
