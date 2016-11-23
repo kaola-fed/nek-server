@@ -57,14 +57,12 @@ const DropArea = Component.extend({
     return module.moduleWidth + 12 - cols;
   },
   configModule(name, row_index, subRow_index, module_index) {
-    console.log(this.getAvailableCols(row_index, subRow_index, module_index));
+    let maxCols = this.getAvailableCols(row_index, subRow_index, module_index);
     let ref = `name_${row_index}_${subRow_index}_${module_index}`;
     let modRef = this.$refs[ref];
     let module = this.data.rows[row_index].subRow[subRow_index][module_index];
     // 首次会把 NEK 数据放到 module 里作持久化，故需先调用组件的 $$NEK() 方法
     module.NEK = module.NEK || this.$$NEK(name);
-    // TODO: 用文天给的数据
-    let maxCols = module.NEK.cols;
     let modal = new ConfigModal({
       data: {
         modRef,
