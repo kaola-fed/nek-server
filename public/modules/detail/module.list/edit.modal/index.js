@@ -7,6 +7,7 @@ const EditModal = Modal.extend({
     this.defaults({
       contentTemplate,
       title: '组件编辑',
+      class: 'm-modal-autoflow',
       cancelButton: true,
       typeList: ['none', 'string', 'number', 'boolean', 'array', 'select', 'expression'],
       params: {},
