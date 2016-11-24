@@ -41,12 +41,12 @@ const DropArea = Component.extend({
   },
   prompContainerModal(row_index, name) {
     let containerModal = new ContainerModal({
-      name: name
+      name,
     });
-    containerModal.$on('confirm', (name) => {
-      this.data.rows[row_index].containerName = name;
+    containerModal.$on('confirm', (param) => {
+      this.data.rows[row_index].containerName = param;
       this.$update();
-    })
+    });
   },
   $$NEK(name) {
     let NEK = {};

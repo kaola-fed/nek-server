@@ -66,7 +66,7 @@ const Detail = Component.extend({
 
   _getPageList() {
     const { projectId } = this.data;
-    const pageList = this.$refs.pageList
+    const pageList = this.$refs.pageList;
     fetch(`/api/page/list?project=${projectId}`)
     .then(res => res.json())
     .then((json) => {
@@ -135,15 +135,15 @@ const Detail = Component.extend({
   _ctrlS() {
     let isCtrl = false;
     document.onkeyup = (e) => {
-      if(e.keyCode == 17) isCtrl = false;
-    }
+      if (e.keyCode === 17) isCtrl = false;
+    };
     document.onkeydown = (e) => {
-      if(e.keyCode == 17) isCtrl = true;
-      if(e.keyCode == 83 && isCtrl == true) {
+      if (e.keyCode === 17) isCtrl = true;
+      if (e.keyCode === 83 && isCtrl === true) {
         this._savePage();
         return false;
       }
-    }
+    };
   },
 
   _savePage() {
@@ -160,17 +160,17 @@ const Detail = Component.extend({
       body: JSON.stringify({
         project: projectId,
         page: pageList.data.activePage._id,
-        sync: dropArea.data.rows
+        sync: dropArea.data.rows,
       }),
     })
     .then(res => res.json())
     .then((json) => {
-      
+
     }).catch((err) => {
       console.error(err.message);
     });
-    console.log(dropArea.data)
-  }
+    console.log(dropArea.data);
+  },
 });
 
 export default Detail;
