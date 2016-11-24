@@ -21,6 +21,10 @@ const componentSchema = new Schema({
     type: { type: String, default: 'string' },
     // 只有在 type 是 select/array 的时候才有意义
     selects: [String],
+    // string/number
+    selectType: { type: String, default: 'string' },
+    // string/number/boolean
+    arrayType: { type: String, default: 'string' },
   }],
   project: { type: Schema.Types.ObjectId, required: true, ref: 'Project' },
   category: { type: Schema.Types.ObjectId, required: true, ref: 'Category' },
