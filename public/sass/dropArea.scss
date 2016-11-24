@@ -1,4 +1,8 @@
 .m-droparea {
+    .containerTitle {
+        margin-top: 8px;
+        font-size: 15px;font-weight: bold;
+    }
     .rowcontainer {
         display: flex;display: -webkit-box-flex;
         &:hover {
