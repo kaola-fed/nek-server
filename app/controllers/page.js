@@ -3,13 +3,22 @@ const mongoose = require('mongoose');
 
 const page = new Router();
 const Page = mongoose.model('Page');
+const Project = mongoose.model('Project');
 
 page.get('/', async ctx => {
   const { project, page } = ctx.query;
   if (!project || !page) {
     throw new Error('[project && page] are required');
   }
-  ctx.body = await Page.queryOne(project, page);
+  let _page = await Page.queryOne(project, page);
+  let _project = await Project.queryOne(project);
+  _page = JSON.parse(JSON.stringify(_page));
+  _project = JSON.parse(JSON.stringify(_project));
+  _page.templates = _project.templates.reduce((r, d) => {
+    r[d.type] = { name: d.name, file: d.file };
+    return r;
+  }, {});
+  ctx.body = _page;
 });
 
 page.get('/list', async ctx => {
