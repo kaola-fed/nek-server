@@ -21,7 +21,7 @@
     }
     .subRow {
         position: relative;
-        min-height: 34px;margin-bottom: 5px;border-bottom: solid 1px #dedede;
+        min-height: 34px;margin-bottom: 5px;border-bottom: solid 1px rgba(222, 222, 222, 0.7);
         &:hover {
             border-bottom-color: #dedede;
         }

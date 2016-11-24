@@ -32,8 +32,8 @@
             display: none;
         }
         padding:30px; margin:10px;
-        border:1px solid #777; color:#777;
-        &.active { 
+        border:1px solid #ccc; color:#333;
+        &.active, &:hover { 
             border:1px solid $themeColor; color:$themeColor;
         }
         &:hover {
