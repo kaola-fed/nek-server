@@ -11,6 +11,16 @@ const Detail = Component.extend({
   config() {
     this.defaults({
       projectId: '',
+      fixedCategory: {
+        name: '模块',
+        componentList: [
+          {
+            desc: '模块',
+            name: 'container',
+            cols: 12,
+          },
+        ],
+      },
       categoryList: [],
       pageList: [],
     });
@@ -43,7 +53,9 @@ const Detail = Component.extend({
     fetch(`/api/component/list?project=${projectId}`)
     .then(res => res.json())
     .then((json) => {
-      this.$update('categoryList', json);
+      const list = json;
+      list.unshift(this.data.fixedCategory);
+      this.$update('categoryList', list);
     }).catch((err) => {
       console.error(err.message);
     });
