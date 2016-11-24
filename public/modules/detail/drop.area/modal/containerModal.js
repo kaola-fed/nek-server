@@ -9,13 +9,14 @@ const ContainerModal = Modal.extend({
       title: '模块名配置',
       class: 'm-modal-autoflow',
       cancelButton: true,
-      name: this.name
+      cname: this.cname,
+      ctitle: this.ctitle,
     });
     this.$on('ok', this._ok);
     this.supr();
   },
   _ok() {
-    this.$emit('confirm', this.data.name);
+    this.$emit('confirm', {cname: this.data.cname, ctitle: this.data.ctitle});
   }
 });
 

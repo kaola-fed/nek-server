@@ -2,6 +2,9 @@
     <a href={'app.home' | encode} class="logo">NEK</a>
     <ul class="entries" r-hide={hideEntries}>
         <li class="entry">
+            <a href='//kaola-fed.github.io/regular-ui/doc/' target="_blank">Guide</a>
+        </li>
+        <li class="entry">
             <a href={'app.setting' | encode: { projectId: projectId }} r-class={{'crt': curName === 'setting'}}>项目设置</a>
         </li>
         <li class="entry">

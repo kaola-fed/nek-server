@@ -2,8 +2,10 @@
 <ul>
 {#list rows as row by row_index}
     {#if row.isContainer}
-        模块名：{row.containerName ? row.containerName : '--'}
-        <i class="f-csp u-icon u-icon-pencil" on-click={this.prompContainerModal(row_index, row.containerName || '')}></i>
+    <h2 class="containerTitle">
+        {row.containerTitle || '--'}
+        <i class="f-csp u-icon u-icon-pencil" on-click={this.prompContainerModal(row_index, row.containerName || '', row.containerTitle || '')}></i>
+    </h2>
     {/if}
     <li class="rowcontainer">
         <div class="row {row.isContainer?'outline':''}">

@@ -39,12 +39,14 @@ const DropArea = Component.extend({
     let subRow = data.rows[param.rowIndex].subRow[param.subRowIndex];
     this.deleteModule(subRow, param.moduleIndex);
   },
-  prompContainerModal(row_index, name) {
+  prompContainerModal(row_index, cname, ctitle) {
     let containerModal = new ContainerModal({
-      name,
+      cname,
+      ctitle,
     });
     containerModal.$on('confirm', (param) => {
-      this.data.rows[row_index].containerName = param;
+      this.data.rows[row_index].containerName = param.cname;
+      this.data.rows[row_index].containerTitle = param.ctitle;
       this.$update();
     });
   },
