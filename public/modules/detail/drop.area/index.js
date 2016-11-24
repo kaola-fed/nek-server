@@ -140,7 +140,7 @@ const DropArea = Component.extend({
         });
       } else {
         res.rows[rowIndex].components.push({
-          name: 'container',
+          name: row.containerName,
           clazz: '',
           rows: [],
         });
@@ -159,6 +159,7 @@ const DropArea = Component.extend({
         });
       }
     });
+    return res;
     console.log(this.data);
     console.log(res);
     console.log(JSON.stringify(res));
