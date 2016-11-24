@@ -25,7 +25,7 @@ page.post('/upsert', async ctx => {
   if (!project) {
     throw new Error('[project] is required');
   }
-  ctx.body = await Page.upsert(page, project, name, url);
+  ctx.body = await Page.upsert(page, project, name, url, data, sync);
 });
 
 module.exports = page.routes();
