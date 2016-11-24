@@ -1,4 +1,4 @@
-/* global fetch,document: false */
+/* global fetch,document,localStorage: false */
 import { Component, Notify } from 'nek-ui';
 import ModuleList from './module.list';
 import PageList from './page.list';
@@ -35,6 +35,7 @@ const Detail = Component.extend({
       this._upsertPage(params);
     });
     this.$refs.pageList.$on('changePage', (pageId) => {
+      localStorage.setItem(this.data.projectId, pageId);
       this._getPageData(pageId);
     });
     this.$on('deleteModule', (param) => {
@@ -43,6 +44,7 @@ const Detail = Component.extend({
     this._ctrlS();
     this.supr();
   },
+
   enter(options) {
     const { projects = [], param } = this.$state;
     this.$state.curProj = projects.find(d => d._id === param.projectId);
@@ -70,9 +72,11 @@ const Detail = Component.extend({
     fetch(`/api/page/list?project=${projectId}`)
     .then(res => res.json())
     .then((json) => {
-      pageList.data.activePage = json[0];
+      const pageId = localStorage.getItem(projectId) || json[0]._id;
+      const curPage = json.find(d => d._id === pageId);
+      pageList.data.activePage = curPage;
       pageList.data.activePage.active = true;
-      this._getPageData(json[0]._id);
+      this._getPageData(pageId);
       this.$update('pageList', json);
     }).catch((err) => {
       console.error(err.message);
