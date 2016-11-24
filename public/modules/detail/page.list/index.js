@@ -8,16 +8,25 @@ const PageList = Component.extend({
   config() {
     this.defaults({
       pageList: [],
+      activePage: {}
     });
     this.supr();
   },
 
-  edit(page = {}) {
+  edit(event, page = {}) {
+    event.stopPropagation();
     const modal = new EditModal({ data: { page } });
     modal.$on('upsertPageList', (params) => {
       this.$emit('upsertPageList', params);
     });
   },
+  
+  changePage(item) {
+    let data = this.data;
+    data.activePage.active = false;
+    data.activePage = item;
+    item.active = true;
+  }
 });
 
 export default PageList;

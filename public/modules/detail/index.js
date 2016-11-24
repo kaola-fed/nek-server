@@ -63,9 +63,12 @@ const Detail = Component.extend({
 
   _getPageList() {
     const { projectId } = this.data;
+    const pageList = this.$refs.pageList
     fetch(`/api/page/list?project=${projectId}`)
     .then(res => res.json())
     .then((json) => {
+      pageList.data.activePage = json[0];
+      pageList.data.activePage.active = true;
       this.$update('pageList', json);
     }).catch((err) => {
       console.error(err.message);
@@ -114,16 +117,42 @@ const Detail = Component.extend({
 
   _ctrlS() {
     let isCtrl = false;
-    document.onkeyup = function(e){
-      if(e.keyCode == 17) isCtrl=false;
+    document.onkeyup = (e) => {
+      if(e.keyCode == 17) isCtrl = false;
     }
-    document.onkeydown=function(e){
-      if(e.keyCode == 17) isCtrl=true;
+    document.onkeydown = (e) => {
+      if(e.keyCode == 17) isCtrl = true;
       if(e.keyCode == 83 && isCtrl == true) {
-        alert("Ctrl-S pressed");
+        this._savePage();
         return false;
       }
     }
+  },
+
+  _savePage() {
+    const { projectId } = this.data;
+    const { pageId } = this.data;
+    const pageList = this.$refs.pageList;
+    const dropArea = this.$refs.dropArea;
+
+    fetch('/api/page/upsert', {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        project: projectId,
+        page: pageList.data.activePage._id,
+        sync: dropArea.data.rows
+      }),
+    })
+    .then(res => res.json())
+    .then((json) => {
+      // this._getPageList();
+    }).catch((err) => {
+      console.error(err.message);
+    });
+    console.log(dropArea.data)
   }
 });
 

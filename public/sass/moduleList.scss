@@ -32,7 +32,10 @@
             display: none;
         }
         padding:30px; margin:10px;
-        border:1px solid $themeColor; color:$themeColor;
+        border:1px solid #333; color:#333;
+        &.active { 
+            border:1px solid $themeColor; color:$themeColor;
+        }
         &:hover {
             .page-edit {
                 display: block;
