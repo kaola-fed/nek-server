@@ -123,35 +123,38 @@ const DropArea = Component.extend({
 
     data.rows.forEach((row, rowIndex) => {
       res.rows.push({
-        clazz: '',
         components: [],
       });
       let isContainer = row.isContainer;
       if (!isContainer) {
         row.subRow[0].forEach((module, moduleIndex) => {
           let NEK = module.NEK || self.$$NEK(module.name);
+          console.log(NEK);
           res.rows[rowIndex].components.push({
             name: NEK.name,
             id: NEK.id,
-            clazz: '',
-            layout: NEK.layout,
+            cols: NEK.cols,
+            offset: module.offset,
             conf: NEK.conf,
           });
         });
       } else {
         res.rows[rowIndex].components.push({
           name: row.containerName,
-          clazz: '',
+          title: row.containerTitle,
+          id: 0,
+          offset: 0,
           rows: [],
         });
         row.subRow.forEach((subRow, subRowIndex) => {
-          res.rows[rowIndex].components[0].rows.push({ clazz: '', components: [] });
+          res.rows[rowIndex].components[0].rows.push({components: [] });
           subRow.forEach((module, moduleIndex) => {
             let NEK = module.NEK || self.$$NEK(module.name);
             res.rows[rowIndex].components[0].rows[subRowIndex].components.push({
               name: NEK.name,
               id: NEK.id,
-              clazz: '',
+              cols: NEK.cols,
+              offset: module.offset,
               layout: NEK.layout,
               conf: NEK.conf,
             });
@@ -159,10 +162,10 @@ const DropArea = Component.extend({
         });
       }
     });
-    return res;
     console.log(this.data);
     console.log(res);
     console.log(JSON.stringify(res));
+    return res;
   },
 }).filter('uniq', (
   name,
