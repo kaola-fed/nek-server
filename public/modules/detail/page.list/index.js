@@ -22,7 +22,8 @@ const PageList = Component.extend({
     });
   },
 
-  copyPageId(item) {
+  copyPageId(event, item) {
+    event.stopPropagation();
     clipboard.copy(item._id);
     Notify.notify.success('页面id已成功复制到剪贴板');
   },
