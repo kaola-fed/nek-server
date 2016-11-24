@@ -10,8 +10,7 @@ const EditModal = Modal.extend({
       class: 'm-modal-autoflow',
       cancelButton: true,
       typeList: ['string', 'number', 'none', 'boolean', 'array', 'select', 'expression'],
-      selectTypeList: ['string', 'number'],
-      arrayTypeList: ['string', 'number', 'boolean'],
+      extraTypeList: ['string', 'number', 'boolean'],
       params: {},
     });
     this.data.params = JSON.parse(JSON.stringify(this.data.component));

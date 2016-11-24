@@ -29,16 +29,9 @@
     <ui.select value={c.type} key="name" source={typeList} placeholder="" />
   </ui.field>
   {#if c.type === 'select' || c.type === 'array'}
-  {#if c.type === 'select'}
   <ui.field title="子元素类型" cols=12>
-    <ui.select value={c.selectType} key="name" source={selectTypeList} placeholder="" />
+    <ui.select value={c.extraType} key="name" source={extraTypeList} placeholder="" />
   </ui.field>
-  {/if}
-  {#if c.type === 'array'}
-  <ui.field title="子元素类型" cols=12>
-    <ui.select value={c.arrayType} key="name" source={arrayTypeList} placeholder="" />
-  </ui.field>
-  {/if}
   <ui.field title="选择列表" cols=12>
     <ui.input value={c.selects | arr2str} placeholder="多个值用单空格分开" />
   </ui.field>
