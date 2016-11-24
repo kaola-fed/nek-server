@@ -52,7 +52,9 @@ const DropArea = Component.extend({
     let NEK = {};
     this.data.categoryList.forEach((category) => {
       category.componentList.forEach((component) => {
-        if (component.name === name) NEK = component;
+        if (component.name === name) {
+          NEK = JSON.parse(JSON.stringify(component));
+        }
       });
     });
     return NEK;
