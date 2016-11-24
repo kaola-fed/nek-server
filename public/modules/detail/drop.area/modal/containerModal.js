@@ -6,7 +6,7 @@ const ContainerModal = Modal.extend({
   config() {
     this.defaults({
       contentTemplate,
-      title: '模块名配置',
+      title: '模块信息配置',
       class: 'm-modal-autoflow',
       cancelButton: true,
       cname: this.cname,
