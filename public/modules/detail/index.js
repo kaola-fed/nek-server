@@ -160,6 +160,7 @@ const Detail = Component.extend({
       body: JSON.stringify({
         project: projectId,
         page: pageList.data.activePage._id,
+        data: dropArea.exportJson(),
         sync: dropArea.data.rows,
       }),
     })
