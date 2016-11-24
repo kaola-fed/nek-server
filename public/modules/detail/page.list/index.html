@@ -7,7 +7,8 @@
         {#list pageList as item}
         <li class="page f-toe f-csp {item.active?'active':''}" on-click={this.changePage(item)}>
             <span>{item.name}</span>
-            <i class="page-edit f-dn f-fr f-csp u-icon u-icon-pencil" on-click={this.edit($event, item)}></i>
+            <i class="page-edit f-dn f-fr f-csp u-icon u-icon-files-o" on-click={this.copyPageId(item)}></i>
+            <i class="page-edit f-dn f-fr f-csp u-icon u-icon-pencil" style="margin-right: 8px" on-click={this.edit($event, item)}></i>
         </li>
         {/list}
         </ul>
