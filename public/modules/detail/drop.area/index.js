@@ -88,6 +88,7 @@ const DropArea = Component.extend({
       module.moduleWidth = module.NEK.cols;
       module.labelTitle = module.NEK.labelTitle;
       module.labelHint = module.NEK.labelHint;
+      module.required = module.NEK.required;
       this.$update();
     });
   },
