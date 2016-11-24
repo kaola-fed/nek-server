@@ -43,6 +43,7 @@
         background-color: $bgColor;
     }
     .addrowcontainer {
+        width: calc(100% - 66px);
         margin-top: 20px;
     }
     .addrow {

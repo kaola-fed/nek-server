@@ -1,26 +1,28 @@
 <droppable on-drop={this.trash($event)}>
 <div class="m-modules">
-    {#list categoryList as cate}
-    <ul>
-        <li class="titie f-tal" on-click={cate.show = !cate.show}>
-            {cate.name}
-            <i class="f-csp u-icon u-icon-lg {!cate.show?'u-icon-angle-up':'u-icon-angle-down'}" aria-hidden="true"></i>
-        </li>
-        {#if !cate.show}
-        {#list cate.componentList as component}
-        <draggable name={component.name} width={component.cols}>
-            <li class="module">
-                {component.desc}
-                <i class="module-edit f-dn f-fr f-csp u-icon u-icon-pencil" r-hide={component.name === 'container'} on-click={this.edit(component)}></i>
+    <div class="listwrap">
+        {#list categoryList as cate}
+        <ul>
+            <li class="titie f-tal" on-click={cate.show = !cate.show}>
+                {cate.name}
+                <i class="f-csp u-icon u-icon-lg {!cate.show?'u-icon-angle-up':'u-icon-angle-down'}" aria-hidden="true"></i>
             </li>
-            <draggable.proxy>
-                <div class="proxy-module" style="width: {component.cols*colWidth}px;height: 40px;line-height: 40px;">{component.name}</div>
-            </draggable.proxy>
-        </draggable>
+            {#if !cate.show}
+            {#list cate.componentList as component}
+            <draggable name={component.name} width={component.cols}>
+                <li class="module">
+                    {component.desc}
+                    <i class="module-edit f-dn f-fr f-csp u-icon u-icon-pencil" r-hide={component.name === 'container'} on-click={this.edit(component)}></i>
+                </li>
+                <draggable.proxy>
+                    <div class="proxy-module" style="width: {component.cols*colWidth}px;height: 40px;line-height: 40px;">{component.name}</div>
+                </draggable.proxy>
+            </draggable>
+            {/list}
+            {/if}
+        </ul>
         {/list}
-        {/if}
-    </ul>
-    {/list}
+    </div>
     <div class="add">
         <a class="u-btn u-btn-primary" on-click={this.edit()}>添加组件</a>
     </div>
