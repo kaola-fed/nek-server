@@ -1,5 +1,5 @@
-/* global fetch: false */
-import { Component } from 'nek-ui';
+/* global fetch,document: false */
+import { Component, Notify } from 'nek-ui';
 import ModuleList from './module.list';
 import PageList from './page.list';
 import DropArea from './drop.area';
@@ -165,9 +165,10 @@ const Detail = Component.extend({
     })
     .then(res => res.json())
     .then((json) => {
-
+      Notify.notify.success('保存成功');
     }).catch((err) => {
       console.error(err.message);
+      Notify.notify.success(`保存失败：${err.message || '未知'}`);
     });
     console.log(dropArea.data);
   },
