@@ -1,6 +1,7 @@
-import { Component } from 'nek-ui';
+import { Component, Notify } from 'nek-ui';
 import EditModal from './edit.modal';
 import template from '!raw!./index.html';
+import clipboard from 'clipboard-js';
 
 const PageList = Component.extend({
   name: 'page.list',
@@ -19,6 +20,11 @@ const PageList = Component.extend({
     modal.$on('upsertPageList', (params) => {
       this.$emit('upsertPageList', params);
     });
+  },
+
+  copyPageId(item) {
+    clipboard.copy(item._id);
+    Notify.notify.success('页面id已成功复制到剪贴板');
   },
 
   changePage(item) {
