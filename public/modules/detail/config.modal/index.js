@@ -24,7 +24,7 @@ const ConfigModal = Modal.extend({
     curConf.forEach((d, i) => {
       NEK.conf[i].value = curConf[i].value;
     });
-    this.$emit('update_cols', NEK.cols);
+    this.$emit('update_page');
     this.data.modRef.$emit('update_nek', NEK.conf);
   },
 }).filter('name2id', {

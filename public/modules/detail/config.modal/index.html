@@ -2,6 +2,15 @@
   <ui.field title="栅格数" cols=12>
     <ui.select source={colArr} key="name" value={NEK.cols} placeholder="" />
   </ui.field>
+  <ui.field title="label标题" cols=12>
+    <ui.input value={NEK.labelTitle} />
+  </ui.field>
+  <ui.field title="label提示" cols=12>
+    <ui.input value={NEK.labelHint} />
+  </ui.field>
+  <ui.field cols=12>
+    <div style="border-bottom: solid 1px #dedede; margin: 10px 0;"></div>
+  </ui.field>
   {#list curConf as item}
   <ui.field title={item.desc} cols=12 required={item.isRequired}>
     {#if item.type == 'string'}

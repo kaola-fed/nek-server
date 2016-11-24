@@ -80,8 +80,10 @@ const DropArea = Component.extend({
         NEK: module.NEK,
       },
     });
-    modal.$on('update_cols', (cols) => {
-      module.moduleWidth = cols;
+    modal.$on('update_page', () => {
+      module.moduleWidth = module.NEK.cols;
+      module.labelTitle = module.NEK.labelTitle;
+      module.labelHint = module.NEK.labelHint;
       this.$update();
     });
   },

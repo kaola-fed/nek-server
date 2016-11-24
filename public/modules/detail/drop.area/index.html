@@ -20,7 +20,7 @@
                         {#list subRow as module by module_index}
                         <draggable name={module.name} width={module.moduleWidth} isMoveModule=true rowIndex={row_index} subRowIndex={subRow_index} moduleIndex={module_index}>
                             <div class="f-fl f-pr g-offset-{module.offset} g-col-{module.moduleWidth} module m-form" on-dblclick={this.configModule(module.name, row_index, subRow_index, module_index)}>
-                            <ui.field cols="12" title="用户名" hint="用户名的用途">
+                            <ui.field cols="12" title={module.labelTitle} hint={module.labelHint}>
                                 <r-component is={module.name} NEK={module.NEK} ref={module.name | uniq: row_index, subRow_index, module_index}></r-component>
                             </ui.field>
                             </div>
