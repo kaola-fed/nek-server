@@ -16,8 +16,8 @@ const ContainerModal = Modal.extend({
     this.supr();
   },
   _ok() {
-    this.$emit('confirm', {cname: this.data.cname, ctitle: this.data.ctitle});
-  }
+    this.$emit('confirm', { cname: this.data.cname, ctitle: this.data.ctitle });
+  },
 });
 
 export default ContainerModal;

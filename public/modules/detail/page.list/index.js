@@ -8,7 +8,7 @@ const PageList = Component.extend({
   config() {
     this.defaults({
       pageList: [],
-      activePage: {}
+      activePage: {},
     });
     this.supr();
   },
@@ -20,14 +20,14 @@ const PageList = Component.extend({
       this.$emit('upsertPageList', params);
     });
   },
-  
+
   changePage(item) {
     let data = this.data;
     data.activePage.active = false;
     data.activePage = item;
     item.active = true;
     this.$emit('changePage', item._id);
-  }
+  },
 });
 
 export default PageList;
