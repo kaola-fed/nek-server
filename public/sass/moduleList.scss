@@ -3,12 +3,13 @@
     overflow: auto;
     background-color: #fff;
     .listwrap {
-        height: calc(100% - 100px);
+        height: calc(100% - 56px);
         overflow: auto;
     }
     .add {
+        position: absolute;bottom: 0;
+        width: 100%;margin: 0;padding: 10px;border-top: 1px solid #ddd;
         text-align: center;
-        margin-top: 50px;
     }
     .titie {
         position: relative;
@@ -36,7 +37,7 @@
             display: none;
         }
         padding:30px; margin:10px;
-        border:1px solid #ccc; color:#333;
+        border:1px solid #ccc;color:#333;
         &.active, &:hover { 
             border:1px solid $themeColor; color:$themeColor;
         }
