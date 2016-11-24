@@ -34,6 +34,9 @@ const Detail = Component.extend({
     this.$refs.pageList.$on('upsertPageList', (params) => {
       this._upsertPage(params);
     });
+    this.$refs.pageList.$on('changePage', (pageId) => {
+      this._getPageData(pageId);
+    });
     this.$on('deleteModule', (param) => {
       this.$refs.dropArea.trash(param);
     });
@@ -69,7 +72,21 @@ const Detail = Component.extend({
     .then((json) => {
       pageList.data.activePage = json[0];
       pageList.data.activePage.active = true;
+      this._getPageData(json[0]._id);
       this.$update('pageList', json);
+    }).catch((err) => {
+      console.error(err.message);
+    });
+  },
+
+  _getPageData(pageId) {
+    const { projectId } = this.data;
+    const dropArea = this.$refs.dropArea;
+    fetch(`/api/page?project=${projectId}&page=${pageId}`)
+    .then(res => res.json())
+    .then((json) => {
+      dropArea.data.rows = json.sync || [{ subRow: [[]], isContainer: false }];
+      this.$update();
     }).catch((err) => {
       console.error(err.message);
     });
@@ -148,7 +165,7 @@ const Detail = Component.extend({
     })
     .then(res => res.json())
     .then((json) => {
-      // this._getPageList();
+      
     }).catch((err) => {
       console.error(err.message);
     });

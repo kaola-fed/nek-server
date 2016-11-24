@@ -26,6 +26,7 @@ const PageList = Component.extend({
     data.activePage.active = false;
     data.activePage = item;
     item.active = true;
+    this.$emit('changePage', item._id);
   }
 });
 
