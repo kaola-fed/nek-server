@@ -30,7 +30,8 @@ const DropArea = Component.extend({
         subRow.forEach((module, module_index) => {
           const ref = `${module.name}_${row_index}_${subRow_index}_${module_index}`;
           const modRef = this.$refs[ref];
-          modRef.$emit('update_nek', module.NEK.conf);
+          const conf = module.NEK ? module.NEK.conf : [];
+          modRef.$emit('update_nek', conf);
         });
       });
     });
