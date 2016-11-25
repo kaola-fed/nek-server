@@ -16,6 +16,25 @@ const DropArea = Component.extend({
     });
     this.supr();
   },
+  init() {
+    // FIXME: 暂时无法拿到 r-component 的 ref, 只能先这样了, orz...
+    setTimeout(() => {
+      this._writeBackNEK();
+    }, 1000);
+    this.supr();
+  },
+  // 回写数据到组件
+  _writeBackNEK() {
+    this.data.rows.forEach((row, row_index) => {
+      row.subRow.forEach((subRow, subRow_index) => {
+        subRow.forEach((module, module_index) => {
+          const ref = `${module.name}_${row_index}_${subRow_index}_${module_index}`;
+          const modRef = this.$refs[ref];
+          modRef.$emit('update_nek', module.NEK.conf);
+        });
+      });
+    });
+  },
   // 添加一行
   addRow() {
     let data = this.data;
@@ -72,7 +91,7 @@ const DropArea = Component.extend({
   },
   configModule(name, row_index, subRow_index, module_index) {
     let maxCols = this.getAvailableCols(row_index, subRow_index, module_index);
-    let ref = `name_${row_index}_${subRow_index}_${module_index}`;
+    let ref = `${name}_${row_index}_${subRow_index}_${module_index}`;
     let modRef = this.$refs[ref];
     let module = this.data.rows[row_index].subRow[subRow_index][module_index];
     // 首次会把 NEK 数据放到 module 里作持久化，故需先调用组件的 $$NEK() 方法
@@ -148,7 +167,7 @@ const DropArea = Component.extend({
           rows: [],
         });
         row.subRow.forEach((subRow, subRowIndex) => {
-          res.rows[rowIndex].components[0].rows.push({components: [] });
+          res.rows[rowIndex].components[0].rows.push({ components: [] });
           subRow.forEach((module, moduleIndex) => {
             let NEK = module.NEK || self.$$NEK(module.name);
             res.rows[rowIndex].components[0].rows[subRowIndex].components.push({
@@ -173,6 +192,6 @@ const DropArea = Component.extend({
   row_index,
   subRow_index,
   module_index
-) => `name_${row_index}_${subRow_index}_${module_index}`).use(Dnd);
+) => `${name}_${row_index}_${subRow_index}_${module_index}`).use(Dnd);
 
 export default DropArea;
