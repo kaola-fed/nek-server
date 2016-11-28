@@ -10,7 +10,10 @@ page.get('/', async ctx => {
   if (!project) {
     throw new Error('[project] is required');
   }
-  let _page = await Page.queryOne(project, page) || {};
+  let _page = {};
+  if (page) {
+    let _page = await Page.queryOne(project, page) || {};
+  }
   let _project = await Project.queryOne(project);
   _page = JSON.parse(JSON.stringify(_page));
   _project = JSON.parse(JSON.stringify(_project));
