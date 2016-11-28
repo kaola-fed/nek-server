@@ -28,15 +28,18 @@ projectSchema.statics = {
     return await this.find();
   },
 
-  async upsertTpl(_id, name, file) {
+  async upsertTpl(_id, name, file, type) {
     const result = await this.find({ _id, 'templates.name': name });
     if (result.length) {
       return await this.update({ _id, 'templates.name': name }, {
         $set: { 'templates.$.file': file }
       });
     }
+    if (!type) {
+      throw new Error('[type] is required');
+    }
     return await this.update({ _id }, {
-      $addToSet: { 'templates': { name, file } }
+      $addToSet: { 'templates': { name, file, type } }
     });
   }
 };

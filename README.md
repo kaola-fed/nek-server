@@ -32,7 +32,7 @@ NEK 的服务端，包含了页面拖拽构建以及数据库交互
 |/project|GET|获取项目信息|project(项目id)|项目信息|
 |/project/list|GET|所有项目|无|项目列表|
 |/project/upsert|POST|新增/更新项目|project(项目id，无则新增),name(项目名),desc(描述)||
-|/project/tpl/upsert|POST|新增/更新项目模板|project(项目id),name(模板文件名，不存在则新增),file(文件id)||
+|/project/tpl/upsert|POST|新增/更新项目模板|project(项目id),name(模板文件名，不存在则新增),file(文件id),type(模板类型)||
 |/project/tpl/delete|POST|删除项目模板|project(项目id),name(模板文件名)||
 |/page|GET|获取页面数据|project(项目id),page(页面id)|页面数据|
 |/page/list|GET|获取页面列表|project(项目id)|页面列表|

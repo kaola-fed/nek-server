@@ -31,11 +31,11 @@ project.post('/upsert', async ctx => {
 });
 
 project.post('/tpl/upsert', async ctx => {
-  const { project, name, file } = ctx.request.body;
+  const { project, name, file, type } = ctx.request.body;
   if (!project || !name || !file) {
     throw new Error('[project && name && file] are required');
   }
-  ctx.body = await Project.upsertTpl(project, name, file);
+  ctx.body = await Project.upsertTpl(project, name, file, type);
 });
 
 project.post('/tpl/delete', async ctx => {
