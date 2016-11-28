@@ -12,7 +12,7 @@ page.get('/', async ctx => {
   }
   let _page = {};
   if (page) {
-    let _page = await Page.queryOne(project, page) || {};
+    _page = await Page.queryOne(project, page) || {};
   }
   let _project = await Project.queryOne(project);
   _page = JSON.parse(JSON.stringify(_page));
