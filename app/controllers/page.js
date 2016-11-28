@@ -7,10 +7,10 @@ const Project = mongoose.model('Project');
 
 page.get('/', async ctx => {
   const { project, page } = ctx.query;
-  if (!project || !page) {
-    throw new Error('[project && page] are required');
+  if (!project) {
+    throw new Error('[project] is required');
   }
-  let _page = await Page.queryOne(project, page);
+  let _page = await Page.queryOne(project, page) || {};
   let _project = await Project.queryOne(project);
   _page = JSON.parse(JSON.stringify(_page));
   _project = JSON.parse(JSON.stringify(_project));
