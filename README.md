@@ -4,13 +4,13 @@ NEK 的服务端，包含了页面拖拽构建以及数据库交互
 
 ## 关于
 
-前端只依赖 nek-ui (我们定制的 regular-ui)，如果有需求，直接在[这里][1]修改
+前端只依赖 nek-ui (定制的 regular-ui)，如果有需求，直接在[这里][1]修改
 
 开发方式跟 Regular 基本一致，需要注意的事项：
  
  - 用的 CommonJS 管理依赖，最终由 Webpack 打包
- - 因为人少，规范就没什么可强制的了，总体参考 RGUI 那一套即可，见[这里][2]
- - 结构规范，我参照之前组内讨论的目录规范，文件名和组件名用**小写+点**，导出的类名还是**大驼峰**
+ - 因为人少，规范就没什么可强制的了，使用的是 [Airbnb 的 ESLint 规范][3]，也可以部分参考 RGUI 那一套，见[这里][2]
+ - 文件名和组件名用**小写+点**，导出的类名还是**大驼峰**
  - 每个组件 config 里建议用 `this.defaults` 指明默认值，这样比较容易理解
 
 ## 接口
@@ -46,7 +46,6 @@ NEK 的服务端，包含了页面拖拽构建以及数据库交互
 
  - 在 .nekrc 里加上 `projectId` 字段，接下来的请求会用到
  - `GET /api/project?project={projectId}` 会得到项目的信息
-![](https://dn-getlink.qbox.me/aqlpdg8pkd38niwyrdx6r.png)
  - 遍历`result.templates`里的 `file` 和 `name`，通过 `GET /api/template?file={file}&name={name}` 即可下载到模板文件
  - 为了正确填充模板，需要 `GET /api/page?project={projectId}&page={pageId}` 获取页面的 JSON 数据，meta 放在 `result.data` 字段下的
 
@@ -74,27 +73,18 @@ NEK 的服务端，包含了页面拖拽构建以及数据库交互
 
 ## 开发
 
-> 由于端口可能冲突，请不要同时使用
-
-#### 纯前端
-
- - `npm start`
- - open `http://localhost:3300`
-
-#### 前后端（建议）
-
- > node >= 7.0（如果是从旧版本升级到 7，建议删除 node_modules 后重新 `npm i`）
+ > node >= 7.0（如果是从旧版本升级到 7，请删除 node_modules 后重新 `npm i`）
 
  `npm run dev`
 
 
 ## 部署
 
- - `ssh fed@kaolafed.com`（密码：fed4kaola）
  - `npm i`（只有修改了包才需执行）
  - `npm run build`（如果仅仅修改 projects 下文件则无需执行）
- - `npm -g pm2`（部署机已经装了，不需要执行）
+ - `npm -g pm2`（如果部署机已经装，就不需要执行）
  - `pm2 restart nek`
 
  [1]: https://github.com/kaola-fed/regular-ui
  [2]: https://kaola-fed.github.io/regular-ui/doc/start/rule.html
+ [3]: https://github.com/airbnb/javascript
