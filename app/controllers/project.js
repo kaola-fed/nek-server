@@ -9,13 +9,7 @@ project.get('/', async ctx => {
   if (!project) {
     throw new Error('[project] is required');
   }
-  let result = await Project.queryOne(project);
-  result = JSON.parse(JSON.stringify(result));
-  result.templates = result.templates.reduce((r, d) => {
-    r[d.type] = { name: d.name, file: d.file };
-    return r;
-  }, {});
-  ctx.body = result;
+  ctx.body = await Project.queryOne(project);
 });
 
 project.get('/list', async ctx => {
