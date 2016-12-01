@@ -42,7 +42,7 @@ NEK 的服务端，包含了页面拖拽构建以及数据库交互
 |/category/list|GET|获取所有分类|project(项目id)|分类列表|
 |/category/upsert|POST|新增/更新类目信息|project(项目id),category(类目id)||
 
-#### NEK CLI 交互方式
+#### NEK CLI 交互方式 
 
  - 在 .nekrc 里加上 `projectId` 字段，接下来的请求会用到
  - `GET /api/project?project={projectId}` 会得到项目的信息
