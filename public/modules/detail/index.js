@@ -2,7 +2,7 @@
 import { Component, Notify } from 'nek-ui';
 import ModuleList from './module.list';
 import PageList from './page.list';
-import DropArea from './drop.area';
+import Main from './main';
 import template from '!raw!./index.html';
 
 const Detail = Component.extend({
@@ -23,6 +23,8 @@ const Detail = Component.extend({
       },
       categoryList: [],
       pageList: [],
+      sync: {},
+      tab: 0
     });
     this.supr();
   },
@@ -39,7 +41,7 @@ const Detail = Component.extend({
       this._getPageData(pageId);
     });
     this.$on('deleteModule', (param) => {
-      this.$refs.dropArea.trash(param);
+      this.$refs.main.$refs.dropArea.trash(param);
     });
     this._ctrlS();
     this.supr();
@@ -84,13 +86,14 @@ const Detail = Component.extend({
   },
 
   _getPageData(pageId) {
+    let data = this.data;
     const { projectId } = this.data;
-    const dropArea = this.$refs.dropArea;
     fetch(`/api/page?project=${projectId}&page=${pageId}`)
     .then(res => res.json())
     .then((json) => {
-      dropArea.data.rows = json.sync || [{ subRow: [[]], isContainer: false }];
-      this.$update();
+      let sync = json.sync || {rows: [{ subRow: [[]], isContainer: false }]};
+      this.$update('sync', sync);
+      this.$refs.main.$emit('updateRow', sync.rows);
     }).catch((err) => {
       console.error(err.message);
     });
@@ -151,11 +154,15 @@ const Detail = Component.extend({
   },
 
   _savePage() {
+    let data = this.data;
     const { projectId } = this.data;
     const { pageId } = this.data;
     const pageList = this.$refs.pageList;
-    const dropArea = this.$refs.dropArea;
-
+    const dropArea = this.$refs.main.$refs.dropArea;
+    if(data.tab == 0) {
+      data.sync.rows = dropArea.data.rows;
+    }
+    console.log(data.sync);
     fetch('/api/page/upsert', {
       headers: {
         'Content-Type': 'application/json',
@@ -165,7 +172,7 @@ const Detail = Component.extend({
         project: projectId,
         page: pageList.data.activePage._id,
         data: dropArea.exportJson(),
-        sync: dropArea.data.rows,
+        sync: data.sync,
       }),
     })
     .then(res => res.json())
@@ -175,7 +182,6 @@ const Detail = Component.extend({
       console.error(err.message);
       Notify.notify.success(`保存失败：${err.message || '未知'}`);
     });
-    console.log(dropArea.data);
   },
 });
 

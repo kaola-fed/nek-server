@@ -141,7 +141,7 @@ const DropArea = Component.extend({
     let self = this;
     let res = {};
     res.rows = [];
-    res.pageId = this.$parent.$refs.pageList.data.activePage._id;
+    res.pageId = this.$parent.$parent.$refs.pageList.data.activePage._id;
     data.rows.forEach((row, rowIndex) => {
       res.rows.push({
         components: [],
