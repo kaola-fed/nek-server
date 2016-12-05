@@ -1,0 +1,9 @@
+<div class="m-mainarea">
+    <a href="javascript:;" class="u-btn u-btn-primary addmodal" on-click={this._addModal()}>添加Modal</a>
+    <tabs>
+        <tab title="Page"><drop.area ref="dropArea" rows={sync.rows} /></tab>
+        {#list sync.modals as modal}
+        <tab title="{modal.name || 'Modal'}"><drop.area ref="dropArea" rows={modal.rows} /></tab>
+        {/list}
+    </tabs>
+</div>
