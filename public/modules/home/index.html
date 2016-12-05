@@ -8,9 +8,14 @@
             <p class="settings">
                 <a href={'app.detail' | encode: { projectId: project._id }}>页面管理</a>
                 &emsp;
-                <a href={'app.setting' | encode: { projectId: project._id }}>项目设置</a>
+                <a href={'app.setting' | encode: { projectId: project._id }}>模板管理</a>
+                &emsp;
+                <a on-click={this.edit($event, project)}>设置</a>
             </p>
         </li>
-        {/list} 
+        {/list}
+        <li class="project add">
+            <a on-click={this.edit($event)}><i class="u-icon u-icon-plus u-icon-3x" title="u-icon u-icon-plus"></i></a>
+        </li>
     </ul>
 </div>
