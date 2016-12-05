@@ -21,19 +21,28 @@ const MainArea = Component.extend({
       modalName: '',
     });
     addModal.$on('confirm', (res) => {
-      if(!sync.modals) sync.modals = [];
+      if (!sync.modals) sync.modals = [];
       sync.modals.push({ name: res.modalName, rows: [{ subRow: [[]], isContainer: false }] });
+      this.$update();
+    });
+  },
+
+  _editModalInfo(modal) {
+    let addModal = new AddModal({
+      modalName: modal.name,
+    });
+    addModal.$on('confirm', (res) => {
+      modal.name = res.modalName;
       this.$update();
     });
   },
 
   _changeTab(tab) {
     this.data.tab = tab;
-    this.$update();
   },
 
   _getJson() {
-    const dropArea = this.$refs.dropArea;
+    const dropArea = this.$refs['dropArea_-1'];
     let data = this.data;
     let res = {};
     res.pageId = this.$parent.$refs.pageList.data.activePage._id;

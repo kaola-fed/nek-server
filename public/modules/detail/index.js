@@ -49,7 +49,9 @@ const Detail = Component.extend({
       this._getPageData(pageId);
     });
     this.$on('deleteModule', (param) => {
-      this.$refs.mainArea.$refs.dropArea.trash(param);
+      let mainArea = this.$refs.mainArea;
+      let tab = mainArea.data.tab;
+      mainArea.$refs['dropArea_' + tab].trash(param);
     });
     this._ctrlS();
     this.supr();

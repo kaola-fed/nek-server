@@ -10,13 +10,14 @@
     <ul class="m-nav f-cb">
         <li class="{tab == -1?'active': ''}" on-click={this._changeTab(-1)}><a>Page</a></li>
         {#list sync.modals as modal by modal_index}
-        <li class="{tab == modal_index?'active': ''}" on-click={this._changeTab(modal_index)}><a>{modal.name || 'Modal'}</a></li>
+        <li class="{tab == modal_index?'active': ''}" on-click={this._changeTab(modal_index)}>
+            <a>{modal.name || 'Modal'} <i class="f-csp u-icon u-icon-pencil" on-click={this._editModalInfo(modal)}></i></a>
+        </li>
         {/list}
-        <i class="f-csp u-icon u-icon-plus-circle" aria-hidden="true" on-click={this._addModal()}></i>
+        <li><i class="f-csp u-icon u-icon-plus-circle addModal" aria-hidden="true" on-click={this._addModal()}></i></li>
     </ul>
-    <div r-hide={tab != -1}><drop.area ref="dropArea" rows={sync.rows} categoryList={categoryList} /></div>
+    <div r-hide={tab != -1}><drop.area ref="dropArea_-1" rows={sync.rows} categoryList={categoryList} /></div>
     {#list sync.modals as modal by modal_index}
-    <div r-hide={tab != modal_index}><drop.area ref="dropArea" rows={modal.rows} categoryList={categoryList} /></div>
+    <div r-hide={tab != modal_index}><drop.area ref="dropArea_{modal_index}" rows={modal.rows} categoryList={categoryList} /></div>
     {/list}
-
 </div>

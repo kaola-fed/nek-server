@@ -17,19 +17,16 @@
         margin-bottom: -1px;
         a {
             position: relative;display: block;
-            padding: 10px 15px;line-height: 1.42857143;
-            color: rgb(0, 0, 0);cursor: pointer;text-decoration: none;
-        }
-        &.active a, a:hover {
-            border-bottom: 2px solid $themeColor;
-            color: $themeColor;
+            height: 38px;padding: 10px 15px;line-height: 1.42857143;
+            color: #000;cursor: pointer;text-decoration: none;
         }
         &.active a {
-            cursor: default;
+            border-bottom: 2px solid $themeColor;
+            color: $themeColor;cursor: default;
         }
     }
-    i {
-        padding: 10px 5px;
+    .addModal {
+        padding: 10px 15px;
         font-size: 18px;color: $themeColor;
     }
 }
