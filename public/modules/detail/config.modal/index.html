@@ -15,7 +15,7 @@
     <div style="border-bottom: solid 1px #dedede; margin: 10px 0;"></div>
   </ui.field>
   {#list curConf as item}
-  <ui.field title={item.desc} cols=12 required={item.isRequired}>
+  <ui.field title={item.desc + ' ( ' + item.key + ' )'} cols=12 required={item.isRequired}>
     {#if item.type == 'string'}
     <ui.input value={item.value} />
     {/if}
