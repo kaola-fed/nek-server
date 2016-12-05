@@ -1,9 +1,24 @@
 <div class="m-mainarea">
     <a href="javascript:;" class="u-btn u-btn-primary addmodal" on-click={this._addModal()}>添加Modal</a>
-    <tabs>
+
+    <!-- 选项卡组件有点bug，切换页面sync改变的情况下，会多循环出几个tab，暂时先用自己写的吧。 -->
+    <!-- <tabs>
         <tab title="Page"><drop.area ref="dropArea" rows={sync.rows} /></tab>
         {#list sync.modals as modal by modal_index}
         <tab title="{modal.name || 'Modal'}"><drop.area ref="dropArea" rows={modal.rows} /></tab>
         {/list}
-    </tabs>
+    </tabs> -->
+
+    <ul class="m-nav f-cb" title={tab}>
+        <li class="{tab == -1?'active': ''}" on-click={this._changeTab(-1)}><a>Page</a></li>
+        {#list sync.modals as modal by modal_index}
+        <li class="{tab == modal_index?'active': ''}" on-click={this._changeTab(modal_index)}><a>{modal.name || 'Modal'}</a></li>
+        {/list}
+    </ul>
+
+    <div r-hide={tab != -1}><drop.area ref="dropArea" rows={sync.rows} /></div>
+    {#list sync.modals as modal by modal_index}
+    <div r-hide={tab != modal_index}><drop.area ref="dropArea" rows={modal.rows} /></div>
+    {/list}
+
 </div>

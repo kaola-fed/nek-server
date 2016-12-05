@@ -9,7 +9,7 @@ const MainArea = Component.extend({
   config(data) {
     this.defaults({
       sync: {rows: [{ subRow: [[]], isContainer: false }], modals: []},
-      tab: 0
+      tab: -1
     });
     this.supr();
   },
@@ -24,6 +24,11 @@ const MainArea = Component.extend({
       this.$update();
     });
   },
+
+  _changeTab(tab) {
+    this.data.tab = tab;
+    this.$update();
+  } 
 });
 
 export default MainArea;

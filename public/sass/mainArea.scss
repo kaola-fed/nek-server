@@ -7,3 +7,24 @@
         border: none;box-shadow: none;-webkit-box-shadow: none;
     }
 }
+
+.m-nav {
+    padding-left: 0px;margin-bottom: 10px;
+    list-style: none;
+    li {
+        position: relative;display: block;float: left;
+        margin-bottom: -1px;
+        a {
+            position: relative;display: block;
+            padding: 10px 15px;line-height: 1.42857143;
+            color: rgb(0, 0, 0);cursor: pointer;text-decoration: none;
+        }
+        &.active a, a:hover {
+            border-bottom: 2px solid $themeColor;
+            color: $themeColor; 
+        }
+        &.active a {
+            cursor: default;
+        }
+    }
+}
