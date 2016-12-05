@@ -11,7 +11,7 @@ const Detail = Component.extend({
   config() {
     this.defaults({
       projectId: '',
-      fixedCategory: {
+      fixedCategory: [{
         name: '模块',
         componentList: [
           {
@@ -20,7 +20,16 @@ const Detail = Component.extend({
             cols: 12,
           },
         ],
-      },
+      }, {
+        name: 'Modal',
+        componentList: [
+          {
+            desc: 'Modal',
+            name: 'modal',
+            cols: 1,
+          },
+        ],
+      }],
       categoryList: [],
       pageList: [],
       sync: {},
@@ -59,8 +68,8 @@ const Detail = Component.extend({
     fetch(`/api/component/list?project=${projectId}`)
     .then(res => res.json())
     .then((json) => {
-      const list = json;
-      list.unshift(this.data.fixedCategory);
+      let list = json;
+      list = this.data.fixedCategory.concat(list);
       this.$update('categoryList', list);
     }).catch((err) => {
       console.error(err.message);
@@ -90,7 +99,7 @@ const Detail = Component.extend({
     fetch(`/api/page?project=${projectId}&page=${pageId}`)
     .then(res => res.json())
     .then((json) => {
-      let sync = json.sync || {rows: [{ subRow: [[]], isContainer: false }]};
+      let sync = json.sync || {rows: [{ subRow: [[]], isContainer: false }], modals: []};
       this.$update('sync', sync);
     }).catch((err) => {
       console.error(err.message);

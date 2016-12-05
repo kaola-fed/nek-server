@@ -23,7 +23,7 @@ const MainArea = Component.extend({
       data.sync.modals.push({name: res.modalName, rows: [{ subRow: [[]], isContainer: false }]});
       this.$update();
     });
-  }
+  },
 });
 
 export default MainArea;
