@@ -16,11 +16,13 @@ const MainArea = Component.extend({
 
   _addModal() {
     let data = this.data;
+    let sync = data.sync;
     let addModal = new AddModal({
       modalName: '',
     });
     addModal.$on('confirm', (res) => {
-      data.sync.modals.push({ name: res.modalName, rows: [{ subRow: [[]], isContainer: false }] });
+      if(!sync.modals) sync.modals = [];
+      sync.modals.push({ name: res.modalName, rows: [{ subRow: [[]], isContainer: false }] });
       this.$update();
     });
   },
