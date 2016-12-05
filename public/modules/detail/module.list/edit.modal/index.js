@@ -30,6 +30,11 @@ const EditModal = Modal.extend({
   add() {
     this.data.params.conf.push({});
   },
+
+  move(idx, step) {
+    const conf = this.data.params.conf;
+    [conf[idx], conf[idx + step]] = [conf[idx + step], conf[idx]];
+  },
 }).filter('arr2str', {
   get(arr = [], split = ' ') {
     return arr.join(' ');

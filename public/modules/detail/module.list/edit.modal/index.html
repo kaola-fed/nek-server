@@ -38,6 +38,12 @@
   {/if}
 </ui.form>
 <a class="u-btn u-btn-error" on-click={this.remove(c_index)}>删除</a>
+{#if c_index !== 0}
+<a class="u-btn" on-click={this.move(c_index, -1)}>上移</a>
+{/if}
+{#if c_index !== params.conf.length - 1}
+<a class="u-btn" on-click={this.move(c_index, 1)}>下移</a>
+{/if}
 <div style="border-bottom: solid 1px #dedede; margin: 10px 0;"></div>
 {/list}
 <a class="u-btn" on-click={this.add()}>增加</a>
