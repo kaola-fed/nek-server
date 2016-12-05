@@ -1,4 +1,5 @@
 import { Regular } from 'nek-ui';
+import _ from 'lodash';
 
 const Dnd = (Comp) => {
   Comp.implement({
@@ -51,7 +52,7 @@ const Dnd = (Comp) => {
         } else {
           data.rows[row_index].subRow[subRow_index] = [
             ...subRow.slice(0, res.moduleIndex),
-            { name: moduleName, moduleWidth: moduleWidth, offset: res.offset, firstCol: res.firstCol },
+            { name: moduleName, moduleWidth, offset: res.offset, firstCol: res.firstCol },
             ...subRow.slice(res.moduleIndex),
           ];
         }
@@ -66,7 +67,7 @@ const Dnd = (Comp) => {
       let colWidth = (dropAreaWidth - 2) / 12;
       let proxyLeft = proxyRect.left;
       let firstCol;
-      for (let i = 0; i < data.col; i++) {
+      for (let i = 0; i < data.col; i += 1) {
         if (proxyLeft > ((dropAreaLeft - 1) + (i * colWidth)) && proxyLeft < (dropAreaLeft + ((i + 1) * colWidth))) {
           firstCol = i;
           break;
@@ -83,7 +84,7 @@ const Dnd = (Comp) => {
       let lines = Array.prototype.slice.call(dropArea.getElementsByClassName('line'));
       this.clearBorder(dropArea);
 
-      for (let i = 0; i < moduleWidth; i++) {
+      for (let i = 0; i < moduleWidth; i += 1) {
         if (firstCol + i > -1 && firstCol + i < data.col) {
           Regular.dom.addClass(lines[firstCol + i], 'linecolor');
         }
@@ -114,7 +115,7 @@ const Dnd = (Comp) => {
         return { moduleIndex: 0, offset: firstCol, firstCol };
       }
       // 非空行，非第一个的情况下
-      for (let i = 0; i < subRowClone.length; i++) {
+      for (let i = 0; i < subRowClone.length; i += 1) {
         let module = subRowClone[i];
         // 没有下一个组件，就算到行尾
         let moduleNext = subRow[i + 1] || { firstCol: data.col };

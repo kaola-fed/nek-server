@@ -99,7 +99,7 @@ const Detail = Component.extend({
     fetch(`/api/page?project=${projectId}&page=${pageId}`)
     .then(res => res.json())
     .then((json) => {
-      let sync = json.sync || {rows: [{ subRow: [[]], isContainer: false }], modals: []};
+      let sync = json.sync || { rows: [{ subRow: [[]], isContainer: false }], modals: [] };
       this.$update('sync', sync);
       // 同时置选项卡的tab为-1
       this.$refs.mainArea._changeTab(-1);
@@ -167,7 +167,7 @@ const Detail = Component.extend({
     const { projectId } = this.data;
     const { pageId } = this.data;
     const pageList = this.$refs.pageList;
-    const dropArea = this.$refs.mainArea.$refs.dropArea;
+    const mainArea = this.$refs.mainArea;
 
     fetch('/api/page/upsert', {
       headers: {
@@ -177,7 +177,7 @@ const Detail = Component.extend({
       body: JSON.stringify({
         project: projectId,
         page: pageList.data.activePage._id,
-        data: dropArea.exportJson(),
+        data: mainArea._getJson(),
         sync: data.sync,
       }),
     })
