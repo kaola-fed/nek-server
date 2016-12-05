@@ -34,6 +34,15 @@
                         {/if}
                     </div>
                 </droppable>
+                <div class="subrowaction">
+                    {#if subRow_index != 0}
+                    <i class="f-csp u-icon u-icon-arrow-up" aria-hidden="true" on-click={this.moveRowUp(0, {row_index: row_index, subRow_index: subRow_index})}></i>
+                    {/if}{#if subRow_index != row.subRow.length - 1}
+                    <i class="f-csp u-icon u-icon-arrow-down" aria-hidden="true" on-click={this.moveRowDown(0, {row_index: row_index, subRow_index: subRow_index})}></i>
+                    {/if}{#if row.subRow.length > 1}
+                    <i class="f-csp u-icon u-icon-trash-o" aria-hidden="true" on-click={this.deleteRow(0, {row_index: row_index, subRow_index: subRow_index})}></i>
+                    {/if}
+                </div>
             </div>
             {/list}
             {#if row.isContainer}
@@ -44,11 +53,11 @@
         </div>
         <div class="rowaction">
             {#if row_index != 0}
-            <i class="f-csp u-icon u-icon-arrow-up" aria-hidden="true" on-click={this.moveRowUp(row_index)}></i>
+            <i class="f-csp u-icon u-icon-arrow-up" aria-hidden="true" on-click={this.moveRowUp(1, {row_index: row_index})}></i>
             {/if}{#if row_index != rows.length - 1}
-            <i class="f-csp u-icon u-icon-arrow-down" aria-hidden="true" on-click={this.moveRowDown(row_index)}></i>
+            <i class="f-csp u-icon u-icon-arrow-down" aria-hidden="true" on-click={this.moveRowDown(1, {row_index: row_index})}></i>
             {/if}{#if rows.length > 1}
-            <i class="f-csp u-icon u-icon-trash-o" aria-hidden="true" on-click={this.deleteRow(row_index)}></i>
+            <i class="f-csp u-icon u-icon-trash-o" aria-hidden="true" on-click={this.deleteRow(1, {row_index: row_index})}></i>
             {/if}
         </div>
     </li>

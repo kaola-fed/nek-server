@@ -115,29 +115,63 @@ const DropArea = Component.extend({
       this.$update();
     });
   },
-  moveRowUp(row_index) {
+  // type: 1 行操作， 0 子行操作
+  moveRowUp(type, param) {
     let data = this.data;
     let rows = data.rows;
-    data.rows = [
-      ...rows.slice(0, row_index - 1),
-      rows[row_index],
-      rows[row_index - 1],
-      ...rows.slice(row_index + 1),
-    ];
+    let row = rows[param.row_index].subRow;
+    let row_index = param.row_index;
+    let subRow_index = param.subRow_index;
+
+    if (type) {
+      data.rows = [
+        ...rows.slice(0, row_index - 1),
+        rows[row_index],
+        rows[row_index - 1],
+        ...rows.slice(row_index + 1),
+      ];
+    } else {
+      data.rows[row_index].subRow = [
+        ...row.slice(0, subRow_index - 1),
+        row[subRow_index],
+        row[subRow_index - 1],
+        ...row.slice(subRow_index + 1),
+      ]
+    }
   },
-  moveRowDown(row_index) {
+  // type: 1 行操作， 0 子行操作
+  moveRowDown(type, param) {
     let data = this.data;
     let rows = data.rows;
-    data.rows = [
-      ...rows.slice(0, row_index),
-      rows[row_index + 1],
-      rows[row_index],
-      ...rows.slice(row_index + 2),
-    ];
+    let row = rows[param.row_index].subRow;
+    let row_index = param.row_index;
+    let subRow_index = param.subRow_index;
+    if (type) {
+      data.rows = [
+        ...rows.slice(0, row_index),
+        rows[row_index + 1],
+        rows[row_index],
+        ...rows.slice(row_index + 2),
+      ];
+    } else {
+      data.rows[row_index].subRow = [
+        ...row.slice(0, subRow_index),
+        row[subRow_index + 1],
+        row[subRow_index],
+        ...row.slice(subRow_index + 2),
+      ]
+    }
   },
-  deleteRow(row_index) {
+  // type: 1 行操作， 0 子行操作
+  deleteRow(type, param) {
     let data = this.data;
-    data.rows.splice(row_index, 1);
+    let row_index = param.row_index;
+    let subRow_index = param.subRow_index;
+    if (type) {
+      data.rows.splice(row_index, 1);
+    } else {
+      data.rows[row_index].subRow.splice(subRow_index, 1);
+    }
   },
   exportJson(rows) {
     let data = this.data;
