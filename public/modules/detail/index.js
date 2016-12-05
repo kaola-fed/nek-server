@@ -99,7 +99,7 @@ const Detail = Component.extend({
     fetch(`/api/page?project=${projectId}&page=${pageId}`)
     .then(res => res.json())
     .then((json) => {
-      let sync = json.sync || {rows: [{ subRow: [[]], isContainer: false }], modals: []};
+      let sync = json.sync || { rows: [{ subRow: [[]], isContainer: false }], modals: [] };
       this.$update('sync', sync);
       // 同时置选项卡的tab为-1
       this.$refs.mainArea._changeTab(-1);

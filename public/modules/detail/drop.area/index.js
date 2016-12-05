@@ -3,7 +3,6 @@ import template from '!raw!./index.html';
 import ConfigModal from '../config.modal';
 import Dnd from './mixins/dnd';
 import ContainerModal from './modal/containerModal';
-import _ from 'lodash';
 
 const DropArea = Component.extend({
   name: 'drop.area',

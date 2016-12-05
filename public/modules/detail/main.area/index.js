@@ -8,8 +8,8 @@ const MainArea = Component.extend({
   template,
   config(data) {
     this.defaults({
-      sync: {rows: [{ subRow: [[]], isContainer: false }], modals: []},
-      tab: -1
+      sync: { rows: [{ subRow: [[]], isContainer: false }], modals: [] },
+      tab: -1,
     });
     this.supr();
   },
@@ -20,7 +20,7 @@ const MainArea = Component.extend({
       modalName: '',
     });
     addModal.$on('confirm', (res) => {
-      data.sync.modals.push({name: res.modalName, rows: [{ subRow: [[]], isContainer: false }]});
+      data.sync.modals.push({ name: res.modalName, rows: [{ subRow: [[]], isContainer: false }] });
       this.$update();
     });
   },
@@ -36,15 +36,15 @@ const MainArea = Component.extend({
     let res = {};
     res.pageId = this.$parent.$refs.pageList.data.activePage._id;
     res.rows = dropArea.exportJson(data.sync.rows);
-    if(data.sync.modals.length > 0) {
+    if (data.sync.modals && data.sync.modals.length > 0) {
       res.modals = [];
       data.sync.modals.forEach((modal) => {
-        res.modals.push({name: modal.name, rows: dropArea.exportJson(modal.rows)});
-      })
+        res.modals.push({ name: modal.name, rows: dropArea.exportJson(modal.rows) });
+      });
     }
     console.log(res);
     return res;
-  }
+  },
 });
 
 export default MainArea;
