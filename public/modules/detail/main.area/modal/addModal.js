@@ -6,7 +6,7 @@ const AddModal = Modal.extend({
   config() {
     this.defaults({
       contentTemplate,
-      title: '新建modal',
+      title: 'Modal信息配置',
       class: 'm-modal-autoflow',
       cancelButton: true,
       modalName: this.modalName,
