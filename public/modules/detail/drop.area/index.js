@@ -78,6 +78,10 @@ const DropArea = Component.extend({
         }
       });
     });
+    // 增加 default 字段，用于后面过滤
+    NEK.conf.forEach((d) => {
+      d.default = d.value;
+    });
     return NEK;
   },
   getAvailableCols(row_index, subRow_index, module_index) {
@@ -153,7 +157,7 @@ const DropArea = Component.extend({
             id: NEK.id,
             cols: NEK.cols,
             offset: module.offset,
-            conf: NEK.conf,
+            conf: NEK.conf.filter(d => d.value.toString() !== d.default),
           });
         });
       } else {
