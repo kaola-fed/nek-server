@@ -1,4 +1,4 @@
-<p><i class="u-icon u-icon-hand-o-right"></i>基础信息</p>
+<p class="title-header">基础信息</p>
 <ui.form>
   <ui.field title="组件名" cols=12 required>
     <ui.input value={params.name} />
@@ -13,7 +13,7 @@
     <ui.select value={params.category} key="_id" source={categoryList} />
   </ui.field>
 </ui.form>
-<p><i class="u-icon u-icon-hand-o-right"></i>配置信息</p>
+<p class="title-header">配置信息</p>
 {#list params.conf as c}
 <ui.form>
   <ui.field title="属性名" cols=12 required>
