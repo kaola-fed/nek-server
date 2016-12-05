@@ -29,6 +29,22 @@ const MainArea = Component.extend({
     this.data.tab = tab;
     this.$update();
   },
+
+  _getJson() {
+    const dropArea = this.$refs.dropArea;
+    let data = this.data;
+    let res = {};
+    res.pageId = this.$parent.$refs.pageList.data.activePage._id;
+    res.rows = dropArea.exportJson(data.sync.rows);
+    if(data.sync.modals.length > 0) {
+      res.modals = [];
+      data.sync.modals.forEach((modal) => {
+        res.modals.push({name: modal.name, rows: dropArea.exportJson(modal.rows)});
+      })
+    }
+    console.log(res);
+    return res;
+  }
 });
 
 export default MainArea;

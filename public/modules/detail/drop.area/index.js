@@ -136,14 +136,12 @@ const DropArea = Component.extend({
     let data = this.data;
     data.rows.splice(row_index, 1);
   },
-  exportJson() {
+  exportJson(rows) {
     let data = this.data;
     let self = this;
-    let res = {};
-    res.rows = [];
-    res.pageId = this.$parent.$parent.$refs.pageList.data.activePage._id;
-    data.rows.forEach((row, rowIndex) => {
-      res.rows.push({
+    let res = [];
+    rows.forEach((row, rowIndex) => {
+      res.push({
         components: [],
       });
       let isContainer = row.isContainer;
@@ -151,7 +149,7 @@ const DropArea = Component.extend({
         row.subRow[0].forEach((module, moduleIndex) => {
           let NEK = module.NEK || self.$$NEK(module.name);
           console.log(NEK);
-          res.rows[rowIndex].components.push({
+          res[rowIndex].components.push({
             name: NEK.name,
             id: NEK.id,
             cols: NEK.cols,
@@ -160,7 +158,7 @@ const DropArea = Component.extend({
           });
         });
       } else {
-        res.rows[rowIndex].components.push({
+        res[rowIndex].components.push({
           name: row.containerName,
           title: row.containerTitle,
           id: 0,
@@ -168,10 +166,10 @@ const DropArea = Component.extend({
           rows: [],
         });
         row.subRow.forEach((subRow, subRowIndex) => {
-          res.rows[rowIndex].components[0].rows.push({ components: [] });
+          res[rowIndex].components[0].rows.push({ components: [] });
           subRow.forEach((module, moduleIndex) => {
             let NEK = module.NEK || self.$$NEK(module.name);
-            res.rows[rowIndex].components[0].rows[subRowIndex].components.push({
+            res[rowIndex].components[0].rows[subRowIndex].components.push({
               name: NEK.name,
               id: NEK.id,
               cols: NEK.cols,
@@ -183,9 +181,6 @@ const DropArea = Component.extend({
         });
       }
     });
-    console.log(this.data);
-    console.log(res);
-    console.log(JSON.stringify(res));
     return res;
   },
 }).filter('uniq', (

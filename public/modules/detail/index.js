@@ -167,7 +167,7 @@ const Detail = Component.extend({
     const { projectId } = this.data;
     const { pageId } = this.data;
     const pageList = this.$refs.pageList;
-    const dropArea = this.$refs.mainArea.$refs.dropArea;
+    const mainArea = this.$refs.mainArea;
 
     fetch('/api/page/upsert', {
       headers: {
@@ -177,7 +177,7 @@ const Detail = Component.extend({
       body: JSON.stringify({
         project: projectId,
         page: pageList.data.activePage._id,
-        data: dropArea.exportJson(),
+        data: mainArea._getJson(),
         sync: data.sync,
       }),
     })
