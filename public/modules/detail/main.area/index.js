@@ -28,7 +28,7 @@ const MainArea = Component.extend({
   _changeTab(tab) {
     this.data.tab = tab;
     this.$update();
-  } 
+  },
 });
 
 export default MainArea;

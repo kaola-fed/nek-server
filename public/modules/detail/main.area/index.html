@@ -9,16 +9,15 @@
         {/list}
     </tabs> -->
 
-    <ul class="m-nav f-cb" title={tab}>
+    <ul class="m-nav f-cb">
         <li class="{tab == -1?'active': ''}" on-click={this._changeTab(-1)}><a>Page</a></li>
         {#list sync.modals as modal by modal_index}
         <li class="{tab == modal_index?'active': ''}" on-click={this._changeTab(modal_index)}><a>{modal.name || 'Modal'}</a></li>
         {/list}
     </ul>
-
-    <div r-hide={tab != -1}><drop.area ref="dropArea" rows={sync.rows} /></div>
+    <div r-hide={tab != -1}><drop.area ref="dropArea" rows={sync.rows} categoryList={categoryList} /></div>
     {#list sync.modals as modal by modal_index}
-    <div r-hide={tab != modal_index}><drop.area ref="dropArea" rows={modal.rows} /></div>
+    <div r-hide={tab != modal_index}><drop.area ref="dropArea" rows={modal.rows} categoryList={categoryList} /></div>
     {/list}
 
 </div>
