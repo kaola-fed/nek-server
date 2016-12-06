@@ -2,7 +2,7 @@
     <ul class="m-projects f-cb">
         {#list projects as project}
         <li class="project">
-            <div class="logo logo-{project_index%4}">{#if project.name}{project.name.substring(0,1)}{/if}</div>
+            <div class="logo logo-{project_index%4}">{project_index + 1}</div>
             <p class="name f-toe">{project.name}</p>
             <p class="desc f-toe">{project.desc}</p>
             <p class="settings">

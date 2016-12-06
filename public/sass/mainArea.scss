@@ -1,6 +1,6 @@
 .m-mainarea {
-    position: relative;
-    margin: 0 0 30px 30px;
+    position: relative; background:#fff;
+    padding: 20px; min-height:600px;
     .addmodal {
         position: absolute;right: 75px;
     }
@@ -11,8 +11,6 @@
 
 .m-nav {
     display:block;
-    padding-left: 0px;margin-bottom: 30px;
-    background:#e5e5e5;
     list-style: none;
     li {
         position: relative;display: block;float: left; overflow:hidden;
@@ -20,18 +18,25 @@
         a {
             position: relative;display: block;
             height: 37px;padding: 10px 35px;line-height: 1.42857143;
-            color: #000;cursor: pointer;text-decoration: none;
+            color: #999;cursor: pointer;text-decoration: none;
         }
         &.active a {
-            background:$themeColor;
-            color:#fff;cursor: default;
+          border-bottom: 3px solid $themeColor;
+          color: $themeColor;
+          cursor: default;
         }
-        &.addIcon { float:right; margin-right:10px; }
-        .winIcon { position:absolute; font-size:25px; color:#ccc; left:-5px; top:15px; }
-        &.active .winIcon { color:#e5e5e5; }
     }
-    .addModal {
-        padding: 10px 15px;
-        font-size: 18px;color: $themeColor;
-    }
+}
+.m-winlist {
+  background:#fff; margin:8px 0;
+  .item {
+    float:left; position:relative; height:70px; color:#999;
+    padding:0px 40px; border-right:4px solid #efefef;
+    line-height:70px; overflow:hidden; cursor:pointer;
+    &.last { border-right:none; }
+    &.addIcon { background:$themeColor; color:#fff; font-size:30px; }
+
+    &.active { color:$themeColor; }
+    .editBtn { position:absolute; bottom:3px; right:3px; line-height:20px; font-size:14px; }
+  }
 }
