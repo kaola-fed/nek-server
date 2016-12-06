@@ -2,11 +2,11 @@
     <li class="{tab == -1?'active': ''}" on-click={this._changeTab(-1)}><a>页面</a></li>
     {#list sync.modals as modal by modal_index}
     <li class="{tab == modal_index?'active': ''}" on-click={this._changeTab(modal_index)}>
-        <a>{modal.name || 'Modal'}&nbsp;<i class="f-csp u-icon u-icon-pencil" on-click={this._editModalInfo(modal)}></i></a>
+        <a>{modal.name || 'Modal'}&nbsp;<i class="f-csp u-icon u-icon-pencil" on-click={this._editModalInfo($event, modal)}></i></a>
         <i class="u-icon u-icon-wordpress winIcon"></i>
     </li>
     {/list}
-    <li class="addIcon"><i class="f-csp u-icon u-icon-plus-circle addModal" title="添加弹窗" aria-hidden="true" on-click={this._addModal()}></i></li>
+    <li class="addIcon"><i class="f-csp u-icon u-icon-plus-circle addModal" on-click={this._addModal()}></i></li>
 </ul>
 <div class="m-mainarea">
     <div r-hide={tab != -1}><drop.area ref="dropArea_-1" rows={sync.rows} categoryList={categoryList} /></div>
