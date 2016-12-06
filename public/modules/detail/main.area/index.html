@@ -1,16 +1,22 @@
 <ul class="m-nav f-cb">
-    <li class="{tab == -1?'active': ''}" on-click={this._changeTab(-1)}><a>页面</a></li>
-    {#list sync.modals as modal by modal_index}
-    <li class="{tab == modal_index?'active': ''}" on-click={this._changeTab(modal_index)}>
-        <a>{modal.name || 'Modal'}&nbsp;<i class="f-csp u-icon u-icon-pencil" on-click={this._editModalInfo(modal)}></i></a>
-        <i class="u-icon u-icon-wordpress winIcon"></i>
-    </li>
-    {/list}
-    <li class="addIcon"><i class="f-csp u-icon u-icon-plus-circle addModal" title="添加弹窗" aria-hidden="true" on-click={this._addModal()}></i></li>
+    <li class="{tab == 1?'active': ''}" on-click={tab = 1}><a>页面</a></li>
+    <li class="{tab == 2?'active': ''}" on-click={tab = 2}><a>弹窗</a></li>
 </ul>
+{#if tab == 2}
+<ul class="m-winlist f-cb">
+	<li class="item addIcon" on-click={this._addModal()}><i class="u-icon u-icon-plus-circle" title="添加弹窗" aria-hidden="true"></i></li>
+	{#list sync.modals as modal by modal_index}
+	<li class="item {modalTab == modal_index?'active': ''}" on-click={modalTab = modal_index}>
+		{modal.name || 'Modal'}
+		<i class="editBtn f-csp u-icon u-icon-pencil" on-click={this._editModalInfo(modal)}></i>
+	</li>
+	{/list}
+</ul>
+{/if}
+
 <div class="m-mainarea">
-    <div r-hide={tab != -1}><drop.area ref="dropArea_-1" rows={sync.rows} categoryList={categoryList} /></div>
+    <div r-hide={tab != 1}><drop.area ref="dropArea_-1" rows={sync.rows} categoryList={categoryList} /></div>
     {#list sync.modals as modal by modal_index}
-    <div r-hide={tab != modal_index}><drop.area ref="dropArea_{modal_index}" rows={modal.rows} categoryList={categoryList} /></div>
+    <div r-hide={modalTab != modal_index}><drop.area ref="dropArea_{modal_index}" rows={modal.rows} categoryList={categoryList} /></div>
     {/list}
 </div>

@@ -9,9 +9,14 @@ const MainArea = Component.extend({
   config(data) {
     this.defaults({
       sync: { rows: [{ subRow: [[]], isContainer: false }], modals: [] },
-      tab: -1,
+      tab: 1,
+      modalTab: 1,
     });
     this.supr();
+
+      this.$watch('tab', function(newval, oldval) {
+          if (newval == -1 ) { this.data.tab = 1;}
+      });
   },
 
   _addModal() {
@@ -37,10 +42,6 @@ const MainArea = Component.extend({
       modal.name = res.modalName;
       this.$update();
     });
-  },
-
-  _changeTab(tab) {
-    this.data.tab = tab;
   },
 
   _getJson() {
