@@ -1,1 +1,22 @@
-<h1>这里是项目模板管理页面</h1>
+<div class="m-setting">
+  {#if loading}
+  loading...
+  {#else}
+  <tabs on-change={this.onChange($event)}>
+    {#list tabList as tab}
+    <tab title={tab.type} file={tab.file}>
+      <div class="title">
+        <span>{tab.name}</span>
+      </div>
+      <ui.textarea cols="9" value={tab.text} />
+      {#if tab.originText !== tab.text}
+      <div class="operate">
+        <a class="u-btn u-btn-primary" on-click={this.save(tab)}>保存</a>
+        <a class="u-btn" on-click={this.reset(tab)}>放弃</a>
+      </div>
+      {/if}
+    </tab>
+    {/list}
+  </tabs>
+  {/if}
+</div>
