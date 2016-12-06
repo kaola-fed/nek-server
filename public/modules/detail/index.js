@@ -20,15 +20,6 @@ const Detail = Component.extend({
             cols: 12,
           },
         ],
-      }, {
-        name: 'Modal',
-        componentList: [
-          {
-            desc: 'Modal',
-            name: 'modal',
-            cols: 1,
-          },
-        ],
       }],
       categoryList: [],
       pageList: [],

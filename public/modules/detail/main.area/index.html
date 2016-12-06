@@ -8,7 +8,6 @@
     {/list}
     <li class="addIcon"><i class="f-csp u-icon u-icon-plus-circle addModal" title="添加弹窗" aria-hidden="true" on-click={this._addModal()}></i></li>
 </ul>
-
 <div class="m-mainarea">
     <div r-hide={tab != -1}><drop.area ref="dropArea_-1" rows={sync.rows} categoryList={categoryList} /></div>
     {#list sync.modals as modal by modal_index}

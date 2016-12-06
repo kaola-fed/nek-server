@@ -31,8 +31,8 @@ const Dnd = (Comp) => {
       let moduleIndex = event.origin.data.moduleIndex;     // 组件原先所在的moduleIndex
       let res = this.getIndexAndOffset(subRow, data.firstCol, moduleWidth, row_index, subRow_index, isMoveModule, rowIndex, subRowIndex, moduleIndex);
       if (moduleName === 'container') {
-        // 只有drop行不是container，且为空行才能放置container
-        if (!data.rows[row_index].isContainer && data.rows[row_index].subRow.length === 1 && data.rows[row_index].subRow[0].length === 0) {
+        // 只有是page页（不是modal），drop行不是container，且为空行才能放置container
+        if (data.ref === 'dropArea_-1' && !data.rows[row_index].isContainer && data.rows[row_index].subRow.length === 1 && data.rows[row_index].subRow[0].length === 0) {
           data.rows[row_index].isContainer = true;
           // 弹窗填写模块名字
           this.prompContainerModal(row_index, '');

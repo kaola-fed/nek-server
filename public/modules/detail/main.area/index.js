@@ -18,6 +18,7 @@ const MainArea = Component.extend({
     let data = this.data;
     let sync = data.sync;
     let addModal = new AddModal({
+      data: { title: '新建modal' },
       modalName: '',
     });
     addModal.$on('confirm', (res) => {
@@ -27,7 +28,8 @@ const MainArea = Component.extend({
     });
   },
 
-  _editModalInfo(modal) {
+  _editModalInfo(event, modal) {
+    event.stopPropagation();
     let addModal = new AddModal({
       modalName: modal.name,
     });
