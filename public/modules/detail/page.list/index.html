@@ -3,8 +3,11 @@
         <div class="titie f-tal">
             页面列表
         </div>
+        <div class="page-filter">
+          <ui.input placeholder="过滤搜索" value={filterStr} />
+        </div>
         <ul>
-        {#list pageList as item}
+        {#list filteredPageList as item}
         <li class="page f-toe f-csp {item.active?'active':''}" on-click={this.changePage(item)}>
             <span>{item.name}</span>
             <div class="page-edit">

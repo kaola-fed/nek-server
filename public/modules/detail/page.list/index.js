@@ -9,9 +9,17 @@ const PageList = Component.extend({
   config() {
     this.defaults({
       pageList: [],
+      filterStr: '',
       activePage: {},
     });
     this.supr();
+  },
+
+  computed: {
+    filteredPageList(data) {
+      const { filterStr, pageList } = data;
+      return pageList.filter(d => !!~(d.name || '').indexOf(filterStr));
+    },
   },
 
   edit(event, page = {}) {

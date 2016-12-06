@@ -17,6 +17,7 @@
     "no-new": 0,
     "prefer-const": 0,
     "max-len": 0,
+    "no-bitwise": 0,
     "no-unused-expressions": 0,
 
   },
