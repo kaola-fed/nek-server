@@ -136,7 +136,7 @@ const DropArea = Component.extend({
         row[subRow_index],
         row[subRow_index - 1],
         ...row.slice(subRow_index + 1),
-      ]
+      ];
     }
   },
   // type: 1 行操作， 0 子行操作
@@ -159,7 +159,7 @@ const DropArea = Component.extend({
         row[subRow_index + 1],
         row[subRow_index],
         ...row.slice(subRow_index + 2),
-      ]
+      ];
     }
   },
   // type: 1 行操作， 0 子行操作

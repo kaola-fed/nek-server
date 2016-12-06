@@ -8,7 +8,7 @@
 	{#list sync.modals as modal by modal_index}
 	<li class="item {modalTab == modal_index?'active': ''}" on-click={modalTab = modal_index}>
 		{modal.name || 'Modal'}
-		<i class="editBtn f-csp u-icon u-icon-pencil" on-click={this._editModalInfo(modal)}></i>
+		<i class="editBtn f-csp u-icon u-icon-pencil" on-click={this._editModalInfo($event, modal)}></i>
 	</li>
 	{/list}
 </ul>

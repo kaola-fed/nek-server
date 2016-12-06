@@ -10,7 +10,7 @@ const MainArea = Component.extend({
     this.defaults({
       sync: { rows: [{ subRow: [[]], isContainer: false }], modals: [] },
       tab: 1,
-      modalTab: 1,
+      modalTab: 0,
     });
     this.supr();
 

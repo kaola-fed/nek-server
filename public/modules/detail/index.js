@@ -42,7 +42,7 @@ const Detail = Component.extend({
     this.$on('deleteModule', (param) => {
       let mainArea = this.$refs.mainArea;
       let tab = mainArea.data.tab;
-      mainArea.$refs['dropArea_' + tab].trash(param);
+      mainArea.$refs[`dropArea_${tab}`].trash(param);
     });
     this._ctrlS();
     this.supr();
