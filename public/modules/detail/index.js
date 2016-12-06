@@ -155,7 +155,48 @@ const Detail = Component.extend({
         this._savePage();
         return false;
       }
+      if (e.keyCode === 90 && isCtrl === true) {
+        this._flushPage();
+        return false;
+      }
     };
+  },
+
+  _getComponentByName(name) {
+    const { categoryList } = this.data;
+    for (let i = 0; i < categoryList.length; i += 1) {
+      let componentList = categoryList[i].componentList;
+      for (let j = 0; j < componentList.length; j += 1) {
+        if (componentList[j].name === name) return componentList[j];
+      }
+    }
+    return null;
+  },
+
+  _flushPage() {
+    const { sync } = this.data;
+    sync.rows.forEach((row) => {
+      row.subRow.forEach((components) => {
+        components.forEach((component) => {
+          // 找到组件原型，深度复制一份 conf，用已有组件的值填充（如果有对应属性的话）
+          let _component = this._getComponentByName(component.name);
+          if (!_component) return;
+          let _conf = JSON.parse(JSON.stringify(_component.conf));
+          _conf.forEach((conf) => {
+            // 存在对应属性
+            let t = component.NEK.conf.find(d => d.key === conf.key);
+            // 填充旧值，用于兼容
+            if (t) {
+              conf.value = t.value;
+            }
+          });
+          component.NEK.conf = _conf;
+        });
+      });
+    });
+    Notify.notify.success('刷新完成');
+    this.$update();
+    this._savePage();
   },
 
   _savePage() {
