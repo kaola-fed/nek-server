@@ -1,5 +1,6 @@
 .m-mainarea {
     position: relative;
+    margin: 0 0 30px 30px;
     .addmodal {
         position: absolute;right: 75px;
     }
@@ -9,21 +10,25 @@
 }
 
 .m-nav {
-    display: inline-block;
-    padding-left: 0px;margin-bottom: 10px;
+    display:block;
+    padding-left: 0px;margin-bottom: 30px;
+    background:#e5e5e5;
     list-style: none;
     li {
-        position: relative;display: block;float: left;
+        position: relative;display: block;float: left; overflow:hidden;
         margin-bottom: -1px;
         a {
             position: relative;display: block;
-            height: 38px;padding: 10px 15px;line-height: 1.42857143;
+            height: 37px;padding: 10px 35px;line-height: 1.42857143;
             color: #000;cursor: pointer;text-decoration: none;
         }
         &.active a {
-            border-bottom: 2px solid $themeColor;
-            color: $themeColor;cursor: default;
+            background:$themeColor;
+            color:#fff;cursor: default;
         }
+        &.addIcon { float:right; margin-right:10px; }
+        .winIcon { position:absolute; font-size:25px; color:#ccc; left:-5px; top:15px; }
+        &.active .winIcon { color:#e5e5e5; }
     }
     .addModal {
         padding: 10px 15px;
