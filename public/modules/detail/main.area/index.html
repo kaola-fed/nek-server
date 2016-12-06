@@ -11,7 +11,7 @@
         <li class="{tab == -1?'active': ''}" on-click={this._changeTab(-1)}><a>Page</a></li>
         {#list sync.modals as modal by modal_index}
         <li class="{tab == modal_index?'active': ''}" on-click={this._changeTab(modal_index)}>
-            <a>{modal.name || 'Modal'} <i class="f-csp u-icon u-icon-pencil" on-click={this._editModalInfo(modal)}></i></a>
+            <a>{modal.name || 'Modal'} <i class="f-csp u-icon u-icon-pencil" on-click={this._editModalInfo($event, modal)}></i></a>
         </li>
         {/list}
         <li><i class="f-csp u-icon u-icon-plus-circle addModal" aria-hidden="true" on-click={this._addModal()}></i></li>
