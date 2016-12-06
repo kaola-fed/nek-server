@@ -8,9 +8,15 @@
 	{#list sync.modals as modal by modal_index}
 	<li class="item {modalTab == modal_index?'active': ''}" on-click={modalTab = modal_index}>
 		{modal.name || 'Modal'}
-		<i class="editBtn f-csp u-icon u-icon-pencil" on-click={this._editModalInfo($event, modal)}></i>
+		<div class="action">
+			<i class="f-csp u-icon u-icon-pencil" on-click={this._editModalInfo($event, modal)}></i>
+			<i class="f-csp u-icon u-icon-trash" on-click={this._removeModal($event, modal_index)}></i>
+		</div>
 	</li>
 	{/list}
+	{#if !sync.modals.length}
+		<p class="item">Looks like you haven't set up a modal yet</p>
+	{/if}
 </ul>
 {/if}
 
