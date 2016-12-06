@@ -13,10 +13,6 @@ const MainArea = Component.extend({
       modalTab: 0,
     });
     this.supr();
-
-      this.$watch('tab', function(newval, oldval) {
-          if (newval == -1 ) { this.data.tab = 1;}
-      });
   },
 
   _addModal() {
