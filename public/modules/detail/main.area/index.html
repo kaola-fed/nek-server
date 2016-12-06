@@ -23,6 +23,6 @@
 <div class="m-mainarea">
     <div r-hide={tab != 1}><drop.area ref="dropArea_-1" rows={sync.rows} categoryList={categoryList} /></div>
     {#list sync.modals as modal by modal_index}
-    <div r-hide={modalTab != modal_index}><drop.area ref="dropArea_{modal_index}" rows={modal.rows} categoryList={categoryList} /></div>
+    <div r-hide={tab != 2 || modalTab != modal_index}><drop.area ref="dropArea_{modal_index}" rows={modal.rows} categoryList={categoryList} /></div>
     {/list}
 </div>
