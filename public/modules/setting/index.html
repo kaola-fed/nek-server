@@ -8,11 +8,11 @@
       <div class="title">
         <span>{tab.name}</span>
       </div>
-      <ui.textarea cols="9" value={tab.text} />
+      <ui.textarea height="500" value={tab.text} />
       {#if tab.originText !== tab.text}
       <div class="operate">
-        <a class="u-btn u-btn-primary" on-click={this.save(tab)}>保存</a>
-        <a class="u-btn" on-click={this.reset(tab)}>放弃</a>
+        <ui.button title="保存" type="primary" on-click={this.save(tab)} />
+        <ui.button title="放弃" on-click={this.reset(tab)} />
       </div>
       {/if}
     </tab>
