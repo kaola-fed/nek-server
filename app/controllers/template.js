@@ -14,8 +14,8 @@ const template = new Router();
 
 template.get('/', async ctx => {
   const { file, name } = ctx.query;
-  if (!file || !name) {
-    throw new Error('[file && name] are required');
+  if (!file) {
+    throw new Error('[file] is required');
   }
   ctx.set('Content-Disposition', `inline;filename=${name || 'file'}`);
   ctx.body = gfs.createReadStream({ _id: file });
