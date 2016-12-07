@@ -180,17 +180,18 @@ const Detail = Component.extend({
         components.forEach((component) => {
           // 找到组件原型，深度复制一份 conf，用已有组件的值填充（如果有对应属性的话）
           let _component = this._getComponentByName(component.name);
-          if (!_component) return;
+          if (!_component || !component.NEK) return;
           let _conf = JSON.parse(JSON.stringify(_component.conf));
           _conf.forEach((conf) => {
             // 存在对应属性
             let t = component.NEK.conf.find(d => d.key === conf.key);
             // 填充旧值，用于兼容
             if (t) {
+              conf.default = conf.value;
               conf.value = t.value;
             }
           });
-          component.NEK.conf = _conf;
+          component.NEK.conf = _conf.filter(d => d.value.toString() !== d.default);
         });
       });
     });

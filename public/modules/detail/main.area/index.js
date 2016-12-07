@@ -63,7 +63,6 @@ const MainArea = Component.extend({
         res.modals.push({ name: modal.name, rows: dropArea.exportJson(modal.rows) });
       });
     }
-    console.log(res);
     return res;
   },
 });

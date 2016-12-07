@@ -185,7 +185,6 @@ const DropArea = Component.extend({
       if (!isContainer) {
         row.subRow[0].forEach((module, moduleIndex) => {
           let NEK = module.NEK || self.$$NEK(module.name);
-          console.log(NEK);
           res[rowIndex].components.push({
             name: NEK.name,
             id: NEK.id,
