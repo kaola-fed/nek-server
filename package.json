@@ -36,7 +36,7 @@
     "moment": "^2.16.0",
     "mongoose": "^4.6.8",
     "multer-gridfs-storage": "^1.0.0",
-    "nek-ui": "0.1.39",
+    "nek-ui": "0.1.40",
     "regular-state": "^0.2.1",
     "rgui-ui-drag": "^0.2.0-alpha.1"
   },
