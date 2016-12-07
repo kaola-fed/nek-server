@@ -35,7 +35,7 @@
     <checkGroup source={item.selects} />
     {/if}
     {#if item.type == 'expression'}
-    <ui.input value={item.value} />
+    <ui.input value={item.value} placeholder="绑定的变量名或表达式" />
     {/if}
   </form.item>
   {/list}

@@ -49,6 +49,7 @@
         line-height: 40px;color: #fff;background-color: $themeColor;
     }
     .module {
+        min-height: 30px;
         &:hover {
             .option {
                 display: flex;

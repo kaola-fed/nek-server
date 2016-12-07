@@ -16,7 +16,8 @@ const MainArea = Component.extend({
   },
 
   _changeTab(tab) {
-      this.data.tab = tab;
+    this.data.tab = tab;
+    this.$update();
   },
 
   _addModal() {
@@ -44,10 +45,10 @@ const MainArea = Component.extend({
     });
   },
 
-  _removeModal($event, index) {
-      event.stopPropagation();
-      let modals = this.data.sync.modals;
-      modals.splice(index, 1);
+  _removeModal(event, index) {
+    event.stopPropagation();
+    let modals = this.data.sync.modals;
+    modals.splice(index, 1);
   },
 
   _getJson() {
