@@ -185,13 +185,10 @@ const DropArea = Component.extend({
       if (!isContainer) {
         row.subRow[0].forEach((module, moduleIndex) => {
           let NEK = module.NEK || self.$$NEK(module.name);
-          res[rowIndex].components.push({
-            name: NEK.name,
-            id: NEK.id,
-            cols: NEK.cols,
+          res[rowIndex].components.push(Object.assign({}, NEK, {
             offset: module.offset,
             conf: NEK.conf.filter(d => d.value.toString() !== d.default),
-          });
+          }));
         });
       } else {
         res[rowIndex].components.push({
@@ -205,14 +202,12 @@ const DropArea = Component.extend({
           res[rowIndex].components[0].rows.push({ components: [] });
           subRow.forEach((module, moduleIndex) => {
             let NEK = module.NEK || self.$$NEK(module.name);
-            res[rowIndex].components[0].rows[subRowIndex].components.push({
-              name: NEK.name,
-              id: NEK.id,
-              cols: NEK.cols,
-              offset: module.offset,
-              layout: NEK.layout,
-              conf: NEK.conf,
-            });
+            res[rowIndex].components[0].rows[subRowIndex].components.push(
+              Object.assign({}, NEK, {
+                offset: module.offset,
+                conf: NEK.conf.filter(d => d.value.toString() !== d.default),
+              }
+            ));
           });
         });
       }
