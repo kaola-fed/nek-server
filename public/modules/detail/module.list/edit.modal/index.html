@@ -1,40 +1,40 @@
 <p class="title-header">基础信息</p>
 <ui.form>
-  <ui.field title="组件名" cols=12 required>
+  <form.item title="组件名" cols=12 required>
     <ui.input value={params.name} />
-  </ui.field>
-  <ui.field title="描述" cols=12 required>
+  </form.item>
+  <form.item title="描述" cols=12 required>
     <ui.input value={params.desc} />
-  </ui.field>
-  <ui.field title="栅格数" cols=12 required>
+  </form.item>
+  <form.item title="栅格数" cols=12 required>
     <numberInput value={params.cols} />
-  </ui.field>
-  <ui.field title="所属类目" cols=12 required>
+  </form.item>
+  <form.item title="所属类目" cols=12 required>
     <ui.select value={params.category} key="_id" source={categoryList} />
-  </ui.field>
+  </form.item>
 </ui.form>
 <p class="title-header">配置信息</p>
 {#list params.conf as c}
 <ui.form>
-  <ui.field title="属性名" cols=12 required>
+  <form.item title="属性名" cols=12 required>
     <ui.input value={c.key} />
-  </ui.field>
-  <ui.field title="描述" cols=12 required>
+  </form.item>
+  <form.item title="描述" cols=12 required>
     <ui.input value={c.desc} />
-  </ui.field>
-  <ui.field title="默认值" cols=12>
+  </form.item>
+  <form.item title="默认值" cols=12>
     <ui.input value={c.value} />
-  </ui.field>
-  <ui.field title="值类型" cols=12 required>
+  </form.item>
+  <form.item title="值类型" cols=12 required>
     <ui.select value={c.type} key="name" source={typeList} placeholder="" />
-  </ui.field>
+  </form.item>
   {#if c.type === 'select' || c.type === 'array'}
-  <ui.field title="子元素类型" cols=12>
+  <form.item title="子元素类型" cols=12>
     <ui.select value={c.extraType} key="name" source={extraTypeList} placeholder="" />
-  </ui.field>
-  <ui.field title="选择列表" cols=12>
+  </form.item>
+  <form.item title="选择列表" cols=12>
     <ui.input value={c.selects | arr2str} placeholder="多个值用单空格分开" />
-  </ui.field>
+  </form.item>
   {/if}
 </ui.form>
 <a class="u-btn u-btn-error" on-click={this.remove(c_index)}>删除</a>

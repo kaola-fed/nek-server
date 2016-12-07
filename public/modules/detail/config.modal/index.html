@@ -1,21 +1,21 @@
 <ui.form>
-  <ui.field title="栅格数" cols=12>
+  <form.item title="栅格数" cols=12>
     <ui.select source={colArr} key="name" value={NEK.cols} placeholder="" />
-  </ui.field>
-  <ui.field title="label标题" cols=12>
+  </form.item>
+  <form.item title="label标题" cols=12>
     <ui.input value={NEK.labelTitle} />
-  </ui.field>
-  <ui.field title="label提示" cols=12>
+  </form.item>
+  <form.item title="label提示" cols=12>
     <ui.input value={NEK.labelHint} />
-  </ui.field>
-  <ui.field title="是否必填" cols=12>
+  </form.item>
+  <form.item title="是否必填" cols=12>
     <check checked={NEK.required} />
-  </ui.field>
-  <ui.field cols=12>
+  </form.item>
+  <form.item cols=12>
     <div style="border-bottom: solid 1px #dedede; margin: 10px 0;"></div>
-  </ui.field>
+  </form.item>
   {#list curConf as item}
-  <ui.field title={item.desc + ' ( ' + item.key + ' )'} cols=12 required={item.isRequired}>
+  <form.item title={item.desc + ' ( ' + item.key + ' )'} cols=12 required={item.isRequired}>
     {#if item.type == 'string'}
     <ui.input value={item.value} />
     {/if}
@@ -37,6 +37,6 @@
     {#if item.type == 'expression'}
     <ui.input value={item.value} />
     {/if}
-  </ui.field>
+  </form.item>
   {/list}
 </ui.form>

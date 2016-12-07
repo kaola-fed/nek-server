@@ -22,9 +22,9 @@
                         {#list subRow as module by module_index}
                         <draggable name={module.name} width={module.moduleWidth} isMoveModule=true rowIndex={row_index} subRowIndex={subRow_index} moduleIndex={module_index}>
                             <div class="f-fl f-pr g-offset-{module.offset} g-col-{module.moduleWidth} module m-form" on-dblclick={this.configModule(module.name, row_index, subRow_index, module_index)}>
-                            <ui.field cols="12" title={module.labelTitle} hint={module.labelHint} required={module.required}>
+                            <form.item cols="12" title={module.labelTitle} hint={module.labelHint} required={module.required}>
                                 <r-component is={module.name} ref={module.name | uniq: row_index, subRow_index, module_index}></r-component>
-                            </ui.field>
+                            </form.item>
                             </div>
                             <draggable.proxy>
                                 <div class="proxy-module" style="width: {module.moduleWidth*80}px;height: 40px;line-height: 40px;">{module.name}</div>
