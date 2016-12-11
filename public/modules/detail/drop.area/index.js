@@ -98,6 +98,7 @@ const DropArea = Component.extend({
     let ref = `${name}_${row_index}_${subRow_index}_${module_index}`;
     let modRef = this.$refs[ref];
     let module = this.data.rows[row_index].subRow[subRow_index][module_index];
+    let moduleNext = this.data.rows[row_index].subRow[subRow_index][module_index + 1];
     // 首次会把 NEK 数据放到 module 里作持久化，故需先调用组件的 $$NEK() 方法
     module.NEK = module.NEK || this.$$NEK(name);
     let modal = new ConfigModal({
@@ -108,6 +109,9 @@ const DropArea = Component.extend({
       },
     });
     modal.$on('update_page', () => {
+      if(moduleNext) {
+        moduleNext.offset = moduleNext.offset + module.moduleWidth - module.NEK.cols;
+      }
       module.moduleWidth = module.NEK.cols;
       module.labelTitle = module.NEK.labelTitle;
       module.labelHint = module.NEK.labelHint;
