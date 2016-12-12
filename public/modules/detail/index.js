@@ -179,6 +179,8 @@ const Detail = Component.extend({
         // 找到组件原型，深度复制一份 conf，用已有组件的值填充（如果有对应属性的话）
         let _component = this._getComponentByName(component.name);
         if (!_component || !component.NEK) return;
+        // 备注字段需要特别处理
+        component.NEK.remark = _component.remark;
         let _conf = JSON.parse(JSON.stringify(_component.conf));
         _conf.forEach((conf) => {
           // 存在对应属性
