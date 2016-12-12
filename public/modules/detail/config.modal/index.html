@@ -8,6 +8,9 @@
   <form.item title="label提示" cols=12>
     <ui.input value={NEK.labelHint} />
   </form.item>
+  <form.item title="label栅格数" cols=12>
+    <ui.input value={NEK.labelCols} />
+  </form.item>
   <form.item title="是否必填" cols=12>
     <check checked={NEK.required} />
   </form.item>
@@ -23,7 +26,7 @@
     <ui.select source={item.selects} value={item.value | name2id : item.selects} />
     {/if}
     {#if item.type == 'number'}
-    <numberInput value={item.value} />
+    <number.input value={item.value} />
     {/if}
     {#if item.type == 'boolean'}
     <check checked={item.value | str2bool} />
@@ -32,7 +35,7 @@
     <check checked={item.value | str2bool} />
     {/if}
     {#if item.type == 'array'}
-    <checkGroup source={item.selects} />
+    <check.group source={item.selects} />
     {/if}
     {#if item.type == 'expression'}
     <ui.input value={item.value} placeholder="绑定的变量名或表达式" />

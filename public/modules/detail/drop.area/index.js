@@ -109,12 +109,13 @@ const DropArea = Component.extend({
       },
     });
     modal.$on('update_page', () => {
-      if(moduleNext) {
-        moduleNext.offset = moduleNext.offset + module.moduleWidth - module.NEK.cols;
+      if (moduleNext) {
+        moduleNext.offset = (moduleNext.offset + module.moduleWidth) - module.NEK.cols;
       }
       module.moduleWidth = module.NEK.cols;
       module.labelTitle = module.NEK.labelTitle;
       module.labelHint = module.NEK.labelHint;
+      module.labelCols = module.NEK.labelCols;
       module.required = module.NEK.required;
       this.$update();
     });
