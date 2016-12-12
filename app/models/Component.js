@@ -6,6 +6,7 @@ const componentSchema = new Schema({
   name: { type: String, required: true }, // 组件名
   desc: String, // 描述
   cols: { type: Number, default: 1 }, // 占栅格数
+  remark: String, // 备注
   conf: [{
     key: String, // 属性名
     value: { type: String, default: '' }, // 属性值

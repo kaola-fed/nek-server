@@ -1,3 +1,8 @@
+{#if NEK.remark}
+<div class="remark">
+  {NEK.remark}
+</div>
+{/if}
 <ui.form>
   <form.item title="栅格数" cols=12>
     <ui.select source={colArr} key="name" value={NEK.cols} placeholder="" />

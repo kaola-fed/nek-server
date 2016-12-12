@@ -1,4 +1,5 @@
 <p class="title-header">基础信息</p>
+<ui.text isBold={true} align="" />
 <ui.form>
   <form.item title="组件名" cols=12 required>
     <ui.input value={params.name} />
@@ -11,6 +12,9 @@
   </form.item>
   <form.item title="所属类目" cols=12 required>
     <ui.select value={params.category} key="_id" source={categoryList} />
+  </form.item>
+  <form.item title="备注" cols=12>
+    <ui.textarea value={params.remark} />
   </form.item>
 </ui.form>
 <p class="title-header">配置信息</p>
