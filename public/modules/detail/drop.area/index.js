@@ -82,6 +82,8 @@ const DropArea = Component.extend({
     NEK.conf.forEach((d) => {
       d.default = d.value;
     });
+    // 默认 label 栅格数为 4
+    NEK.labelCols = 4;
     return NEK;
   },
   getAvailableCols(row_index, subRow_index, module_index) {
