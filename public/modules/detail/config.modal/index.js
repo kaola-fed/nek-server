@@ -1,6 +1,9 @@
 import { Modal } from 'nek-ui';
 import contentTemplate from '!raw!./index.html';
 
+// return: [1...num]
+const genSeqArr = num => [...Array(num)].map((_, i) => i + 1);
+
 const ConfigModal = Modal.extend({
   name: 'config.modal',
   config() {
@@ -9,13 +12,14 @@ const ConfigModal = Modal.extend({
       title: '组件配置',
       maxCols: 1,
       colArr: [],
+      labelColArr: genSeqArr(12),
       class: 'm-modal-autoflow',
       cancelButton: true,
       NEK: {},
     });
     // 深度复制，只有在确定的时候才真实写回
     this.data.curConf = JSON.parse(JSON.stringify(this.data.NEK.conf));
-    this.data.colArr = Array(this.data.maxCols).fill().map((e, i) => i + 1);
+    this.data.colArr = genSeqArr(this.data.maxCols);
     this.$on('ok', this._ok);
     this.supr();
   },
