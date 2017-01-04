@@ -1,6 +1,6 @@
 {
   "name": "nek-server",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Server for NEK",
   "main": "app.js",
   "scripts": {
@@ -13,13 +13,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "ssh://git@g.hz.netease.com:22222/NEK/nek-server.git"
+    "url": "https://github.com/kaola-fed/nek-server.git"
   },
   "keywords": [
     "NEK"
   ],
   "author": "Kaola",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "app-module-path": "^2.1.0",
     "clipboard-js": "^0.3.1",
