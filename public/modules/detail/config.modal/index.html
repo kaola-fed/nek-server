@@ -4,26 +4,28 @@
 </div>
 {/if}
 <ui.form>
-  <form.item title="栅格数" cols=12>
+  <form.item title="栅格数" labelCols=4 cols=12>
     <ui.select source={colArr} key="name" value={NEK.cols} placeholder="" />
   </form.item>
-  <form.item title="label标题" cols=12>
+  {#if NEK.name != 'list.table'}
+  <form.item title="label标题" labelCols=4 cols=12>
     <ui.input value={NEK.labelTitle} />
   </form.item>
-  <form.item title="label提示" cols=12>
+  <form.item title="label提示" labelCols=4 cols=12>
     <ui.input value={NEK.labelHint} />
   </form.item>
-  <form.item title="label栅格数" cols=12>
+  <form.item title="label栅格数" labelCols=4 cols=12>
     <ui.select source={labelColArr} key="name" value={NEK.labelCols} placeholder="" />
   </form.item>
-  <form.item title="是否必填" cols=12>
+  <form.item title="是否必填" labelCols=4 cols=12>
     <check checked={NEK.required} />
   </form.item>
-  <form.item cols=12>
+  {/if}
+  <form.item cols=12 labelCols=4>
     <div style="border-bottom: solid 1px #dedede; margin: 10px 0;"></div>
   </form.item>
   {#list curConf as item}
-  <form.item title={item.desc + ' ( ' + item.key + ' )'} cols=12 required={item.isRequired}>
+  <form.item title={item.desc + ' ( ' + item.key + ' )'} labelCols=4 cols=12 required={item.isRequired}>
     {#if item.type == 'string'}
     <ui.input value={item.value} />
     {/if}
@@ -39,11 +41,26 @@
     {#if item.type == 'none'}
     <check checked={item.value | str2bool} />
     {/if}
-    {#if item.type == 'array'}
+    <!--配置表格-->
+    {#if item.type == 'array' && item.extraType =='tbObj'}
+      <div class="m-tbdatasetting">
+        {#list item.value as val}
+        <h3>第{val_index +1}列 &nbsp;&nbsp;<a href="javascript:void(0)" on-click="{this.removeTbItem(item, val_index)}">删除</a></h3>
+        {#list item.selects as select}
+        <form.item title="{select.key}" labelCols=4 cols=12>
+          <ui.input value={val[select.key]} />
+        </form.item>
+        {/list}
+        {/list}
+      </div>
+    <a href="javascript:void(0)" class="u-btn u-btn-primary" on-click="{this.addItm(item)}">添加项</a>
+    {/if}
+    <!-- 非表格配置-->
+    {#if item.type == 'array' && item.extraType !='tbObj'}
     <check.group source={item.selects} />
     {/if}
-    {#if item.type == 'expression'}
-    <ui.input value={item.value} placeholder="绑定的变量名或表达式" />
+    {#if item.type == 'expression'}绑定的变量名或表达式
+    <ui.input value={item.value} placeholder="" />
     {/if}
   </form.item>
   {/list}

@@ -1,44 +1,66 @@
 <p class="title-header">基础信息</p>
-<ui.text isBold={true} align="" />
 <ui.form>
-  <form.item title="组件名" cols=12 required>
+  <form.item title="组件名"  labelCols=4 cols=12 required>
     <ui.input value={params.name} />
   </form.item>
-  <form.item title="描述" cols=12 required>
+  <form.item title="描述" labelCols=4 cols=12 required>
     <ui.input value={params.desc} />
   </form.item>
-  <form.item title="栅格数" cols=12 required>
+  <form.item title="栅格数" labelCols=4 cols=12 required>
     <number.input value={params.cols} />
   </form.item>
-  <form.item title="所属类目" cols=12 required>
+  <form.item title="所属类目" labelCols=4 cols=12 required>
     <ui.select value={params.category} key="_id" source={categoryList} />
   </form.item>
-  <form.item title="备注" cols=12>
+  <form.item title="备注" labelCols=4 cols=12>
     <ui.textarea value={params.remark} />
   </form.item>
 </ui.form>
 <p class="title-header">配置信息</p>
 {#list params.conf as c}
 <ui.form>
-  <form.item title="属性名" cols=12 required>
+  <form.item title="属性名" labelCols=4 cols=12 required>
     <ui.input value={c.key} />
   </form.item>
-  <form.item title="描述" cols=12 required>
+  <form.item title="描述" labelCols=4 cols=12 required>
     <ui.input value={c.desc} />
   </form.item>
-  <form.item title="默认值" cols=12>
+  <form.item title="默认值" labelCols=4 cols=12>
     <ui.input value={c.value} />
   </form.item>
-  <form.item title="值类型" cols=12 required>
+  <form.item title="值类型" labelCols=4 cols=12 required>
     <ui.select value={c.type} key="name" source={typeList} placeholder="" />
   </form.item>
   {#if c.type === 'select' || c.type === 'array'}
-  <form.item title="子元素类型" cols=12>
+  <form.item title="子元素类型" labelCols=4 cols=12>
     <ui.select value={c.extraType} key="name" source={extraTypeList} placeholder="" />
   </form.item>
-  <form.item title="选择列表" cols=12>
+  {#if c.extraType != 'tbObj' }
+  <form.item title="选择列表" labelCols=4 cols=12>
     <ui.input value={c.selects | arr2str} placeholder="多个值用单空格分开" />
   </form.item>
+  {#else}
+  <div class="m-tbsetting g-col g-col-12">
+    <h3 class="subtitle">子元素属性配置</h3>
+    <ul class="settingwrap">
+    {#list c.selects as select}
+    <li class="item">
+      <h4>属性{select_index + 1} <a class="javascript:void(0)" on-click="{this.removeChildAttr(c,select_index)}">删除</a></h4>
+      <form.item title="属性名" labelCols=4 cols=12 required>
+        <ui.input value={select.key} placeholder="属性名" />
+      </form.item>
+      <form.item title="描述" labelCols=4 cols=12>
+        <ui.input value={select.desc} placeholder="描述" />
+      </form.item>
+      <form.item title="默认值" labelCols=4 cols=12 required>
+        <ui.input value={select.value} placeholder="默认值" />
+      </form.item>
+    </li>
+    {/list}
+    </ul>
+    <a class="u-btn" on-click={this.addAttr(c.selects)}>添加子属性</a>
+  </div>
+  {/if}
   {/if}
 </ui.form>
 <a class="u-btn u-btn-error" on-click={this.remove(c_index)}>删除</a>

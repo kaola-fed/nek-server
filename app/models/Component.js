@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const Mixed = Schema.Types.Mixed;
 
 const componentSchema = new Schema({
   id: Number,
@@ -9,7 +10,7 @@ const componentSchema = new Schema({
   remark: String, // 备注
   conf: [{
     key: String, // 属性名
-    value: { type: String, default: '' }, // 属性值
+    value: { type: Mixed, default: '' }, // 属性值
     desc: String, // 属性描述
     // 属性类型，用于配置页和生成页
     // none: 配置页(checkbox) 生成页(attr)
@@ -21,9 +22,10 @@ const componentSchema = new Schema({
     // expression: 配置页(input-text) 生成页(attr={exp})
     type: { type: String, default: 'string' },
     // 只有在 type 是 select/array 的时候才有意义
-    selects: [String],
+    selects: [{type:Mixed}],
     // string/number/boolean
     extraType: { type: String, default: 'string' },
+
   }],
   project: { type: Schema.Types.ObjectId, required: true, ref: 'Project' },
   category: { type: Schema.Types.ObjectId, required: true, ref: 'Category' },

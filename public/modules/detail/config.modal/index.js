@@ -20,6 +20,11 @@ const ConfigModal = Modal.extend({
     // 深度复制，只有在确定的时候才真实写回
     this.data.curConf = JSON.parse(JSON.stringify(this.data.NEK.conf));
     this.data.colArr = genSeqArr(this.data.maxCols);
+    this.data.curConf.forEach(function(d) {
+      if (d.type == 'array' && d.extraType == 'tbObj') {
+        d.value = d.value ? ( d.value instanceof Array ? d.value : []) : [];
+      }
+    });
     this.$on('ok', this._ok);
     this.supr();
   },
@@ -31,6 +36,16 @@ const ConfigModal = Modal.extend({
     this.$emit('update_page');
     this.data.modRef.$emit('update_nek', NEK.conf);
   },
+  addItm(crtItem) {
+    var newItem = {};
+    crtItem.selects.forEach((d) => {
+      newItem[d.key] = d.value;
+    });
+    crtItem.value.push(newItem);
+  },
+  removeTbItem(crtItem, index) {
+    crtItem.value.splice(index, 1);
+  }
 }).filter('name2id', {
   get(name, selects) {
     const source = selects.map((d) => {

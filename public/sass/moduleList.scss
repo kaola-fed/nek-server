@@ -65,3 +65,22 @@
     font-size: 15px;
     margin: 20px 0;
 }
+.m-tbsetting {
+    width: 80%;
+    margin-left: 80px;
+    .subtitle{
+        padding: 10px 0;
+        border-bottom: 2px dashed  #ddd;
+        font-weight: bold;
+    }
+    .settingwrap {
+        .item{
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            overflow: auto;
+        }
+        h4{padding: 10px 0px;}
+    }
+
+
+}

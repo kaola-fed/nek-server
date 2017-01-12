@@ -10,7 +10,7 @@ const EditModal = Modal.extend({
       class: 'm-modal-autoflow',
       cancelButton: true,
       typeList: ['string', 'number', 'none', 'boolean', 'array', 'select', 'expression'],
-      extraTypeList: ['string', 'number', 'boolean'],
+      extraTypeList: ['string', 'number', 'boolean','tbObj'],
       params: {},
     });
     this.data.params = JSON.parse(JSON.stringify(this.data.component));
@@ -26,11 +26,17 @@ const EditModal = Modal.extend({
   remove(idx) {
     this.data.params.conf.splice(idx, 1);
   },
-
-  add() {
-    this.data.params.conf.push({});
+  removeChildAttr(crtItem, index) {
+    crtItem.selects.splice(index, 1);
   },
 
+  add() {
+    this.data.params.conf.push({selects: []});
+  },
+  addAttr(list) {
+    list = list || [];
+    list.push({key: '', desc: '', value: ''});
+  },
   move(idx, step) {
     const conf = this.data.params.conf;
     [conf[idx], conf[idx + step]] = [conf[idx + step], conf[idx]];
