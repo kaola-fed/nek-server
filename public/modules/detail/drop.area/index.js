@@ -86,14 +86,16 @@ const DropArea = Component.extend({
     NEK.labelCols = 4;
     return NEK;
   },
+  // 修改组件的栅格数的时候，返回可设置的最大栅格数
   getAvailableCols(row_index, subRow_index, module_index) {
     let subRow = this.data.rows[row_index].subRow[subRow_index];
     let module = subRow[module_index];
-    let cols = 0;
-    subRow.forEach((item) => {
-      cols += item.moduleWidth + item.offset;
-    });
-    return (module.moduleWidth + 12) - cols;
+    let moduleNext = subRow[module_index + 1];
+    // 右边有组件，返回该组件宽度+右边组件的offset，否则返回最大栅格数12
+    if (moduleNext) {
+      return module.moduleWidth + moduleNext.offset;
+    }
+    return this.data.cols;
   },
   configModule(name, row_index, subRow_index, module_index) {
     let maxCols = this.getAvailableCols(row_index, subRow_index, module_index);
