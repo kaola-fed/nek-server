@@ -39,9 +39,8 @@
                     <i class="f-csp u-icon u-icon-arrow-up" on-click={this.moveRowUp(0, {row_index: row_index, subRow_index: subRow_index})}></i>
                     {/if}{#if subRow_index != row.subRow.length - 1}
                     <i class="f-csp u-icon u-icon-arrow-down" on-click={this.moveRowDown(0, {row_index: row_index, subRow_index: subRow_index})}></i>
-                    {/if}{#if row.subRow.length > 1}
-                    <i class="f-csp u-icon u-icon-trash-o" on-click={this.deleteRow(0, {row_index: row_index, subRow_index: subRow_index})}></i>
                     {/if}
+                    <i class="f-csp u-icon u-icon-trash-o" on-click={this.deleteRow(0, {row_index: row_index, subRow_index: subRow_index})}></i>
                 </div>
             </div>
             {/list}
@@ -56,9 +55,8 @@
             <i class="f-csp u-icon u-icon-arrow-up" on-click={this.moveRowUp(1, {row_index: row_index})}></i>
             {/if}{#if row_index != rows.length - 1}
             <i class="f-csp u-icon u-icon-arrow-down" on-click={this.moveRowDown(1, {row_index: row_index})}></i>
-            {/if}{#if rows.length > 1}
-            <i class="f-csp u-icon u-icon-trash-o" on-click={this.deleteRow(1, {row_index: row_index})}></i>
             {/if}
+            <i class="f-csp u-icon u-icon-trash-o" on-click={this.deleteRow(1, {row_index: row_index})}></i>
         </div>
     </li>
 {/list}
