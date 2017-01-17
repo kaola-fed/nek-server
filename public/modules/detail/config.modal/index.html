@@ -28,7 +28,7 @@
     <ui.input value={item.value} />
     {/if}
     {#if item.type == 'select'}
-    <ui.select source={item.selects} value={item.value | name2id : item.selects} />
+    <ui.select source={item.selects} value={item.value | name2id : item.selects} placeholder="" />
     {/if}
     {#if item.type == 'number'}
     <number.input value={item.value} />

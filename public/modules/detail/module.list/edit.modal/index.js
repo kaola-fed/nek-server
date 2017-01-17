@@ -40,7 +40,7 @@ const EditModal = Modal.extend({
     return arr.join(' ');
   },
   set(str = '', split = ' ') {
-    return str.split(split);
+    return str.trim().split(split);
   },
 });
 
