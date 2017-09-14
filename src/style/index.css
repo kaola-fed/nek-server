@@ -1,0 +1,11 @@
+@charset "UTF-8";
+@import "./iconfont/style.css";
+@import "./theme/kaola.css";
+
+/* 全局使用样式,使用g命名空间开头 */
+@component-namespace g {
+  /*  详情页非编辑状态时如果没用formItem的行间距, 最后一行不要设置  */
+  @b row-detail {
+    margin-bottom: 20px;
+  }
+}

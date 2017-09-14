@@ -1,0 +1,8 @@
+/* 覆盖 element-kaola 中的样式，仅项目专用的样式在此覆盖 */
+@component-namespace el {
+  @b dialog {
+    @m full {
+      top: 0 !important;
+    }
+  }
+}

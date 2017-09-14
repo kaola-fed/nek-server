@@ -1,6 +1,7 @@
 // http://eslint.org/docs/user-guide/configuring
 
 module.exports = {
+  extends: 'kaola/esnext',
   root: true,
   parser: 'babel-eslint',
   parserOptions: {
@@ -9,31 +10,30 @@ module.exports = {
   env: {
     browser: true,
   },
-  extends: 'airbnb-base',
   // required to lint *.vue files
   plugins: [
     'html'
   ],
-  // check if imports actually resolve
-  'settings': {
-    'import/resolver': {
-      'webpack': {
-        'config': 'build/webpack.base.conf.js'
-      }
-    }
-  },
   // add your custom rules here
   'rules': {
-    // don't require .vue extension when importing
-    'import/extensions': ['error', 'always', {
-      'js': 'never',
-      'vue': 'never'
-    }],
-    // allow optionalDependencies
-    'import/no-extraneous-dependencies': ['error', {
-      'optionalDependencies': ['test/unit/index.js']
-    }],
     // allow debugger during development
-    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
+    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
+    'semi': [2, 'always'], // 要求在行末加上分号,
+    'line-style': 'off',
+    'comma-dangle': ['error', 'only-multiline'],
+    'no-negated-condition': 0,
+    'indent': [2, 2, {
+      // case 用一个缩进
+      'SwitchCase': 1,
+      // 变量声明用一个缩进
+      'VariableDeclarator': 1,
+      'outerIIFEBody': 1,
+      'MemberExpression': 1,
+      'FunctionDeclaration': {'body': 1, 'parameters': 2},
+      'FunctionExpression': {'body': 1, 'parameters': 2},
+      'CallExpression': {'arguments': 1}
+    }],
+    'arrow-body-style': 0,
+    'object-shorthand': ['warn', 'properties'],
   }
-}
+};

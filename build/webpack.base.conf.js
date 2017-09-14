@@ -19,7 +19,7 @@ module.exports = {
       : config.dev.assetsPublicPath
   },
   resolve: {
-    extensions: ['.js', '.vue', '.json'],
+    extensions: ['.js', '.vue', '.json', '.css'],
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
@@ -44,7 +44,26 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [resolve('src'), resolve('test')]
+        include: [resolve('src'), resolve('test')],
+        query: {
+          babelrc: false,
+          "presets": [
+            ["env", {
+              "modules": false,
+              "targets": {
+                "browsers": ["> 1%", "last 2 versions", "not ie <= 8"]
+              }
+            }],
+            "stage-2"
+          ],
+          "plugins": ["transform-runtime"],
+          "env": {
+            "test": {
+              "presets": ["env", "stage-2"],
+              "plugins": ["istanbul"]
+            }
+          }
+        }
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
