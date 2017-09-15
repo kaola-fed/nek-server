@@ -12,11 +12,10 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: { name: 'app' }
+      redirect: { name: 'home' }
     },
     {
       path: '/app',
-      name: 'app',
       components: {
         header: resolve => require(['@/components/layout/TopHeader.vue'], resolve),
         main: resolve => require(['@/components/layout/Main.vue'], resolve)
