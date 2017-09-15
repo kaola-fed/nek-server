@@ -1,19 +1,22 @@
 import * as LoginService from './../services/login';
+import * as CONFIG from './../config';
+import KoaOpenid from 'koa-openid';
+// import KoaOpenid from './../auth.js';
 
-export const index = async (ctx) => {
-    let code = ctx.query.code;
-    if(ctx.query.error) {
-        await ctx.render('error', {
-            error: ctx.query.error,
-            error_description: ctx.query.err
-        })
-    } else {
-        const json = await LoginService.fetchToken(code);
-        const result = LoginService.checkIdToken(json.id_token);
-        if(result) {
-            const userInfo = await LoginService.fetchUserInfo(json.access_token)
-            ctx.session.user = userInfo;
+const config = {
+    client_id: CONFIG.client_id,
+    client_secret: CONFIG.client_secret,
+    redirect_uri: CONFIG.redirect_uri
+}
+const koaOpenid = new KoaOpenid(config);
+
+export const index = async function(ctx, next) {
+    return await koaOpenid.getUserInfo(ctx, next, function(result) {
+        if(result.error) {
+            console.log(error);
+            return ctx.redirect('/error');
         }
-        await ctx.redirect('/');
-    }
+        ctx.session.user = result.userInfo;
+        return ctx.redirect('/');
+    })
 }

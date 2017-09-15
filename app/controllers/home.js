@@ -1,18 +1,18 @@
 import * as CONFIG from './../config';
-
+import KoaOpenid from 'koa-openid';
 export const index = async (ctx) => {
-    if(!ctx.session.user) {
-        const params = {
-            response_type: 'code',
-            scope: 'openid fullname nickname email',
-            client_id: CONFIG.client_id,
-            redirect_uri: CONFIG.redirectUrl
-        };
-        const paramsStr = Object.entries(params).map(arr => `${arr[0]}=${arr[1]}`).join('&');
-        return ctx.redirect(`${CONFIG.authorizeUrl}?${paramsStr}`)
-    }
-    const title = "hello koa";
     const user = ctx.session.user;
+    if(!user) {
+        const config = {
+            client_id: CONFIG.client_id,
+            client_secret: CONFIG.client_secret,
+            redirect_uri: CONFIG.redirect_uri
+        }
+        const koaOpenid = new KoaOpenid(config);
+        return await koaOpenid.goLogin(ctx);
+    }
+    const title = "NEK SERVER";
+
     console.log(user);
     await ctx.render('index', {
         title,
