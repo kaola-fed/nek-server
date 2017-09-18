@@ -1,14 +1,25 @@
 <template>
   <section class="main">
-    <router-view></router-view>
-    <p class="main__foot">（╯‵□′）╯︵┴─┴</p>
+    <div class="g-container">
+      <router-view></router-view>
+    </div>
+    <p class="main__foot">{{ text }}</p>
   </section>
 </template>
 
 <script>
 export default {
+  mounted() {
+    setInterval(() => {
+      this.text = this.flag ? '（╯‵□′）╯︵┴─┴' : ' ┬─┬ ノ( \' - \'ノ) ';
+      this.flag = !this.flag;
+    }, 2000);
+  },
   data() {
-    return {};
+    return {
+      text: '（╯‵□′）╯︵┴─┴',
+      flag: false
+    };
   }
 };
 </script>
@@ -29,5 +40,10 @@ export default {
     color: #9FA6AF;
     text-align: center;
   }
+}
+
+.g-container {
+  max-width: 1200px;
+  margin: 0 auto;
 }
 </style>

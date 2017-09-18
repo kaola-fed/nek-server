@@ -12,20 +12,44 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: { name: 'home' }
+      redirect: { name: 'dashboard' }
+    },
+    {
+      path: '/editor',
+      name: 'editor',
+      components: {
+        body: resolve => require(['@/pages/editor/Editor.vue'], resolve)
+      }
     },
     {
       path: '/app',
       components: {
         header: resolve => require(['@/components/layout/TopHeader.vue'], resolve),
-        main: resolve => require(['@/components/layout/Main.vue'], resolve)
+        body: resolve => require(['@/components/layout/Body.vue'], resolve)
       },
       children: [
         {
-          alias: 'home',
-          path: '/',
-          name: 'home',
-          component: resolve => require(['@/pages/user/Home.vue'], resolve)
+          path: '',
+          component: resolve => require(['@/components/layout/Main.vue'], resolve),
+          children: [
+            {
+              path: 'dashboard',
+              name: 'dashboard',
+              component: resolve => require(['@/pages/app/Home.vue'], resolve),
+            }
+          ]
+        },
+        {
+          path: 'project',
+          name: 'project',
+          component: resolve => require(['@/components/layout/Main.vue'], resolve),
+          children: [
+            {
+              path: 'setting',
+              name: 'projectSetting',
+              component: resolve => require(['@/pages/app/project/Setting.vue'], resolve)
+            }
+          ]
         }
       ]
     },
