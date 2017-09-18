@@ -1,6 +1,6 @@
 <template>
   <header class="header">
-    <h1 class="header-title">NEK Server<a href="/app" class="header-title__link"></a></h1>
+    <div class="header-title">NEK Server<a href="/app" class="header-title__link"></a></div>
     <div class="header-right">
       hi&nbsp;<a class="header-right__link">User</a>&nbsp;<a class="header-right__link">退出</a>
     </div>

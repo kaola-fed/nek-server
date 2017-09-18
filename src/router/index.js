@@ -30,6 +30,14 @@ export default new Router({
       ]
     },
     {
+      path: '/edit',
+      name: 'edit',
+      components: {
+        header: resolve => require(['@/components/layout/TopHeader.vue'], resolve),
+        main: resolve => require(['@/pages/user/Edit.vue'], resolve)
+      }
+    },
+    {
       path: '*',
       name: '404',
       component: resolve => require(['@/pages/404'], resolve)

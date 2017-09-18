@@ -7,6 +7,7 @@ import App from './App.vue';
 import router from './router';
 import 'element-kaola/index.css';
 import '@/style/index.css';
+import 'nek-ui/dist/css/nek-ui.default.min.css';
 
 Vue.use(Element);
 Vue.use(VueMoment);
