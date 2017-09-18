@@ -28,3 +28,9 @@ $ npm run server-build  # 后端编译
 $ npm build             # 部署前端与后端
 $ npm start             # 启动
 ```
+
+## 说明
+
+### babel配置
+由于前后端的babel配置存在一些差异，因此将配置文件分开，
+`.babelrc`文件中的是后端的babel配置，`build/webpack.base.conf.js`里`/\.js$/`下的配置为前端的babel配置
