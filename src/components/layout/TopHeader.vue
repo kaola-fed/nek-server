@@ -1,6 +1,6 @@
 <template>
   <header class="header">
-    <div class="header-title">NEK Server<a href="/app" class="header-title__link"></a></div>
+    <div class="header-title">NEK Server<router-link :to="{name: 'dashboard'}" class="header-title__link"></router-link></div>
     <div class="header-right">
       hi&nbsp;<a class="header-right__link">User</a>&nbsp;<a class="header-right__link">退出</a>
     </div>

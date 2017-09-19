@@ -10,6 +10,7 @@ var path = require('path')
 var express = require('express')
 var webpack = require('webpack')
 var proxyMiddleware = require('http-proxy-middleware')
+var mockMiddleware = require('./mock')
 var webpackConfig = require('./webpack.dev.conf')
 
 // default port where dev server listens for incoming traffic
@@ -40,14 +41,30 @@ compiler.plugin('compilation', function (compilation) {
   })
 })
 
+
+const proxyEnv = process.argv[2]
+const proxyPrefixes = ['/api']
+
+if (proxyEnv == 'mock') {
+  console.log('> Using mock data.')
+  // handle local data mock
+  app.use(mockMiddleware(proxyPrefixes, {asyncMockPath: path.join(__dirname, '../mock/')}))
+} else if (proxyTable[proxyEnv]) {
+  // proxy api requests
+  console.log(`> Current proxy: ${proxyTable[proxyEnv]}`)
+  app.use(proxyMiddleware(proxyPrefix, {
+    target: proxyTable[proxyEnv]
+  }))
+}
+
 // proxy api requests
-Object.keys(proxyTable).forEach(function (context) {
-  var options = proxyTable[context]
-  if (typeof options === 'string') {
-    options = { target: options }
-  }
-  app.use(proxyMiddleware(options.filter || context, options))
-})
+// Object.keys(proxyTable).forEach(function (context) {
+//   var options = proxyTable[context]
+//   if (typeof options === 'string') {
+//     options = { target: options }
+//   }
+//   app.use(proxyMiddleware(options.filter || context, options))
+// })
 
 // handle fallback for HTML5 history API
 app.use(require('connect-history-api-fallback')())
