@@ -3,7 +3,7 @@
         <div class="g-lsb">
             <ul>
               <li>
-                <a href="javascript:;" draggable="true" @dragstart="dragStart($event, 'kl-input')" @dragend="dragEnd">kl-input</a>
+                <a href="javascript:;" draggable="true" @dragstart="dragStart($event, 'kl-input')">kl-input</a>
               </li>
               <li>
                 <a href="javascript:;" draggable="true" @dragstart="dragStart($event, 'kl-card')">kl-card</a>
@@ -52,7 +52,7 @@
               </li>
             </ul>
         </div>
-        <div class="g-main" @dragenter="drageEnter" @dragover.prevent="" @dragleave="dragLeave" @drop="drop" ref="preview">
+        <div class="g-main" @dragover.prevent="" @drop="drop" ref="preview">
 
         </div>
         <div class="g-rsb">
@@ -85,15 +85,6 @@ export default {
     dragStart(event, type) {
       event.dataTransfer.dropEffect = 'move';
       event.dataTransfer.setData('text/plain', type);
-    },
-    dragEnd(event) {
-      console.log('dragEnd', event);
-    },
-    drageEnter(event) {
-      console.log('drageEnter', event);
-    },
-    dragLeave(event) {
-      console.log('dragLeave', event);
     },
     drop(event) {
       const path = event.path;
