@@ -18,7 +18,6 @@ export default new Router({
       path: '/editor',
       name: 'editor',
       components: {
-        header: resolve => require(['@/components/layout/TopHeader.vue'], resolve),
         body: resolve => require(['@/pages/editor/Editor.vue'], resolve)
       }
     },
