@@ -2,16 +2,14 @@
   <div class="g-side-bar" :style="{width: `${width}px`}">
     <div class="g-side-wrapper" :class="{'f-reverse': placement === 'right'}">
       <div class="m-side-tabs">
-        <div v-for="(c, index) in $slots.default" :key="index"
-             class="u-tab" :class="{'z-active': index === currentTab}" @click="changeTab(index)"
+        <div v-for="(c, index) in tabs" :key="c.name"
+             class="u-tab" :class="{'z-active': index === currentTab}" @click="changeTab(c, index)"
         >
-          {{ c.data.attrs.tag || 'Tab' }}
+          {{ c.label }}
         </div>
       </div>
       <div class="m-body">
-        <keep-alive>
-          <slot name="display"></slot>
-        </keep-alive>
+        <slot></slot>
       </div>
     </div>
     <div class="u-toggle-btn" @click="toggle" :style="getStyle()">
@@ -23,13 +21,16 @@
 <script>
 export default {
   name: 'SideBar',
-  mounted() {
-    this.changeTab(0);
-  },
   props: {
     placement: {
       type: String, // left | right
       default: 'left'
+    },
+    tabs: {
+      type: Array,
+      default() {
+        return [];
+      }
     }
   },
   data() {
@@ -39,15 +40,9 @@ export default {
     };
   },
   methods: {
-    changeTab(index) {
-      const display = this.$slots.default[index];
-      if (!display) {
-        return;
-      }
-
+    changeTab(tab, index) {
       this.currentTab = index;
-      this.$slots.display = [display];
-      this.$forceUpdate();
+      this.$emit('changed', tab);
     },
     toggle() {
       this.width = this.width ? 0 : 250;

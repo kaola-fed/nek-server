@@ -2,15 +2,15 @@
   <div class="g-editor">
     <tools-bar projectName="Project RED"></tools-bar>
     <div class="g-workspace">
-      <side-bar>
-        <component-bar tag="组件" :libraries="libraries"></component-bar>
+      <side-bar :tabs="[{label: '组件', name: 'ComponentBar'}]"
+                @changed="leftSideBarView = $event.name">
+        <keep-alive>
+          <component :is="leftSideBarView" :libraries="libraries"></component>
+        </keep-alive>
       </side-bar>
       <div class="g-preview-wrapper">
         <div class="g-preview" @dragover.prevent="" @drop="drop" ref="preview"></div>
       </div>
-      <side-bar placement="right">
-        <props-bar tag="属性"></props-bar>
-      </side-bar>
     </div>
 
     <div class="u-fs-hint" @click="quitPreview"></div>
@@ -28,11 +28,15 @@ import PropsBar from './components/PropsBar.vue';
 
 import _ from '@/widget/util';
 
-const BaseComponent = Regular.extend({}).directive('r-tag', (elem, value) => {
-  elem.attributes.setNamedItem('r-tag', value);
-});
+import { getLibraries } from '@/api/library';
+
 install(Regular);
-let preview = '';
+
+const BaseComponent = Regular.extend({}).directive('r-tag', {
+  link: function(elem, value) {
+    elem.setAttribute('r-tag', value);
+  }
+});
 
 export default {
   components: {
@@ -41,42 +45,26 @@ export default {
     ComponentBar,
     PropsBar,
   },
-  mounted() {
-    preview = this.$refs.preview;
+  async mounted() {
+    this.preview = this.$refs.preview;
+    const { data } = await getLibraries({ names: 'nekui' });
+    this.libraries = data;
+    this.$forceUpdate();
   },
   data() {
     return {
-      libraries: [
-        {
-          name: 'NEK-UI',
-          version: '0.6.1',
-          components: [
-            {name: 'kl-input'},
-            {name: 'kl-card'},
-            {name: 'kl-button'},
-            {name: 'kl-row'},
-            {name: 'kl-col-1'},
-            {name: 'kl-col-2'},
-            {name: 'kl-col-3'},
-            {name: 'kl-col-4'},
-          ]
-        }
-      ]
+      libraries: [],
+      leftSideBarView: 'ComponentBar'
     };
   },
   methods: {
     drop(event) {
       const path = event.path;
       let componentsName = event.dataTransfer.getData('text');
-      let slot = '';
-      if (componentsName.indexOf('kl-col') > -1) {
-        slot = componentsName.split('-').pop();
-        componentsName = 'kl-col';
-      }
       let flag = false;
       for (let i = 0; i < path.length; i++) {
         if (path[i].className && path[i].className.indexOf('r-tag') > -1) {
-          this.refresh(componentsName, path[i], slot);
+          this.refresh(componentsName, path[i]);
           flag = true;
           break;
         }
@@ -85,10 +73,9 @@ export default {
         this.refresh(componentsName);
       }
     },
-    render(tpl, node = preview) {
-      // while(node.firstChild) {
-      //   node.removeChild(node.firstChild);
-      // }
+    render(tpl, node) {
+      node = node || this.preview;
+
       const RootComponent = new BaseComponent({
         template: tpl
       });
@@ -104,7 +91,7 @@ export default {
           tpl = '<kl-button title="哈哈" ref="root-button" class="root-button r-tag" r-tag="root-button" />';
           break;
         case 'kl-card':
-          tpl = '<kl-card title="用户信息" ref="root-card" class="root-card r-tag" r-tag="root-card"></kl-card>';
+          tpl = '<kl-card title="用户信息" ref="root-card" class="root-card r-tag" r-tag="kl-card" />';
           break;
         case 'kl-row':
           tpl = '<kl-row type="flex" gutter="0" class="root-row r-tag"></kl-row>';
@@ -176,6 +163,10 @@ export default {
   .u-fs-hint:hover:before {
     content: '退出预览'
   }
+}
+
+.r-tag:hover {
+  box-shadow: 0 0 10px rgba(35, 151, 121, 0.5);
 }
 
 .g-row {

@@ -1,12 +1,15 @@
 <template>
   <div class="g-components">
-    <ul v-for="lib in libraries" :key="lib.name" class="g-lib">
-      <li class="u-lib-header">{{ lib.name }} ({{ lib.version }})</li>
-      <li v-for="component in lib.components" :key="component.name" class="u-item"
-          draggable="true" @dragstart="handleDragStart($event, component)">
-        {{ component.name }}
-      </li>
-    </ul>
+    <template v-if="libraries && libraries.length > 0">
+      <ul v-for="lib in libraries" :key="lib.name" class="g-lib">
+        <li class="u-lib-header">{{ lib.name }} ({{ lib.version }})</li>
+        <li v-for="component in lib.components" :key="component.name" class="u-item"
+            draggable="true" @dragstart="handleDragStart($event, component)">
+          {{ component.name }}
+        </li>
+      </ul>
+    </template>
+    <div v-else>暂无组件</div>
   </div>
 </template>
 
@@ -29,7 +32,7 @@ export default {
   methods: {
     handleDragStart(event, component) {
       event.dataTransfer.dropEffect = 'move';
-      event.dataTransfer.setData('text/plain', component.name);
+      event.dataTransfer.setData('text/plain', component.tag);
       this.$emit('dragStart', event);
     }
   }

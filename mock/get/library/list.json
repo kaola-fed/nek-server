@@ -1,0 +1,145 @@
+{
+  "code": 200,
+  "data": [{
+    "name": "NEK-UI",
+    "version": "0.6.1",
+    "components": [
+      {
+        "name": "KlRow",
+        "tag": "kl-row",
+        "isLayout": true,
+        "attributes": {
+          "class": {
+            "type": "String",
+            "default": null
+          },
+          "type": {
+            "type": "String",
+            "default": null
+          },
+          "justify": {
+            "type": "String",
+            "default": "start"
+          },
+          "align": {
+            "type": "String",
+            "default": "top"
+          },
+          "wrap": {
+            "type": "String",
+            "default": "wrap"
+          },
+          "gutter": {
+            "type": "Number",
+            "default": 40
+          }
+        }
+      },
+      {
+        "name": "KlCol",
+        "tag": "kl-col",
+        "isLayout": true,
+        "attributes": {
+          "class": {
+            "type": "String",
+            "default": null
+          },
+          "span": {
+            "type": "Number",
+            "default": 0
+          },
+          "offset": {
+            "type": "Number",
+            "default": 0
+          },
+          "xs": {
+            "type": "Number|Object",
+            "default": null
+          },
+          "sm": {
+            "type": "Number|Object",
+            "default": null
+          },
+          "md": {
+            "type": "Number|Object",
+            "default": null
+          },
+          "lg": {
+            "type": "Number|Object",
+            "default": null
+          }
+        }
+      },
+      {
+        "name": "KlCard",
+        "tag": "kl-card",
+        "isLayout": true,
+        "attributes": {
+          "class": {
+            "type": "String",
+            "default": null
+          },
+          "isShowLine": {
+            "type": "Boolean",
+            "default": true
+          },
+          "isShowBtLine": {
+            "type": "Boolean",
+            "default": true
+          },
+          "isIndent": {
+            "type": "Boolean",
+            "default": true
+          }
+        }
+      },
+      {
+        "name": "KlButton",
+        "tag": "kl-button",
+        "isLayout": false,
+        "attributes": {
+          "class": {
+            "type": "String",
+            "default": null
+          },
+          "title": {
+            "type": "String",
+            "default": "确定"
+          },
+          "type": {
+            "type": "String",
+            "default": "default"
+          },
+          "size": {
+            "type": "String",
+            "default": "normal"
+          },
+          "action": {
+            "type": "String",
+            "default": null
+          },
+          "link": {
+            "type": "String",
+            "default": null
+          },
+          "target": {
+            "type": "String",
+            "default": "_self"
+          },
+          "download": {
+            "type": "String",
+            "default": null
+          },
+          "loading": {
+            "type": "Boolean",
+            "default": true
+          },
+          "disabled": {
+            "type": "Boolean",
+            "default": true
+          }
+        }
+      }
+    ]
+  }]
+}

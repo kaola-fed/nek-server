@@ -17,6 +17,7 @@ export default {
 <style scoped>
 .g-props-bar {
   white-space: nowrap;
+  background-color: #313335;
 
   .u-placeholder {
     text-align: center;
