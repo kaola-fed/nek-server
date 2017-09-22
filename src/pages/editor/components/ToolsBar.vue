@@ -10,14 +10,15 @@
       <el-tooltip content="保存" effect="light" placement="bottom">
         <a class="m-button"><i class="el-icon-upload"></i></a>
       </el-tooltip>
-      <el-tooltip content="随便什么" effect="light" placement="bottom">
-        <a class="m-button"><i class="el-icon-more"></i></a>
+      <el-tooltip content="预览" effect="light" placement="bottom">
+        <a class="m-button" @click="onPreviewClick"><i class="el-icon-star-on"></i></a>
       </el-tooltip>
     </div>
   </div>
 </template>
 
 <script>
+import _ from '@/widget/util';
 
 export default {
   name: 'ToolsBar',
@@ -27,7 +28,11 @@ export default {
   data() {
     return {};
   },
-  methods: {}
+  methods: {
+    onPreviewClick() {
+      _.requestFullScreen();
+    }
+  }
 };
 </script>
 
@@ -36,6 +41,7 @@ export default {
   width: 100%;
   height: 50px;
   background-color: #3C3F41;
+  transition: 500ms;
 
   display: flex;
   align-items: center;
@@ -62,6 +68,13 @@ export default {
       margin: 10px;
       text-align: center;
     }
+  }
+}
+
+:fullscreen {
+  .g-tools-bar {
+    height: 0;
+    overflow: hidden;
   }
 }
 </style>

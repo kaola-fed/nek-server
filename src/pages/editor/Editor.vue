@@ -2,22 +2,31 @@
   <div class="g-editor">
     <tools-bar projectName="Project RED"></tools-bar>
     <div class="g-workspace">
-      <component-bar :libraries="libraries"></component-bar>
-      <div class="g-preview" @dragover.prevent="" @drop="drop" ref="preview"></div>
-      <div class="g-rsb">
-
+      <side-bar>
+        <component-bar tag="组件" :libraries="libraries"></component-bar>
+      </side-bar>
+      <div class="g-preview-wrapper">
+        <div class="g-preview" @dragover.prevent="" @drop="drop" ref="preview"></div>
       </div>
+      <side-bar placement="right">
+        <props-bar tag="属性"></props-bar>
+      </side-bar>
     </div>
+
+    <div class="u-fs-hint" @click="quitPreview"></div>
   </div>
 </template>
 
 <script>
-import {install} from 'nek-ui';
+import { install } from 'nek-ui';
 import Regular from 'regularjs';
 
 import ToolsBar from './components/ToolsBar.vue';
+import SideBar from './components/SideBar.vue';
 import ComponentBar from './components/ComponentsBar.vue';
+import PropsBar from './components/PropsBar.vue';
 
+import _ from '@/widget/util';
 
 const BaseComponent = Regular.extend({}).directive('r-tag', (elem, value) => {
   elem.attributes.setNamedItem('r-tag', value);
@@ -28,7 +37,9 @@ let preview = '';
 export default {
   components: {
     ToolsBar,
-    ComponentBar
+    SideBar,
+    ComponentBar,
+    PropsBar,
   },
   mounted() {
     preview = this.$refs.preview;
@@ -106,6 +117,9 @@ export default {
           break;
       }
       this.render(tpl, node);
+    },
+    quitPreview() {
+      _.exitFullScreen();
     }
   }
 };
@@ -124,41 +138,44 @@ export default {
     display: flex;
     flex: 1;
 
-    .g-preview {
+    .g-preview-wrapper {
       flex: 1;
       height: 100%;
-      margin: 10px;
-      background-color: white;
+      padding: 10px;
+
+      .g-preview {
+        background-color: white;
+        height: 100%;
+      }
     }
+  }
+
+  .u-fs-hint {
+    display: none;
   }
 }
 
-.g-lsb {
-  position: absolute;
-  left: 0;
-  display: inline-block;
-  width: 120px;
-  height: calc(100vh - 60px);
-  border-right: 1px solid #ccc;
-  overflow: auto;
-}
+:fullscreen {
+  .u-fs-hint {
+    display: block;
+    position: fixed;
+    right: 0;
+    bottom: 20px;
+    width: 145px;
+    text-align: center;
 
-.g-main {
-  position: absolute;
-  display: inline-block;
-  left: 120px;
-  right: 120px;
-  width: calc(100vw - 260px);
-  height: calc(100vh - 80px);
-  margin: 10px;
-  overflow: auto;
-}
+    background-color: rgba(43, 43, 43, 0.6);
+    color: white;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
 
-.g-rsb {
-  width: 120px;
-  height: 100%;
-  border-left: 1px solid #ccc;
-  overflow: auto;
+  .u-fs-hint:before {
+    content: '按下 ESC 退出预览'
+  }
+  .u-fs-hint:hover:before {
+    content: '退出预览'
+  }
 }
 
 .g-row {

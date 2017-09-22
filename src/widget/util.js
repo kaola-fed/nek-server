@@ -1,3 +1,5 @@
+import { Message } from 'element-ui';
+
 export default {
   /* 正数校验包含空字符串, 最长4位小数, 默认包含0, 如果zero为false, 则不包含 */
   isPositive(value = '', zero = true) {
@@ -71,5 +73,26 @@ export default {
     } else {
       window.open(url);
     }
+  },
+
+
+  requestFullScreen() {
+    const el = document.documentElement;
+    const requestFullScreen = el.requestFullscreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+    if (!requestFullScreen) {
+      Message && Message.error('当前浏览器不支持该操作');
+      return;
+    }
+
+    requestFullScreen.call(el);
+  },
+  exitFullScreen() {
+    const cancelFullScreen = document.cancelFullScreen || document.webkitCancelFullScreen;
+    if (!cancelFullScreen) {
+      Message && Message.error('当前浏览器不支持该操作');
+      return;
+    }
+
+    cancelFullScreen.call(document);
   }
 };
