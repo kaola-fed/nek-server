@@ -11,6 +11,12 @@
       <div class="g-preview-wrapper">
         <div class="g-preview" @dragover.prevent="" @drop="drop" ref="preview"></div>
       </div>
+      <side-bar :tabs="[{label: '属性', name: 'PropsBar'}]" placement="right"
+                @changed="rightSideBarView = $event.name">
+        <keep-alive>
+          <component :is="rightSideBarView" :libraries="libraries"></component>
+        </keep-alive>
+      </side-bar>
     </div>
 
     <div class="u-fs-hint" @click="quitPreview"></div>
@@ -54,7 +60,8 @@ export default {
   data() {
     return {
       libraries: [],
-      leftSideBarView: 'ComponentBar'
+      leftSideBarView: 'ComponentBar',
+      rightSideBarView: 'PropsBar'
     };
   },
   methods: {
