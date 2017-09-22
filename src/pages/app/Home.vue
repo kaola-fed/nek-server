@@ -2,17 +2,17 @@
   <div>
     <el-row :gutter="20">
       <h2 class="g-section__content__title">最近项目</h2>
-      <el-col v-for="item in list" :key="item.id || +new Date()" :sm="12" :md="8" :lg="6">
+      <el-col v-for="item in projects" :key="item.id || +new Date()" :sm="12" :md="8" :lg="6">
         <el-card :body-style="cardStyle" class="f-mb20">
           <div slot="header">
             <div class="f-tac">
-              <h3 class="f-mb10">项目名称</h3>
-              <span>2017-1-1</span>
+              <h3 class="f-mb10">{{ item.name }}</h3>
+              <span>{{ item.updatedTime | date }}</span>
             </div>
           </div>
-          <el-button type="text" icon="edit" @click="onEditClick"></el-button>
-          <el-button type="text" icon="setting" @click="onSettingClick"></el-button>
-          <el-button type="text" icon="delete" @click="onDeleteClick"></el-button>
+          <el-button type="text" icon="edit" @click="onEditClick(item.id)"></el-button>
+          <el-button type="text" icon="setting" @click="onSettingClick(item.id)"></el-button>
+          <el-button type="text" icon="delete" @click="onDeleteClick(item.id)"></el-button>
         </el-card>
       </el-col>
     </el-row>
@@ -20,7 +20,13 @@
 </template>
 
 <script>
+import { getDashboard } from '@/api/user';
+
 export default {
+  async mounted() {
+    const { data } = await getDashboard();
+    this.projects = data.projects;
+  },
   computed: {
     cardStyle() {
       return {
@@ -33,24 +39,20 @@ export default {
   },
   data() {
     return {
-      list: []
+      projects: []
     };
   },
   methods: {
-    onEditClick() {
+    onEditClick(id) {
       this.$router.push({
         name: 'editor',
-        query: {
-          id: 1
-        }
+        query: { id }
       });
     },
-    onSettingClick() {
+    onSettingClick(id) {
       this.$router.push({
         name: 'projectSetting',
-        query: {
-          id: 1
-        }
+        query: { id }
       });
     },
     onDeleteClick() {

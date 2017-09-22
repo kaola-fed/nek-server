@@ -1,0 +1,32 @@
+{
+  "code": 200,
+  "data": {
+    "projects": [
+      {
+        "id": 1,
+        "name": "Project A",
+        "updatedTime": 1506045795631
+      },
+      {
+        "id": 2,
+        "name": "Project B",
+        "updatedTime": 1506045795631
+      },
+      {
+        "id": 3,
+        "name": "Project C",
+        "updatedTime": 1506045795631
+      },
+      {
+        "id": 4,
+        "name": "Project D",
+        "updatedTime": 1506045795631
+      },
+      {
+        "id": 5,
+        "name": "Project E",
+        "updatedTime": 1506045795631
+      }
+    ]
+  }
+}
