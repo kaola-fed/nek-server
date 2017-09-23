@@ -4,7 +4,7 @@
       <ul v-for="lib in libraries" :key="lib.name" class="g-lib">
         <li class="u-lib-header">{{ lib.name }} ({{ lib.version }})</li>
         <li v-for="component in lib.components" :key="component.name" class="u-item"
-            draggable="true" @dragstart="handleDragStart($event, component)">
+            draggable="true" @dragstart="handleDragStart($event, lib.name, component.tag)">
           {{ component.name }}
         </li>
       </ul>
@@ -30,9 +30,10 @@ export default {
     };
   },
   methods: {
-    handleDragStart(event, component) {
+    handleDragStart(event, libName, tagName) {
       event.dataTransfer.dropEffect = 'move';
-      event.dataTransfer.setData('text/plain', component.tag);
+      event.dataTransfer.setData('libName', libName);
+      event.dataTransfer.setData('tagName', tagName);
       this.$emit('dragStart', event);
     }
   }

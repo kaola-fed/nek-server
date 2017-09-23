@@ -46,7 +46,7 @@
           },
           "span": {
             "type": "Number",
-            "default": 0
+            "default": 3
           },
           "offset": {
             "type": "Number",
@@ -85,11 +85,15 @@
           },
           "isShowBtLine": {
             "type": "Boolean",
-            "default": true
+            "default": false
           },
           "isIndent": {
             "type": "Boolean",
             "default": true
+          },
+          "title": {
+            "type": "String",
+            "default": "Title"
           }
         }
       },
@@ -132,11 +136,11 @@
           },
           "loading": {
             "type": "Boolean",
-            "default": true
+            "default": false
           },
           "disabled": {
             "type": "Boolean",
-            "default": true
+            "default": false
           }
         }
       }
