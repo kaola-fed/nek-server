@@ -2,17 +2,16 @@
   <div class="g-editor">
     <tools-bar projectName="Project RED"></tools-bar>
     <div class="g-workspace">
-      <side-bar :tabs="[{label: '组件', name: 'ComponentBar'}]"
-                @changed="leftSideBarView = $event.name">
+      <side-bar :tabs="leftBars" @changed="leftSideBarView = $event.name">
         <keep-alive>
+          <!-- 参数考虑改成一个store，组件内部进行mapState，下同 -->
           <component :is="leftSideBarView" :libraries="libraries"></component>
         </keep-alive>
       </side-bar>
       <div class="g-preview-wrapper">
         <div class="g-preview" @dragover.prevent="" @drop="drop" ref="preview"></div>
       </div>
-      <side-bar :tabs="[{label: '属性', name: 'PropsBar'}]" placement="right"
-                @changed="rightSideBarView = $event.name">
+      <side-bar :tabs="rightBars" placement="right" @changed="rightSideBarView = $event.name">
         <keep-alive>
           <component :is="rightSideBarView" :libraries="libraries"></component>
         </keep-alive>
@@ -30,6 +29,7 @@ import Regular from 'regularjs';
 import ToolsBar from './components/ToolsBar.vue';
 import SideBar from './components/SideBar.vue';
 import ComponentBar from './components/ComponentsBar.vue';
+import DirectoryBar from './components/DirectoryBar.vue';
 import PropsBar from './components/PropsBar.vue';
 
 import _ from '@/widget/util';
@@ -38,10 +38,9 @@ import { getLibraries } from '@/api/library';
 
 install(Regular);
 
-const BaseComponent = Regular.extend({}).directive('r-tag', {
-  link: function(elem, value) {
-    elem.setAttribute('r-tag', value);
-  }
+const BaseComponent = Regular.extend().directive('r-tag', (elem, value) => {
+  console.log('???');
+  elem.setAttribute('r-tag', value);
 });
 
 export default {
@@ -49,6 +48,7 @@ export default {
     ToolsBar,
     SideBar,
     ComponentBar,
+    DirectoryBar,
     PropsBar,
   },
   async mounted() {
@@ -60,7 +60,16 @@ export default {
   data() {
     return {
       libraries: [],
+
+      leftBars: [
+        { label: '组件', name: 'ComponentBar' },
+        { label: '目录', name: 'DirectoryBar' },
+      ],
       leftSideBarView: 'ComponentBar',
+
+      rightBars: [
+        {label: '属性', name: 'PropsBar'}
+      ],
       rightSideBarView: 'PropsBar'
     };
   },
@@ -81,7 +90,7 @@ export default {
       }
     },
     render(tpl, node) {
-      node = node || this.preview;
+      node = node || this.$refs.preview;
 
       const RootComponent = new BaseComponent({
         template: tpl
@@ -98,7 +107,7 @@ export default {
           tpl = '<kl-button title="哈哈" ref="root-button" class="root-button r-tag" r-tag="root-button" />';
           break;
         case 'kl-card':
-          tpl = '<kl-card title="用户信息" ref="root-card" class="root-card r-tag" r-tag="kl-card" />';
+          tpl = '<some-custom title="用户信息" ref="root-card" class="root-card r-tag" r-tag="test" >test</some-custom>';
           break;
         case 'kl-row':
           tpl = '<kl-row type="flex" gutter="0" class="root-row r-tag"></kl-row>';
@@ -114,6 +123,23 @@ export default {
     },
     quitPreview() {
       _.exitFullScreen();
+    },
+
+    /* 组件变化处理函数 */
+
+    // 拖拽等操作触发的新增组件处理函数
+    createHandler() {
+      //
+    },
+
+    // 选中等操作
+    selectHandler() {
+      //
+    },
+
+    // 更新属性等操作
+    updateHandler() {
+      //
     }
   }
 };
