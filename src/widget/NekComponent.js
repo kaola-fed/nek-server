@@ -42,4 +42,35 @@ NekComponent.prototype.$inject = function(node, { direction = 'bottom', beforeIn
   return group;
 };
 
+NekComponent.prototype.$replace = function(oldNode, { beforeReplace }) {
+  if (!oldNode) {
+    throw Error('Need to provide an old node');
+  }
+
+  let group = this;
+  let fragment = combine.node(group.group || group);
+
+  if (!fragment) {
+    return group;
+  }
+
+  if (beforeReplace) {
+    fragment = beforeReplace(fragment);
+  }
+
+  // replace
+  if (Array.isArray(fragment)) {
+    const newNode = dom.fragment();
+    for (let i of fragment) {
+      newNode.append(i);
+    }
+    oldNode.parentNode.replaceChild(newNode, oldNode);
+  } else {
+    oldNode.parentNode.replaceChild(fragment, oldNode);
+  }
+
+  return group;
+
+};
+
 export default NekComponent;

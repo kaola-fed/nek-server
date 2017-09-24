@@ -10,27 +10,27 @@
         "isLayout": true,
         "attributes": {
           "class": {
-            "type": "String",
+            "type": "string",
             "default": null
           },
           "type": {
-            "type": "String",
+            "type": "string",
             "default": null
           },
           "justify": {
-            "type": "String",
+            "type": "string",
             "default": "start"
           },
           "align": {
-            "type": "String",
+            "type": "string",
             "default": "top"
           },
           "wrap": {
-            "type": "String",
+            "type": "string",
             "default": "wrap"
           },
           "gutter": {
-            "type": "Number",
+            "type": "number",
             "default": 40
           }
         }
@@ -41,31 +41,31 @@
         "isLayout": true,
         "attributes": {
           "class": {
-            "type": "String",
+            "type": "string",
             "default": null
           },
           "span": {
-            "type": "Number",
+            "type": "number",
             "default": 3
           },
           "offset": {
-            "type": "Number",
+            "type": "number",
             "default": 0
           },
           "xs": {
-            "type": "Number|Object",
+            "type": "number|object",
             "default": null
           },
           "sm": {
-            "type": "Number|Object",
+            "type": "number|object",
             "default": null
           },
           "md": {
-            "type": "Number|Object",
+            "type": "number|object",
             "default": null
           },
           "lg": {
-            "type": "Number|Object",
+            "type": "number|object",
             "default": null
           }
         }
@@ -76,23 +76,23 @@
         "isLayout": true,
         "attributes": {
           "class": {
-            "type": "String",
+            "type": "string",
             "default": null
           },
           "isShowLine": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": true
           },
           "isShowBtLine": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
           },
           "isIndent": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": true
           },
           "title": {
-            "type": "String",
+            "type": "string",
             "default": "Title"
           }
         }
@@ -103,43 +103,43 @@
         "isLayout": false,
         "attributes": {
           "class": {
-            "type": "String",
+            "type": "string",
             "default": null
           },
           "title": {
-            "type": "String",
+            "type": "string",
             "default": "确定"
           },
           "type": {
-            "type": "String",
+            "type": "string",
             "default": "default"
           },
           "size": {
-            "type": "String",
+            "type": "string",
             "default": "normal"
           },
           "action": {
-            "type": "String",
+            "type": "string",
             "default": null
           },
           "link": {
-            "type": "String",
+            "type": "string",
             "default": null
           },
           "target": {
-            "type": "String",
+            "type": "string",
             "default": "_self"
           },
           "download": {
-            "type": "String",
+            "type": "string",
             "default": null
           },
           "loading": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
           },
           "disabled": {
-            "type": "Boolean",
+            "type": "boolean",
             "default": false
           }
         }

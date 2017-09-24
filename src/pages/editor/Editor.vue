@@ -4,16 +4,21 @@
     <div class="g-workspace">
       <side-bar :tabs="leftBars" @changed="leftSideBarView = $event.name">
         <keep-alive>
-          <!-- props考虑改成一个store，组件内部进行mapState，下同 -->
           <component :is="leftSideBarView" :libraries="libraries"></component>
         </keep-alive>
       </side-bar>
       <div class="g-preview-wrapper">
-        <div class="g-preview" @dragover.prevent="" @drop="drop" ref="preview"></div>
+        <div ref="preview" class="g-preview"
+             @dragover.prevent="" @drop="onPreviewDrop"
+             @click="onPreviewClick"
+        ></div>
       </div>
       <side-bar :tabs="rightBars" placement="right" @changed="rightSideBarView = $event.name">
         <keep-alive>
-          <component :is="rightSideBarView" :libraries="libraries"></component>
+          <component :is="rightSideBarView"
+                     :attributes="currentAttributes" :model="currentComponent"
+                     @change="onPropChange"
+          ></component>
         </keep-alive>
       </side-bar>
     </div>
@@ -36,21 +41,23 @@ import genRegularTemplate from '@/../core/transfer';
 
 import { getLibraries } from '@/api/library';
 
-const addAttributes = (f, id, lib, tag) => {
-  if (Array.isArray(f)) {
-    for (let i of f) {
+const addAttributes = (fragment, id, lib, tag) => {
+  if (Array.isArray(fragment)) {
+    for (let i of fragment) {
       if (i.setAttribute) {
         i.setAttribute('ns-id', id);
         i.setAttribute('ns-lib', lib);
         i.setAttribute('ns-tag', tag);
+        i.setAttribute('tabIndex', 0);
       }
     }
   } else {
-    f.setAttribute('ns-id', id);
-    f.setAttribute('ns-lib', lib);
-    f.setAttribute('ns-tag', tag);
+    fragment.setAttribute('ns-id', id);
+    fragment.setAttribute('ns-lib', lib);
+    fragment.setAttribute('ns-tag', tag);
+    fragment.setAttribute('tabIndex', 0);
   }
-  return f;
+  return fragment;
 };
 
 export default {
@@ -79,8 +86,6 @@ export default {
   },
   data() {
     return {
-      libraries: [],
-
       leftBars: [
         { label: '组件', name: 'ComponentBar' },
         { label: '目录', name: 'DirectoryBar' },
@@ -90,7 +95,11 @@ export default {
       rightBars: [
         {label: '属性', name: 'PropsBar'}
       ],
-      rightSideBarView: 'PropsBar'
+      rightSideBarView: 'PropsBar',
+
+      libraries: [],
+      currentAttributes: [],
+      currentComponent: null
     };
   },
   methods: {
@@ -102,12 +111,12 @@ export default {
 
     /*====== 事件绑定 ======*/
 
-    drop(event) {
+    onPreviewDrop(event) {
       const libName = event.dataTransfer.getData('libName');
       const tagName = event.dataTransfer.getData('tagName');
       // 拖拽已有组件的时候带上
       const nsId = event.dataTransfer.getData('nsId');
-      const parent = this.getParentNode(event.path);
+      const parent = this.getFirstNSNode(event.path, true);
 
       if (nsId) {
         this.updateHandler();
@@ -116,23 +125,53 @@ export default {
       }
     },
 
+    onPreviewClick(event) {
+      const target = this.getFirstNSNode(event.path);
+
+      if (!target) {
+        this.currentAttributes = [];
+        return;
+      }
+
+      const nodeId = target.getAttribute('ns-id');
+      const libName = target.getAttribute('ns-lib');
+      const tagName = target.getAttribute('ns-tag');
+
+      const vNode = this.$nekVNodes[nodeId];
+      const componentConfig = this.getComponentConfig(libName, tagName);
+      const attributes = {
+        ...componentConfig.attributes,
+        ...vNode.attributes
+      };
+
+      this.currentAttributes = Object.keys(attributes).sort().map(el => ({ name: el, ...attributes[el] }));
+      this.currentNodeId = nodeId;
+    },
+
+    onPropChange(event) {
+      const vNode = this.$nekVNodes[this.currentNodeId];
+      vNode.attributes[event.name] = { type: typeof event.value, value: event.value };
+
+      const tpl = genRegularTemplate(this.$nekVNodes, vNode);
+      const oldNode = document.querySelector(`[ns-id="${this.currentNodeId}"]`);
+      const libName = oldNode.getAttribute('ns-lib');
+      const tagName = oldNode.getAttribute('ns-tag');
+
+      vNode.instant = this.replace(tpl, oldNode, { id: this.currentNodeId, lib: libName, tag: tagName });
+    },
+
     /*====== 组件变化处理函数 ======*/
 
     // 拖拽等操作触发的新增组件处理函数
     createHandler(libName, tagName, parentNode/*, nextBrother = null*/) {
-      const lib = this.libraries.find(el => el.name === libName);
-      if (!lib) {
-        throw new Error(`Unknown component library '${libName}'`);
-      }
-
-      let parentId = null;
-      if (parentNode) {
-        parentId = parentNode.getAttribute('ns-id');
-      }
-
-      const component = lib.components.find(el => el.tag === tagName);
+      const component = this.getComponentConfig(libName, tagName);
       if (!component) {
         return;
+      }
+
+      let parentId = 0;
+      if (parentNode) {
+        parentId = parentNode.getAttribute('ns-id');
       }
 
       const attributes = {};
@@ -156,12 +195,9 @@ export default {
       };
 
       const tpl = genRegularTemplate(this.$nekVNodes, this.$nekVNodes[nodeId]);
-      this.inject(tpl, parentNode, { id: nodeId, lib: libName, tag: tagName });
-    },
-
-    // 选中等操作
-    selectHandler() {
-      //
+      this.$nekVNodes[nodeId].instant = this.inject(tpl, parentNode, { id: nodeId, lib: libName, tag: tagName });
+      // TODO: push换成插入
+      this.$nekVNodes[parentId].children.push(nodeId);
     },
 
     // 更新属性等操作
@@ -171,23 +207,33 @@ export default {
 
     /*====== 工具函数等 ======*/
 
-    canLayout(libName, tagName) {
+    getComponentConfig(libName, tagName) {
       const lib = this.libraries.find(el => el.name === libName);
       if (!lib) {
-        return false;
+        return null;
       }
 
-      const res = (lib.components.find(el => el.tag === tagName) || {}).isLayout;
-      return !!res;
+      return lib.components.find(el => el.tag === tagName);
     },
 
-    getParentNode(path) {
+    canLayout(libName, tagName) {
+      const component = this.getComponentConfig(libName, tagName) || {};
+      return !!component.isLayout;
+    },
+
+    getFirstNSNode(path, needLayout) {
       for (let i of path) {
-        if (i.getAttribute) {
-          let nsTag = i.getAttribute('ns-tag');
-          if (nsTag && this.canLayout(i.getAttribute('ns-lib'), nsTag)) {
-            return i;
-          }
+        if (!i.getAttribute) {
+          continue;
+        }
+        let nsTag = i.getAttribute('ns-tag');
+        if (!nsTag) {
+          continue;
+        }
+        if (!needLayout) {
+          return i;
+        } else if (this.canLayout(i.getAttribute('ns-lib'), nsTag)) {
+          return i;
         }
       }
       return null;
@@ -204,7 +250,20 @@ export default {
         direction,
         beforeInsert: f => addAttributes(f, id, lib, tag)
       });
+
+      return RootComponent;
     },
+
+    replace(tpl, oldNode, { id, lib, tag }) {
+      const RootComponent = new NekComponent({
+        template: tpl
+      });
+      RootComponent.$replace(oldNode, {
+        beforeReplace: f => addAttributes(f, id, lib, tag)
+      });
+
+      return RootComponent;
+    }
   }
 };
 </script>
@@ -260,6 +319,10 @@ export default {
   .u-fs-hint:hover:before {
     content: '退出预览'
   }
+}
+
+*[ns-tag]:target {
+  box-shadow: 0 0 5px rgba(0, 0, 255, 0.6);
 }
 
 .g-row {
