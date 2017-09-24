@@ -5,9 +5,9 @@
       <el-col v-for="attr in attributes" :key="attr.name" :span="24" class="f-mb15">
         <div class="u-label">{{ attr.name }}</div>
         <div>
-          <el-input v-if="attr.type === 'number'" v-model.number="attr.value" @blur="onInputBlur(attr)"></el-input>
-          <el-checkbox v-else-if="attr.type === 'boolean'" @changed="onBoolChange($event, attr)" v-model="attr.value"></el-checkbox>
-          <el-input v-else v-model="attr.value" @blur="onInputBlur(attr)"></el-input>
+          <el-input v-if="attr.type === 'number'" v-model.number="attr.value" @change="debounceInputChange(attr)"></el-input>
+          <el-checkbox v-else-if="attr.type === 'boolean'" @changed="onBoolChange(attr)" v-model="attr.value"></el-checkbox>
+          <el-input v-else v-model="attr.value" @change="debounceInputChange(attr)"></el-input>
         </div>
       </el-col>
     </el-row>
@@ -15,6 +15,8 @@
 </template>
 
 <script>
+import debounce from 'throttle-debounce/debounce';
+
 export default {
   name: 'PropsBar',
   props: {
@@ -25,16 +27,15 @@ export default {
       }
     }
   },
+  created() {
+    this.debounceInputChange = debounce(600, value => this.update(value));
+  },
   data() {
     return {};
   },
   methods: {
-    onInputBlur(attr) {
+    onBoolChange(attr) {
       this.update(attr);
-    },
-
-    onBoolChange(event, attr) {
-      this.update({...event, attr});
     },
 
     // 统一event的格式后再激活事件
