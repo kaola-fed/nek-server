@@ -133,9 +133,7 @@ export default {
         return;
       }
 
-      const nodeId = target.getAttribute('ns-id');
-      const libName = target.getAttribute('ns-lib');
-      const tagName = target.getAttribute('ns-tag');
+      const { nodeId, libName, tagName } = this.getNSInfo(target);
 
       const vNode = this.$nekVNodes[nodeId];
       const componentConfig = this.getComponentConfig(libName, tagName);
@@ -154,8 +152,7 @@ export default {
 
       const tpl = genRegularTemplate(this.$nekVNodes, vNode);
       const oldNode = document.querySelector(`[ns-id="${this.currentNodeId}"]`);
-      const libName = oldNode.getAttribute('ns-lib');
-      const tagName = oldNode.getAttribute('ns-tag');
+      const { libName, tagName } = this.getNSInfo(oldNode);
 
       vNode.instant = this.replace(tpl, oldNode, { id: this.currentNodeId, lib: libName, tag: tagName });
     },
@@ -237,6 +234,18 @@ export default {
         }
       }
       return null;
+    },
+
+    getNSInfo(node) {
+      if (!node || !node.getAttribute) {
+        return null;
+      }
+
+      const nodeId = node.getAttribute('ns-id');
+      const libName = node.getAttribute('ns-lib');
+      const tagName = node.getAttribute('ns-tag');
+
+      return { nodeId, libName, tagName };
     },
 
 
