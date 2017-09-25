@@ -119,7 +119,7 @@ export default {
       const parent = this.getFirstNSNode(event.path, true);
 
       if (nsId) {
-        this.updateHandler();
+        this.updateHandler(nsId, parent);
       } else {
         this.createHandler(libName, tagName, parent);
       }
@@ -151,7 +151,7 @@ export default {
       vNode.attributes[event.name] = { type: typeof event.value, value: event.value };
 
       const tpl = genRegularTemplate(this.$nekVNodes, vNode);
-      const oldNode = document.querySelector(`[ns-id="${this.currentNodeId}"]`);
+      const oldNode = this.getNodeByNSId(this.currentNodeId);
       const { libName, tagName } = this.getNSInfo(oldNode);
 
       vNode.instant = this.replace(tpl, oldNode, { id: this.currentNodeId, lib: libName, tag: tagName });
@@ -198,8 +198,14 @@ export default {
     },
 
     // 更新属性等操作
-    updateHandler() {
-      //
+    updateHandler(nodeId, newParentNode) {
+      const node = this.getNodeByNSId(nodeId);
+      const vNode = this.$nekVNodes[nodeId];
+      const oldParentNode = this.getNodeByNSId(vNode.parent);
+
+      oldParentNode.removeChild(node);
+      // TODO: 换成insertBefore，参数加上兄弟节点
+      newParentNode.appendChild(node);
     },
 
     /*====== 工具函数等 ======*/
@@ -246,6 +252,10 @@ export default {
       const tagName = node.getAttribute('ns-tag');
 
       return { nodeId, libName, tagName };
+    },
+
+    getNodeByNSId(id) {
+      return document.querySelector(`[ns-id="${id}"]`);
     },
 
 

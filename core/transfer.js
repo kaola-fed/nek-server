@@ -18,7 +18,7 @@ const genRegularTemplate = (vNodeTree, vNode = null) => {
   vNode = vNode || vNodeTree['0'];
 
   const { tagName, attributes, children } = vNode;
-  return `<${tagName}${genAttributes(attributes)}>${children.length > 0 ? children.map(el => genRegularTemplate(vNodeTree, vNodeTree[el])).join('') : ''}</${tagName}>`;
+  return `<${tagName}${genAttributes(attributes)}>${children.map(el => genRegularTemplate(vNodeTree, vNodeTree[el])).join('')}</${tagName}>`;
 };
 
 export default genRegularTemplate;
