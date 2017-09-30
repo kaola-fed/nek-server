@@ -1,19 +1,25 @@
 <template>
   <div>
+    <el-row :gutter="0" type="flex">
+      <el-col :span="24">
+        <h2 class="g-section__content__title">最近项目
+          <el-button type="primary" class="f-fr" @click="onCreateClick">新建项目</el-button></h2>
+      </el-col>
+    </el-row>
     <el-row :gutter="20">
-      <h2 class="g-section__content__title">最近项目</h2>
       <el-col v-for="item in projects" :key="item.id || +new Date()" :sm="12" :md="8" :lg="6">
-        <el-card :body-style="cardStyle" class="f-mb20">
+        <div @click="onItemClick(item.id)" class="m-project-card">
+        <el-card :body-style="cardStyle">
           <div slot="header">
             <div class="f-tac">
               <h3 class="f-mb10">{{ item.name }}</h3>
               <span>{{ item.updatedTime | date }}</span>
             </div>
           </div>
-          <el-button type="text" icon="edit" @click="onEditClick(item.id)"></el-button>
-          <el-button type="text" icon="setting" @click="onSettingClick(item.id)"></el-button>
-          <el-button type="text" icon="delete" @click="onDeleteClick(item.id)"></el-button>
+          <el-button type="text" icon="setting" @click.stop="onSettingClick(item.id)"></el-button>
+          <el-button type="text" icon="delete" @click.stop="onDeleteClick(item.id)"></el-button>
         </el-card>
+        </div>
       </el-col>
     </el-row>
   </div>
@@ -43,7 +49,10 @@ export default {
     };
   },
   methods: {
-    onEditClick(id) {
+    onCreateClick() {
+      this.$router.push({ name: 'projectCreate' });
+    },
+    onItemClick(id) {
       this.$router.push({
         name: 'editor',
         query: { id }
@@ -63,4 +72,14 @@ export default {
 </script>
 
 <style scoped>
+.m-project-card {
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: 0.3s;
+  border-radius: 4px;
+
+  &:hover {
+    box-shadow: 0 0 8px 0 rgba(100, 100, 100, 0.7);
+  }
+}
 </style>
