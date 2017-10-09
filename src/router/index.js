@@ -16,10 +16,21 @@ export default new Router({
     },
     {
       path: '/editor',
-      name: 'editor',
       components: {
-        body: resolve => require(['@/pages/editor/Editor.vue'], resolve)
-      }
+        body: resolve => require(['@/components/layout/Body.vue'], resolve)
+      },
+      children: [
+        {
+          path: '',
+          name: 'editor',
+          component: resolve => require(['@/pages/editor/Editor.vue'], resolve)
+        },
+        {
+          path: 'list',
+          name: 'listTemplate',
+          component: resolve => require(['@/pages/editor/templates/ListEditor.vue'], resolve)
+        }
+      ]
     },
     {
       path: '/app',
@@ -44,16 +55,6 @@ export default new Router({
           name: 'project',
           component: resolve => require(['@/components/layout/Main.vue'], resolve),
           children: [
-            {
-              path: 'create',
-              name: 'projectCreate',
-              component: resolve => require(['@/pages/app/project/Create.vue'], resolve)
-            },
-            {
-              path: 'setting',
-              name: 'projectSetting',
-              component: resolve => require(['@/pages/app/project/Setting.vue'], resolve)
-            }
           ]
         }
       ]

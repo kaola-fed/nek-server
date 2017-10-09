@@ -22,13 +22,18 @@
         </div>
       </el-col>
     </el-row>
+    <project-modal :visible="projectVisible" @close="projectVisible = false"></project-modal>
   </div>
 </template>
 
 <script>
+import ProjectModal from './components/ProjectModal.vue';
 import { getDashboard } from '@/api/user';
 
 export default {
+  components: {
+    ProjectModal
+  },
   async mounted() {
     const { data } = await getDashboard();
     this.projects = data.projects;
@@ -45,12 +50,13 @@ export default {
   },
   data() {
     return {
-      projects: []
+      projects: [],
+      projectVisible: false
     };
   },
   methods: {
     onCreateClick() {
-      this.$router.push({ name: 'projectCreate' });
+      this.projectVisible = true;
     },
     onItemClick(id) {
       this.$router.push({
