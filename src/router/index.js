@@ -55,6 +55,11 @@ export default new Router({
           name: 'project',
           component: resolve => require(['@/components/layout/Main.vue'], resolve),
           children: [
+            {
+              path: 'detail',
+              name: 'projectDetail',
+              component: resolve => require(['@/pages/app/project/Project.vue'], resolve)
+            }
           ]
         }
       ]

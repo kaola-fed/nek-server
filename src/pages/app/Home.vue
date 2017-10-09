@@ -22,7 +22,7 @@
         </div>
       </el-col>
     </el-row>
-    <project-modal :visible="projectVisible" @close="projectVisible = false"></project-modal>
+    <project-modal :id="currentProjectId" :visible="projectVisible" @close="onProjectModalClose"></project-modal>
   </div>
 </template>
 
@@ -51,27 +51,31 @@ export default {
   data() {
     return {
       projects: [],
-      projectVisible: false
+      projectVisible: false,
+      currentProjectId: null
     };
   },
   methods: {
     onCreateClick() {
+      this.currentProjectId = null;
       this.projectVisible = true;
     },
     onItemClick(id) {
       this.$router.push({
-        name: 'editor',
+        name: 'projectDetail',
         query: { id }
       });
     },
     onSettingClick(id) {
-      this.$router.push({
-        name: 'projectSetting',
-        query: { id }
-      });
+      this.currentProjectId = id;
+      this.projectVisible = true;
     },
     onDeleteClick() {
       this.$confirm('确认要删除项目？', '删除项目');
+    },
+    onProjectModalClose() {
+      this.projectVisible = false;
+      this.currentProjectId = null;
     }
   }
 };
