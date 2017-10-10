@@ -1,5 +1,5 @@
 @charset "UTF-8";
-@import "./iconfont/style.css";
+@import "./iconfont.css";
 @import "./theme/kaola.css";
 
 /* 全局使用样式,使用g命名空间开头 */

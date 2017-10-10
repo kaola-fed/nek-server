@@ -4,14 +4,16 @@
       <i class="el-icon-arrow-left"></i>&nbsp;&nbsp;{{ projectName }}
     </router-link>
     <div class="m-tools">
-      <el-tooltip content="设置" effect="light" placement="bottom">
-        <a class="m-button"><i class="el-icon-setting"></i></a>
-      </el-tooltip>
       <el-tooltip content="保存" effect="light" placement="bottom">
-        <a class="m-button"><i class="el-icon-upload"></i></a>
+        <a class="m-button"><i class="iconfont-save"></i></a>
       </el-tooltip>
       <el-tooltip content="预览" effect="light" placement="bottom">
-        <a class="m-button" @click="onPreviewClick"><i class="el-icon-star-on"></i></a>
+        <a class="m-button" @click="onPreviewClick"><i class="iconfont-start"></i></a>
+      </el-tooltip>
+      <!-- 自定义按钮 -->
+      <el-tooltip v-for="(item, index) in buttons" :key="`toolBtn_${item.tip}_${index}`"
+                  :content="item.tip" effect="light" placement="bottom">
+        <a class="m-button" @click="item.onClick"><i :class="item.icon"></i></a>
       </el-tooltip>
     </div>
   </div>
@@ -23,7 +25,11 @@ import _ from '@/widget/util';
 export default {
   name: 'ToolsBar',
   props: {
-    projectName: String
+    projectName: String,
+    buttons: {
+      type: Array,
+      default: () => []
+    }
   },
   data() {
     return {};
@@ -58,6 +64,7 @@ export default {
   }
 
   .m-tools {
+    flex: 1;
     margin: 0 30px;
 
     .m-button {
@@ -67,6 +74,7 @@ export default {
       font-size: 14px;
       margin: 10px;
       text-align: center;
+      text-decoration: none;
     }
   }
 }
