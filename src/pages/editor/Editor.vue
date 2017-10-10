@@ -12,6 +12,7 @@
              @dragover.prevent="" @drop="onPreviewDrop"
              @click="onPreviewClick"
         ></div>
+        <side-bar :tabs="codeBars" placement="bottom"></side-bar>
       </div>
       <side-bar :tabs="rightBars" placement="right" @changed="rightSideBarView = $event.name">
         <keep-alive>
@@ -93,9 +94,14 @@ export default {
       leftSideBarView: 'ComponentBar',
 
       rightBars: [
-        {label: '属性', name: 'PropsBar'}
+        { label: '属性', name: 'PropsBar' }
       ],
       rightSideBarView: 'PropsBar',
+
+      codeBars: [
+        { label: 'HTML' },
+        { label: 'JavaScript' },
+      ],
 
       libraries: [],
       currentAttributes: [],
@@ -303,11 +309,18 @@ export default {
     .g-preview-wrapper {
       flex: 1;
       height: 100%;
-      padding: 10px;
+      display: flex;
+      flex-direction: column;
 
       .g-preview {
+        flex: 1;
+        margin: 10px;
         background-color: white;
-        height: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 10px;
+        box-shadow: 0 0 3px 3px rgba(43, 43, 43, 0.1);
+        border-radius: 3px;
       }
     }
   }
@@ -340,7 +353,7 @@ export default {
   }
 }
 
-*[ns-tag]:target {
+[ns-tag]:target {
   box-shadow: 0 0 5px rgba(0, 0, 255, 0.6);
 }
 

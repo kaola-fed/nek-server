@@ -48,6 +48,7 @@ export default {
   height: 50px;
   background-color: #3C3F41;
   transition: 500ms;
+  z-index: 3;
 
   display: flex;
   align-items: center;
