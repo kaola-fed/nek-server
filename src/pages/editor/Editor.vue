@@ -39,23 +39,20 @@ import PropsBar from './components/PropsBar.vue';
 import _ from '@/widget/util';
 import NekComponent from '@/widget/NekComponent';
 import genRegularTemplate from '@/../core/transfer';
+import NSNode from '@/../core/NSNode';
 
 import { getLibraries } from '@/api/library';
 
-const addAttributes = (fragment, id, lib, tag) => {
+const addAttributes = (fragment, id) => {
   if (Array.isArray(fragment)) {
     for (let i of fragment) {
       if (i.setAttribute) {
         i.setAttribute('ns-id', id);
-        i.setAttribute('ns-lib', lib);
-        i.setAttribute('ns-tag', tag);
         i.setAttribute('tabIndex', 0);
       }
     }
   } else {
     fragment.setAttribute('ns-id', id);
-    fragment.setAttribute('ns-lib', lib);
-    fragment.setAttribute('ns-tag', tag);
     fragment.setAttribute('tabIndex', 0);
   }
   return fragment;
@@ -73,12 +70,7 @@ export default {
     this.preview = this.$refs.preview;
     this.$nekVNodes = {
       // 默认根节点
-      0: {
-        tagName: 'div',
-        parent: null,
-        attributes: { id: 'ns-app' },
-        children: []
-      }
+      0: new NSNode(0, { tagName: 'div' })
     };
 
     const { data } = await getLibraries({ names: 'nekui' });
@@ -136,20 +128,23 @@ export default {
 
       if (!target) {
         this.currentAttributes = [];
+        this.currentNodeId = null;
         return;
       }
 
-      const { nodeId, libName, tagName } = this.getNSInfo(target);
+      const vNode = this.getNSInfo(target);
+      if (!vNode) {
+        return;
+      }
 
-      const vNode = this.$nekVNodes[nodeId];
-      const componentConfig = this.getComponentConfig(libName, tagName);
+      const componentConfig = this.getComponentConfig(vNode.libName, vNode.tagName);
       const attributes = {
         ...componentConfig.attributes,
         ...vNode.attributes
       };
 
       this.currentAttributes = Object.keys(attributes).sort().map(el => ({ name: el, ...attributes[el] }));
-      this.currentNodeId = nodeId;
+      this.currentNodeId = vNode.id;
     },
 
     onPropChange(event) {
@@ -158,9 +153,8 @@ export default {
 
       const tpl = genRegularTemplate(this.$nekVNodes, vNode);
       const oldNode = this.getNodeByNSId(this.currentNodeId);
-      const { libName, tagName } = this.getNSInfo(oldNode);
 
-      vNode.instant = this.replace(tpl, oldNode, { id: this.currentNodeId, lib: libName, tag: tagName });
+      this.replace(tpl, oldNode, { id: this.currentNodeId });
     },
 
     /*====== 组件变化处理函数 ======*/
@@ -188,19 +182,18 @@ export default {
         }
       }
 
-      // TODO: ObjectId gen
-      const nodeId = Math.random();
-      this.$nekVNodes[nodeId] = {
+      const nodeId = NSNode.generateId();
+      this.$nekVNodes[nodeId] = new NSNode(nodeId, {
         tagName,
+        libName,
         parent: parentId,
-        attributes,
-        children: []
-      };
+        attributes
+      });
 
       const tpl = genRegularTemplate(this.$nekVNodes, this.$nekVNodes[nodeId]);
-      this.$nekVNodes[nodeId].instant = this.inject(tpl, parentNode, { id: nodeId, lib: libName, tag: tagName });
-      // TODO: push换成插入
-      this.$nekVNodes[parentId].children.push(nodeId);
+      this.inject(tpl, parentNode, { id: nodeId });
+      // TODO: 加上nextBrotherId
+      this.$nekVNodes[parentId].insertChild(nodeId);
     },
 
     // 更新属性等操作
@@ -235,13 +228,13 @@ export default {
         if (!i.getAttribute) {
           continue;
         }
-        let nsTag = i.getAttribute('ns-tag');
-        if (!nsTag) {
+        const nsId = i.getAttribute('ns-id');
+        if (!nsId) {
           continue;
         }
-        if (!needLayout) {
-          return i;
-        } else if (this.canLayout(i.getAttribute('ns-lib'), nsTag)) {
+
+        const vNode = this.$nekVNodes[nsId];
+        if (!needLayout || this.canLayout(vNode.libName, vNode.tagName)) {
           return i;
         }
       }
@@ -254,10 +247,7 @@ export default {
       }
 
       const nodeId = node.getAttribute('ns-id');
-      const libName = node.getAttribute('ns-lib');
-      const tagName = node.getAttribute('ns-tag');
-
-      return { nodeId, libName, tagName };
+      return this.$nekVNodes[nodeId] || null;
     },
 
     getNodeByNSId(id) {
@@ -265,7 +255,7 @@ export default {
     },
 
 
-    inject(tpl, parent, { direction, id, lib, tag }) {
+    inject(tpl, parent, { direction, id }) {
       parent = parent || this.$refs.preview;
 
       const RootComponent = new NekComponent({
@@ -273,18 +263,18 @@ export default {
       });
       RootComponent.$inject(parent, {
         direction,
-        beforeInsert: f => addAttributes(f, id, lib, tag)
+        beforeInsert: f => addAttributes(f, id)
       });
 
       return RootComponent;
     },
 
-    replace(tpl, oldNode, { id, lib, tag }) {
+    replace(tpl, oldNode, { id }) {
       const RootComponent = new NekComponent({
         template: tpl
       });
       RootComponent.$replace(oldNode, {
-        beforeReplace: f => addAttributes(f, id, lib, tag)
+        beforeReplace: f => addAttributes(f, id)
       });
 
       return RootComponent;
@@ -353,7 +343,7 @@ export default {
   }
 }
 
-[ns-tag]:target {
+[ns-id]:target {
   box-shadow: 0 0 5px rgba(0, 0, 255, 0.6);
 }
 
