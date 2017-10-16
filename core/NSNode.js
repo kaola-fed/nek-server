@@ -1,3 +1,6 @@
+let counter = 0;
+let counterTimer = null;
+
 export default class NSNode {
   constructor(id, { tagName, libName = 'native', parent = null, children = [], attributes = {}, events = {} }) {
     this.id = id;
@@ -14,8 +17,14 @@ export default class NSNode {
   /* 静态函数 */
 
   static generateId() {
-    // TODO: id gen
-    return `${Math.random()}`;
+    if (!counter && !counterTimer) {
+      counterTimer = setTimeout(() => {
+        counter = 0;
+        counterTimer = null;
+      }, 1000);
+    }
+    ++counter;
+    return new Date().getTime().toString(16) + counter.toString(16).padStart(5, '0');
   }
 
   /* 子元素操作 */
