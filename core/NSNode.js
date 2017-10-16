@@ -11,10 +11,14 @@ export default class NSNode {
     this.events = events;
   }
 
+  /* 静态函数 */
+
   static generateId() {
     // TODO: id gen
     return `${Math.random()}`;
   }
+
+  /* 子元素操作 */
 
   insertChild(childId, beforeId = null) {
     // 统一id类型为字符串
@@ -45,5 +49,13 @@ export default class NSNode {
   removeChild(childId) {
     const index = this.children.findIndex(el => el.id === childId);
     this.children.splice(index, 1);
+  }
+
+  /* 属性/事件操作 */
+  setAttribute(name, value, type) {
+    this.attributes[name] = {
+      value,
+      type: type || typeof value
+    };
   }
 }

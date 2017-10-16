@@ -149,7 +149,7 @@ export default {
 
     onPropChange(event) {
       const vNode = this.$nekVNodes[this.currentNodeId];
-      vNode.attributes[event.name] = { type: typeof event.value, value: event.value };
+      vNode.setAttribute(event.name, event.value);
 
       const tpl = genRegularTemplate(this.$nekVNodes, vNode);
       const oldNode = this.getNodeByNSId(this.currentNodeId);
