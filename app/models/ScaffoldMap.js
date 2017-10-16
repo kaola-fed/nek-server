@@ -2,21 +2,29 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const projectSchema = new Schema({
-  name: { type: String, required: true },
+  keyword: { type: String, required: true },
   url: { type: String, required: true }
 }, { timestamps: true, versionKey: false });
 
 projectSchema.statics = {
-  async queryOne(name) {
-    return await this.findOne({ name });
+  async queryOne(keyword) {
+    return await this.findOne({ keyword });
   },
 
-  async upsert(name, url) {
-    name = name || new mongoose.Types.ObjectId;
+  async upsert(keyword, url) {
+    keyword = keyword || new mongoose.Types.ObjectId;
     return await this.update(
-      { name },
-      JSON.parse(JSON.stringify({ name, url })),
+      { keyword },
+      JSON.parse(JSON.stringify({ keyword, url })),
       { upsert: true });
+  },
+
+  async remove(keyword) {
+    return await this.deleteOne({ keyword });
+  },
+
+  async exist(keyword) {
+    return !!(await this.where('keyword').equals(keyword)).length;
   },
 
   async getList() {
