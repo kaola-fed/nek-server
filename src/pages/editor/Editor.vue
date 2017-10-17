@@ -209,6 +209,10 @@ export default {
     // 更新属性等操作
     updateHandler(nodeId, newParentNode) {
       const node = this.getNodeByNSId(nodeId);
+      if (node.contains(newParentNode)) {
+        return;
+      }
+
       const vNode = this.$nekVNodes[nodeId];
       const oldParentNode = this.getNodeByNSId(vNode.parent);
 
