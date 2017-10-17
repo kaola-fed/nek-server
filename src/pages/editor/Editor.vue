@@ -8,8 +8,8 @@
         </keep-alive>
       </side-bar>
       <div class="g-preview-wrapper">
-        <div ref="preview" class="g-preview"
-             @dragover.prevent="" @drop="onPreviewDrop"
+        <div ref="preview" class="g-preview" id="ns-preview" ns-id="0"
+             @dragover.prevent="" @dragstart="onPreviewDrag" @drop="onPreviewDrop"
              @click="onPreviewClick"
         ></div>
         <side-bar :tabs="codeBars" placement="bottom"></side-bar>
@@ -43,17 +43,21 @@ import NSNode from '@/../core/NSNode';
 
 import { getLibraries } from '@/api/library';
 
+const NSID = 'ns-id';
+
 const addAttributes = (fragment, id) => {
   if (Array.isArray(fragment)) {
     for (let i of fragment) {
       if (i.setAttribute) {
-        i.setAttribute('ns-id', id);
+        i.setAttribute(NSID, id);
         i.setAttribute('tabIndex', 0);
+        i.setAttribute('draggable', true);
       }
     }
   } else {
-    fragment.setAttribute('ns-id', id);
+    fragment.setAttribute(NSID, id);
     fragment.setAttribute('tabIndex', 0);
+    fragment.setAttribute('draggable', true);
   }
   return fragment;
 };
@@ -109,12 +113,18 @@ export default {
 
     /*====== 事件绑定 ======*/
 
+    onPreviewDrag(event) {
+      event.dataTransfer.dropEffect = 'move';
+      const node = this.getFirstNSNode(event.path);
+      event.dataTransfer.setData('nsId', node.getAttribute(NSID));
+    },
+
     onPreviewDrop(event) {
       const libName = event.dataTransfer.getData('libName');
       const tagName = event.dataTransfer.getData('tagName');
       // 拖拽已有组件的时候带上
       const nsId = event.dataTransfer.getData('nsId');
-      const parent = this.getFirstNSNode(event.path, true);
+      const parent = this.getFirstNSNode(event.path, true) || this.$refs.preview;
 
       if (nsId) {
         this.updateHandler(nsId, parent);
@@ -126,7 +136,7 @@ export default {
     onPreviewClick(event) {
       const target = this.getFirstNSNode(event.path);
 
-      if (!target) {
+      if (!target || target.id === 'ns-preview') {
         this.currentAttributes = [];
         this.currentNodeId = null;
         return;
@@ -168,7 +178,7 @@ export default {
 
       let parentId = 0;
       if (parentNode) {
-        parentId = parentNode.getAttribute('ns-id');
+        parentId = parentNode.getAttribute(NSID);
       }
 
       const attributes = {};
@@ -202,6 +212,19 @@ export default {
       const vNode = this.$nekVNodes[nodeId];
       const oldParentNode = this.getNodeByNSId(vNode.parent);
 
+      const oldParentId = oldParentNode.getAttribute(NSID);
+      const newParentId = newParentNode.getAttribute(NSID);
+      if (oldParentId === newParentId) {
+        return;
+      }
+
+      const oldParentVNode = this.$nekVNodes[oldParentId];
+      const newParentVNode = this.$nekVNodes[newParentId];
+
+      oldParentVNode.removeChild(nodeId);
+      newParentVNode.insertChild(nodeId);
+      vNode.parent = newParentId;
+
       oldParentNode.removeChild(node);
       // TODO: 换成insertBefore，参数加上兄弟节点
       newParentNode.appendChild(node);
@@ -228,7 +251,7 @@ export default {
         if (!i.getAttribute) {
           continue;
         }
-        const nsId = i.getAttribute('ns-id');
+        const nsId = i.getAttribute(NSID);
         if (!nsId) {
           continue;
         }
@@ -246,7 +269,7 @@ export default {
         return null;
       }
 
-      const nodeId = node.getAttribute('ns-id');
+      const nodeId = node.getAttribute(NSID);
       return this.$nekVNodes[nodeId] || null;
     },
 
@@ -344,7 +367,7 @@ export default {
 }
 
 [ns-id]:target {
-  box-shadow: 0 0 5px rgba(0, 0, 255, 0.6);
+  box-shadow: 0 0 5px rgba(0, 0, 255, 0.6) !important;
 }
 
 .g-row {
