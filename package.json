@@ -39,7 +39,7 @@
     "multer-gridfs-storage": "^1.0.0",
     "nek-ui": "0.1.46",
     "regular-state": "^0.2.1",
-    "rgui-ui-drag": "^0.2.0-alpha.1"
+    "rgui-ui-drag": "^0.2.0"
   },
   "devDependencies": {
     "babel-cli": "^6.16.0",
