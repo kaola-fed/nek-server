@@ -15,6 +15,13 @@ export default new Router({
       redirect: { name: 'dashboard' }
     },
     {
+      path: '/login',
+      name: 'login',
+      components: {
+        body: resolve => require(['@/pages/app/auth/Login.vue'], resolve)
+      }
+    },
+    {
       path: '/editor',
       components: {
         body: resolve => require(['@/components/layout/Body.vue'], resolve)

@@ -2,14 +2,23 @@
   <header class="header">
     <div class="header-title">NEK Server<router-link :to="{name: 'dashboard'}" class="header-title__link"></router-link></div>
     <div class="header-right">
-      hi&nbsp;<a class="header-right__link">User</a>&nbsp;<a class="header-right__link">退出</a>
+      hi&nbsp;<a class="header-right__link">{{ userInfo.username }}</a>&nbsp;<a class="header-right__link" @click="logout">退出</a>
     </div>
   </header>
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex';
+
 export default {
-  methods: {}
+  computed: {
+    ...mapState({
+      userInfo: state => state.userInfo
+    })
+  },
+  methods: {
+    ...mapActions(['logout'])
+  }
 };
 </script>
 

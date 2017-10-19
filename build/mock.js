@@ -4,7 +4,7 @@ const { existsSync } = require('fs-extra');
 const config = require('../config/client');
 
 const getAsyncMock = (method, ctx, urlPath, options) => {
-  const { asyncMockPath, defaultMock = {} } = options;
+  const { asyncMockPath, defaultMock = { code: 200 } } = options;
   if (!asyncMockPath) {
     console.warn(`urlPath: ${urlPath}, mockPath: ${asyncMockPath}, not exists`);
     return defaultMock

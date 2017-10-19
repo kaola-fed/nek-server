@@ -8,6 +8,7 @@ import Element from 'element-ui';
 import App from './App.vue';
 import router from './router';
 import Custom from '@/widget/custom';
+import store from './store';
 
 // 样式
 import 'element-kaola/index.css';
@@ -29,6 +30,7 @@ Vue.config.productionTip = false;
 new Vue({
   el: '#app',
   router,
+  store,
   template: '<App/>',
   components: { App },
 });
