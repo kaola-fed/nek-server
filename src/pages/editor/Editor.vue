@@ -11,6 +11,7 @@
         <div ref="preview" class="g-preview" id="ns-preview" ns-id="0"
              @dragover.prevent="" @dragstart="onPreviewDrag" @drop="onPreviewDrop"
              @click="onPreviewClick"
+             @keydown.delete="onDeletePress"
         ></div>
         <side-bar :tabs="codeBars" placement="bottom"></side-bar>
       </div>
@@ -165,6 +166,20 @@ export default {
       const oldNode = this.getNodeByNSId(this.currentNodeId);
 
       this.replace(tpl, oldNode, { id: this.currentNodeId });
+    },
+
+    // 键盘删除键
+    onDeletePress() {
+      if (!this.currentNodeId) {
+        return;
+      }
+      const node = this.getNodeByNSId(this.currentNodeId);
+      const vNode = this.$nekVNodes[this.currentNodeId];
+      const parentVNode = this.$nekVNodes[vNode.parent];
+      parentVNode.removeChild(this.currentNodeId);
+      node.parentNode.removeChild(node);
+      delete this.$nekVNodes[this.currentNodeId];
+      this.currentNodeId = null;
     },
 
     /*====== 组件变化处理函数 ======*/
