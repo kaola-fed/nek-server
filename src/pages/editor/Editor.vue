@@ -1,17 +1,16 @@
 <template>
   <div class="g-editor">
-    <tools-bar projectName="Project RED"></tools-bar>
+    <tools-bar projectName="Project RED" :buttons="toolsBarButtons"></tools-bar>
     <div class="g-workspace">
       <side-bar :tabs="leftBars" @changed="leftSideBarView = $event.name">
         <keep-alive>
-          <component :is="leftSideBarView" :libraries="libraries"></component>
+          <component :is="leftSideBarView" :libraries="libraries" @dragStart="clearCurrent"></component>
         </keep-alive>
       </side-bar>
       <div class="g-preview-wrapper">
         <div ref="preview" class="g-preview" id="ns-preview" ns-id="0"
-             @dragover.prevent="" @dragstart="onPreviewDrag" @drop="onPreviewDrop"
+             @dragstart="onPreviewDragStart" @dragover.prevent.stop="onComponentDragOver" @drop="onPreviewDrop"
              @click="onPreviewClick"
-             @keydown.delete="onDeletePress"
         ></div>
         <side-bar :tabs="codeBars" placement="bottom"></side-bar>
       </div>
@@ -78,6 +77,8 @@ export default {
   },
   data() {
     return {
+      toolsBarButtons: [],
+
       leftBars: [
         { label: '组件', name: 'ComponentBar' },
         { label: '目录', name: 'DirectoryBar' },
@@ -95,15 +96,63 @@ export default {
       ],
 
       libraries: [],
-      currentAttributes: [],
       currentComponent: null,
 
       currentNodeId: null,
-      currentNodeDOM: null
+      currentNodeDOM: null,
+
+      dragX: null,
+      dragY: null,
     };
   },
+  computed: {
+    currentAttributes() {
+      if (!this.currentNodeId) {
+        return [];
+      }
+
+      const vNode = this.$nsVNodes.getNode(this.currentNodeId);
+      const componentConfig = this.getComponentConfig(vNode.libName, vNode.tagName);
+      const attributes = {
+        ...componentConfig.attributes,
+        ...vNode.attributes
+      };
+
+      return Object.keys(attributes).sort().map(el => ({ name: el, ...attributes[el] }));
+    },
+    librarySet() {
+      if (!this.libraries) {
+        return {};
+      }
+
+      const set = {};
+      this.libraries.forEach((lib) => {
+        set[lib.name] = {};
+        lib.components.forEach((c) => {
+          set[lib.name][c.tag] = c;
+        });
+      });
+
+      return set;
+    }
+  },
   watch: {
+    currentNodeId(newValue, oldValue) {
+      // 修改顶部栏按钮
+      if (oldValue === null && newValue !== null) {
+        this.toolsBarButtons.push({
+          icon: 'el-icon-delete',
+          tip: '删除选中组件',
+          onClick: this.deleteHandler
+        });
+      } else if (oldValue !== null && newValue === null) {
+        const index = this.toolsBarButtons.find(el => el.tip === '删除选中组件');
+        this.toolsBarButtons.splice(index, 1);
+      }
+    },
     currentNodeDOM(newValue, oldValue) {
+      // 不要用watch来更新currentNodeId
+
       if (oldValue !== null && oldValue.classList) {
         oldValue.classList.remove('current');
       }
@@ -121,10 +170,23 @@ export default {
 
     /*====== 事件绑定 ======*/
 
-    onPreviewDrag(event) {
+    onPreviewDragStart(event) {
       event.dataTransfer.dropEffect = 'move';
       const node = this.getFirstNSNode(event.path);
-      event.dataTransfer.setData('nsId', node.getAttribute(NSID));
+      this.currentNodeId = node.getAttribute(NSID);
+      this.currentNodeDOM = node;
+      event.dataTransfer.setData('nsId', this.currentNodeId);
+    },
+
+    onComponentDragOver(event) {
+      const { clientX, clientY } = event;
+      if (!this.currentNodeId || (clientX === this.dragX && clientY === this.dragY)) {
+        return;
+      }
+
+      this.dragX = clientX;
+      this.dragY = clientY;
+      console.log(event);
     },
 
     onPreviewDrop(event) {
@@ -145,25 +207,12 @@ export default {
       const target = this.getFirstNSNode(event.path);
 
       if (!target || target.id === 'ns-preview') {
-        this.currentAttributes = [];
         this.currentNodeId = null;
         this.currentNodeDOM = null;
         return;
       }
 
-      const vNode = this.getNSInfo(target);
-      if (!vNode) {
-        return;
-      }
-
-      const componentConfig = this.getComponentConfig(vNode.libName, vNode.tagName);
-      const attributes = {
-        ...componentConfig.attributes,
-        ...vNode.attributes
-      };
-
-      this.currentAttributes = Object.keys(attributes).sort().map(el => ({ name: el, ...attributes[el] }));
-      this.currentNodeId = vNode.id;
+      this.currentNodeId = target.getAttribute(NSID);
       this.currentNodeDOM = target;
     },
 
@@ -179,20 +228,6 @@ export default {
       const oldNode = this.getNodeByNSId(this.currentNodeId);
 
       this.replace(tpl, oldNode, { id: this.currentNodeId });
-    },
-
-    // 键盘删除键
-    onDeletePress() {
-      if (!this.currentNodeId) {
-        return;
-      }
-
-      this.$nsVNodes.removeNode(this.currentNodeId);
-
-      const node = this.getNodeByNSId(this.currentNodeId);
-      node.parentNode.removeChild(node);
-      this.currentNodeId = null;
-      this.currentNodeDOM = null;
     },
 
     /*====== 组件变化处理函数 ======*/
@@ -250,15 +285,30 @@ export default {
       newParentNode.appendChild(node);
     },
 
+    // 删除节点
+    deleteHandler() {
+      if (!this.currentNodeId) {
+        return;
+      }
+
+      this.$nsVNodes.removeNode(this.currentNodeId);
+
+      const node = this.getNodeByNSId(this.currentNodeId);
+      node.parentNode.removeChild(node);
+
+      this.currentNodeId = null;
+      this.currentNodeDOM = null;
+    },
+
     /*====== 工具函数等 ======*/
 
     getComponentConfig(libName, tagName) {
-      const lib = this.libraries.find(el => el.name === libName);
+      const lib = this.librarySet[libName];
       if (!lib) {
         return null;
       }
 
-      return lib.components.find(el => el.tag === tagName);
+      return lib[tagName] || null;
     },
 
     canLayout(libName, tagName) {
@@ -284,19 +334,14 @@ export default {
       return null;
     },
 
-    getNSInfo(node) {
-      if (!node || !node.getAttribute) {
-        return null;
-      }
-
-      const nodeId = node.getAttribute(NSID);
-      return this.$nsVNodes.getNode(nodeId) || null;
-    },
-
     getNodeByNSId(id) {
       return document.querySelector(`[ns-id="${id}"]`);
     },
 
+    clearCurrent() {
+      this.currentNodeId = null;
+      this.currentNodeDOM = null;
+    },
 
     inject(tpl, parent, { direction, id }) {
       parent = parent || this.$refs.preview;
