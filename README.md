@@ -10,12 +10,25 @@
 │  └─models
 ├─build           // 编译脚本
 ├─config          // 配置文件
+├─core            // 主要数据结构等实现，前后端通用的部分
+├─mock            // mock数据
 ├─src             // 前端代码
-│  ├─assets
-│  ├─components
-│  ├─pages
-│  └─router
+│  ├─api          // 网络通信部分函数
+│  ├─components   // 全局组件
+│  ├─pages        // 页面
+│  ├─router       // 路由配置
+│  ├─store        // Redux
+│  ├─style        // 全局样式
+│  └─widget       // 工具函数、filter等实现
 └─static
+```
+
+## 安装
+
+```
+$ npm i
+# or
+$ yarn
 ```
 
 ## 运行指令
