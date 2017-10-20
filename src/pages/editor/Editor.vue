@@ -50,13 +50,11 @@ const addAttributes = (fragment, id) => {
     for (let i of fragment) {
       if (i.setAttribute) {
         i.setAttribute(NSID, id);
-        i.setAttribute('tabIndex', 0);
         i.setAttribute('draggable', true);
       }
     }
   } else {
     fragment.setAttribute(NSID, id);
-    fragment.setAttribute('tabIndex', 0);
     fragment.setAttribute('draggable', true);
   }
   return fragment;
@@ -98,8 +96,21 @@ export default {
 
       libraries: [],
       currentAttributes: [],
-      currentComponent: null
+      currentComponent: null,
+
+      currentNodeId: null,
+      currentNodeDOM: null
     };
+  },
+  watch: {
+    currentNodeDOM(newValue, oldValue) {
+      if (oldValue !== null && oldValue.classList) {
+        oldValue.classList.remove('current');
+      }
+      if (newValue !== null && newValue.classList) {
+        newValue.classList.add('current');
+      }
+    }
   },
   methods: {
     /*====== 业务逻辑 ======*/
@@ -136,6 +147,7 @@ export default {
       if (!target || target.id === 'ns-preview') {
         this.currentAttributes = [];
         this.currentNodeId = null;
+        this.currentNodeDOM = null;
         return;
       }
 
@@ -152,6 +164,7 @@ export default {
 
       this.currentAttributes = Object.keys(attributes).sort().map(el => ({ name: el, ...attributes[el] }));
       this.currentNodeId = vNode.id;
+      this.currentNodeDOM = target;
     },
 
     onPropChange(event) {
@@ -179,6 +192,7 @@ export default {
       const node = this.getNodeByNSId(this.currentNodeId);
       node.parentNode.removeChild(node);
       this.currentNodeId = null;
+      this.currentNodeDOM = null;
     },
 
     /*====== 组件变化处理函数 ======*/
@@ -362,18 +376,18 @@ export default {
     color: white;
     padding: 10px 20px;
     cursor: pointer;
-  }
 
-  .u-fs-hint:before {
-    content: '按下 ESC 退出预览'
-  }
-  .u-fs-hint:hover:before {
-    content: '退出预览'
+    &:before {
+      content: '按下 ESC 退出预览'
+    }
+    &:hover:before {
+      content: '退出预览'
+    }
   }
 }
 
-[ns-id]:target {
-  box-shadow: 0 0 5px rgba(0, 0, 255, 0.6) !important;
+[ns-id].current {
+  box-shadow: 0 0 5px rgba(0, 100, 255, 0.6) !important;
 }
 
 .g-row {

@@ -49,7 +49,7 @@ export default class VNodeTree {
       return oldParentId;
     }
 
-    this.__nodeTree[oldParentId].removeNode(nodeId);
+    this.__nodeTree[oldParentId].removeChild(nodeId);
     this.__nodeTree[newParentId].insertChild(nodeId, nextBrotherId);
     node.parent = newParentId;
 
