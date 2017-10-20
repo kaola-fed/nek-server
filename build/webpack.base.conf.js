@@ -44,7 +44,7 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [resolve('src'), resolve('test')],
+        include: [resolve('core'), resolve('src'), resolve('test')],
         query: {
           babelrc: false,
           "presets": [
