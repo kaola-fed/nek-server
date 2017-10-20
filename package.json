@@ -26,6 +26,7 @@
     "moment": "^2.18.1",
     "mongoose": "^4.11.11",
     "nek-ui": "^0.6.1",
+    "particlesjs": "^2.0.2",
     "qs": "^6.5.1",
     "regularjs": "^0.6.0-beta.6",
     "throttle-debounce": "^1.0.1",

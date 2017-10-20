@@ -39,8 +39,7 @@ import PropsBar from './components/PropsBar.vue';
 
 import _ from '@/widget/util';
 import NekComponent from '@/widget/NekComponent';
-import genRegularTemplate from '@/../core/transfer';
-import NSNode from '@/../core/NSNode';
+import VNodeTree from '@/../core/VNodeTree';
 
 import { getLibraries } from '@/api/library';
 
@@ -73,10 +72,7 @@ export default {
   },
   async mounted() {
     this.preview = this.$refs.preview;
-    this.$nekVNodes = {
-      // 默认根节点
-      0: new NSNode(0, { tagName: 'div' })
-    };
+    this.$nsVNodes = new VNodeTree();
 
     const { data } = await getLibraries({ names: 'nekui' });
     this.libraries = data;
@@ -159,10 +155,14 @@ export default {
     },
 
     onPropChange(event) {
-      const vNode = this.$nekVNodes[this.currentNodeId];
+      if (!this.currentNodeId) {
+        return;
+      }
+
+      const vNode = this.$nsVNodes.getNode(this.currentNodeId);
       vNode.setAttribute(event.name, event.value);
 
-      const tpl = genRegularTemplate(this.$nekVNodes, vNode);
+      const tpl = this.$nsVNodes.getTemplate(vNode.id);
       const oldNode = this.getNodeByNSId(this.currentNodeId);
 
       this.replace(tpl, oldNode, { id: this.currentNodeId });
@@ -173,19 +173,18 @@ export default {
       if (!this.currentNodeId) {
         return;
       }
+
+      this.$nsVNodes.removeNode(this.currentNodeId);
+
       const node = this.getNodeByNSId(this.currentNodeId);
-      const vNode = this.$nekVNodes[this.currentNodeId];
-      const parentVNode = this.$nekVNodes[vNode.parent];
-      parentVNode.removeChild(this.currentNodeId);
       node.parentNode.removeChild(node);
-      delete this.$nekVNodes[this.currentNodeId];
       this.currentNodeId = null;
     },
 
     /*====== 组件变化处理函数 ======*/
 
     // 拖拽等操作触发的新增组件处理函数
-    createHandler(libName, tagName, parentNode/*, nextBrother = null*/) {
+    createHandler(libName, tagName, parentNode, nextBrother = null) {
       const component = this.getComponentConfig(libName, tagName);
       if (!component) {
         return;
@@ -207,42 +206,30 @@ export default {
         }
       }
 
-      const nodeId = NSNode.generateId();
-      this.$nekVNodes[nodeId] = new NSNode(nodeId, {
-        tagName,
+      const vNode = this.$nsVNodes.addNode(tagName, parentId, nextBrother, {
         libName,
-        parent: parentId,
         attributes
       });
 
-      const tpl = genRegularTemplate(this.$nekVNodes, this.$nekVNodes[nodeId]);
-      this.inject(tpl, parentNode, { id: nodeId });
-      // TODO: 加上nextBrotherId
-      this.$nekVNodes[parentId].insertChild(nodeId);
+      const tpl = this.$nsVNodes.getTemplate(vNode.id);
+      this.inject(tpl, parentNode, { id: vNode.id });
     },
 
-    // 更新属性等操作
+    // 修改父节点
     updateHandler(nodeId, newParentNode) {
       const node = this.getNodeByNSId(nodeId);
       if (node.contains(newParentNode)) {
         return;
       }
 
-      const vNode = this.$nekVNodes[nodeId];
-      const oldParentNode = this.getNodeByNSId(vNode.parent);
-
-      const oldParentId = oldParentNode.getAttribute(NSID);
       const newParentId = newParentNode.getAttribute(NSID);
+      // TODO: nextBrotherId
+      const oldParentId = this.$nsVNodes.moveNode(nodeId, newParentId);
+
+      const oldParentNode = this.getNodeByNSId(oldParentId);
       if (oldParentId === newParentId) {
         return;
       }
-
-      const oldParentVNode = this.$nekVNodes[oldParentId];
-      const newParentVNode = this.$nekVNodes[newParentId];
-
-      oldParentVNode.removeChild(nodeId);
-      newParentVNode.insertChild(nodeId);
-      vNode.parent = newParentId;
 
       oldParentNode.removeChild(node);
       // TODO: 换成insertBefore，参数加上兄弟节点
@@ -275,7 +262,7 @@ export default {
           continue;
         }
 
-        const vNode = this.$nekVNodes[nsId];
+        const vNode = this.$nsVNodes.getNode(nsId);
         if (!needLayout || this.canLayout(vNode.libName, vNode.tagName)) {
           return i;
         }
@@ -289,7 +276,7 @@ export default {
       }
 
       const nodeId = node.getAttribute(NSID);
-      return this.$nekVNodes[nodeId] || null;
+      return this.$nsVNodes.getNode(nodeId) || null;
     },
 
     getNodeByNSId(id) {

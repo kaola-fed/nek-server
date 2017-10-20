@@ -2,7 +2,18 @@ let counter = 0;
 let counterTimer = null;
 
 export default class NSNode {
-  constructor(id, { tagName, libName = 'native', parent = null, children = [], attributes = {}, events = {} }) {
+  constructor(id, options) {
+    const opts = {
+      tagName: 'div',
+      libName: 'native',
+      parent: null,
+      children: [],
+      attributes: {},
+      events: {},
+      ...options
+    };
+    const { tagName, libName, parent, children, attributes, events } = opts;
+
     this.id = id;
     this.tagName = tagName;
     this.libName = libName;
