@@ -8,7 +8,7 @@
           {{ c.label }}
         </div>
       </div>
-      <div class="m-body">
+      <div class="m-body" :style="{'background-color': this.backgroundColor}">
         <slot></slot>
       </div>
     </div>
@@ -37,11 +37,20 @@ export default {
       default() {
         return [];
       }
+    },
+    maxSize: [Number, String],
+    type: {
+      type: String,
+      default: 'dark' // dark | light
+    },
+    defaultOpen: {
+      type: Boolean,
+      default: true
     }
   },
   computed: {
     sideBarStyle: function() {
-      const size = `${this.size}px`;
+      const size = typeof this.size === 'number' ? `${this.size}px` : this.size;
       switch (this.placement) {
         case 'left':
         case 'right':
@@ -62,18 +71,30 @@ export default {
           return {};
       }
     },
+    backgroundColor: function() {
+      return this.type === 'light' ? '#f2f2f2' : '#313335';
+    },
     toggleButtonStyle: function() {
+      const result = {
+        'background-color': this.type === 'light' ? '#aaa' : '#4d4d4d'
+      };
       const place = '-15px';
       switch (this.placement) {
         case 'left':
-          return { right: place };
+          result.right = place;
+          break;
         case 'right':
-          return { left: place };
+          result.left = place;
+          break;
         case 'bottom':
-          return { top: '-37px', left: '48%', transform: 'rotate(90deg)' };
+          result.top = '-37px';
+          result.left = '48%';
+          result.transform = 'rotate(90deg)';
+          break;
         default:
-          return {};
+          break;
       }
+      return result;
     },
     tabClass: function() {
       switch (this.placement) {
@@ -85,12 +106,15 @@ export default {
         default:
           return {};
       }
+    },
+    _maxSize: function() {
+      return this.maxSize || SIZE[this.placement];
     }
   },
   data() {
     return {
       currentTab: 0,
-      size: SIZE[this.placement]
+      size: this.defaultOpen ? (this.maxSize || SIZE[this.placement]) : 0
     };
   },
   methods: {
@@ -99,7 +123,7 @@ export default {
       this.$emit('changed', tab);
     },
     toggle() {
-      this.size = this.size ? 0 : SIZE[this.placement];
+      this.size = this.size ? 0 : this._maxSize;
     },
     getToggleIcon() {
       let icon = '';
@@ -153,7 +177,7 @@ export default {
     .m-body {
       flex: 1;
       height: 100%;
-      background-color: #313335;
+      overflow-y: auto;
     }
   }
 
@@ -164,7 +188,6 @@ export default {
     color: white;
     text-align: center;
     width: 15px;
-    background-color: #4d4d4d;
     padding: 20px 0;
     cursor: pointer;
   }

@@ -24,7 +24,7 @@
       </side-bar>
     </div>
 
-    <div class="u-fs-hint" @click="quitPreview"></div>
+    <preview-button></preview-button>
   </div>
 </template>
 
@@ -35,8 +35,8 @@ import SideBar from './components/SideBar.vue';
 import ComponentBar from './components/ComponentsBar.vue';
 import DirectoryBar from './components/DirectoryBar.vue';
 import PropsBar from './components/PropsBar.vue';
+import PreviewButton from './components/PreviewButton.vue';
 
-import _ from '@/widget/util';
 import NekComponent from '@/widget/NekComponent';
 import VNodeTree from '@/../core/VNodeTree';
 
@@ -66,6 +66,7 @@ export default {
     ComponentBar,
     DirectoryBar,
     PropsBar,
+    PreviewButton,
   },
   async mounted() {
     this.preview = this.$refs.preview;
@@ -163,10 +164,6 @@ export default {
   },
   methods: {
     /*====== 业务逻辑 ======*/
-
-    quitPreview() {
-      _.exitFullScreen();
-    },
 
     /*====== 事件绑定 ======*/
 
@@ -403,32 +400,6 @@ export default {
     }
   }
 
-  .u-fs-hint {
-    display: none;
-  }
-}
-
-:fullscreen {
-  .u-fs-hint {
-    display: block;
-    position: fixed;
-    right: 0;
-    bottom: 20px;
-    width: 145px;
-    text-align: center;
-
-    background-color: rgba(43, 43, 43, 0.6);
-    color: white;
-    padding: 10px 20px;
-    cursor: pointer;
-
-    &:before {
-      content: '按下 ESC 退出预览'
-    }
-    &:hover:before {
-      content: '退出预览'
-    }
-  }
 }
 
 [ns-id].current {

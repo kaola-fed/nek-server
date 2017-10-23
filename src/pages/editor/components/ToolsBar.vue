@@ -49,6 +49,7 @@ export default {
   background-color: #3C3F41;
   transition: 500ms;
   z-index: 3;
+  box-shadow: 0 0 3px 3px rgba(0, 0, 0, 0.2);
 
   display: flex;
   align-items: center;
