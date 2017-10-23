@@ -97,28 +97,20 @@ export default {
       configActiveNames: ['breadcrumb', 'tabs', 'list'],
 
       breadcrumbEnable: true,
-      breadcrumbs: [
-        { id: this.getRandomId(), title: '', link: '' }
-      ],
+      breadcrumbs: [this.newBreadcrumbItem()],
 
       multiTabEnable: false,
-      multiTabs: [
-        { id: this.getRandomId(), title: '', key: '' }
-      ],
+      multiTabs: [this.newTabItem()],
       copyTab: -1,
 
       currentTab: '',
-      listConfigs: [{
-        filters: [],
-        buttons: [],
-        cols: []
-      }],
+      listConfigs: [this.newColItem()],
     };
   },
   methods: {
     onAddBreadcrumbClick() {
       if (this.breadcrumbs.length < 3) {
-        this.breadcrumbs.push({ id: this.getRandomId(), title: '', link: '' });
+        this.breadcrumbs.push(this.newBreadcrumbItem());
       }
     },
     onDeleteBreadcrumbClick(index) {
@@ -130,8 +122,8 @@ export default {
       this.currentTab = '0';
     },
     onAddTabClick() {
-      this.multiTabs.push({ id: this.getRandomId(), title: '', key: this.multiTabs.length });
-      this.listConfigs.push({ filters: [], buttons: [], cols: [] });
+      this.multiTabs.push(this.newTabItem(this.multiTabs.length));
+      this.listConfigs.push(this.newColItem());
     },
     async onDeleteTabClick(index) {
       if (this.multiTabs.length < 2) {
@@ -169,10 +161,13 @@ export default {
         return;
       }
       const copy = this.listConfigs[this.copyTab];
+      const { filters, buttons, cols, operatorButtons, ...others } = copy;
       this.listConfigs[this.currentTab] = {
-        filters: copy.filters.map(el => ({ ...el })),
-        buttons: copy.buttons.map(el => ({ ...el })),
-        cols: copy.cols.map(el => ({ ...el }))
+        filters: filters.map(el => ({ ...el })),
+        buttons: buttons.map(el => ({ ...el })),
+        cols: cols.map(el => ({ ...el })),
+        operatorButtons: operatorButtons.map(el => ({ ...el })),
+        ...others
       };
       this.$forceUpdate();
       this.$message.success('已粘贴');
@@ -183,9 +178,28 @@ export default {
     },
     isListEmpty(index) {
       const config = this.listConfigs[index];
-      const { filters, buttons, cols } = config;
-      return filters.length + buttons.length + cols.length === 0;
-    }
+      const { filters, buttons, cols, operatorCol, operatorButtons } = config;
+      return filters.length + buttons.length + cols.length + operatorButtons.length === 0 && !operatorCol;
+    },
+    newBreadcrumbItem() {
+      return { id: this.getRandomId(), title: '', link: '' };
+    },
+    newTabItem(key) {
+      return {
+        id: this.getRandomId(),
+        title: '',
+        key: key || ''
+      };
+    },
+    newColItem() {
+      return {
+        filters: [],
+        buttons: [],
+        cols: [],
+        operatorCol: false,
+        operatorButtons: []
+      };
+    },
   }
 };
 </script>

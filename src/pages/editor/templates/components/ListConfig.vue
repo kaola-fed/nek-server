@@ -3,7 +3,7 @@
     <div class="m-card">
       <h5 class="u-title">筛选区</h5>
       <div class="f-mb10">
-        <el-button size="small" @click="onAddFieldClick">新增按钮</el-button>
+        <el-button size="small" @click="onAddFieldClick">新增筛选项</el-button>
       </div>
       <el-table :data="value.filters">
         <el-table-column label="标题">
@@ -24,7 +24,8 @@
         <el-table-column label="操作" fixed="right" width="135" align="center">
           <template scope="scope">
             <el-button v-if="scope.$index > 0" type="text" @click="onUpMoveClick(value.filters, scope.$index)">上移</el-button>
-            <el-button v-if="scope.$index < value.filters.length - 1" type="text" @click="onDownMoveClick(value.filters, scope.$index)">下移</el-button>
+            <el-button v-if="scope.$index < value.filters.length - 1" type="text"
+                       @click="onDownMoveClick(value.filters, scope.$index)">下移</el-button>
             <el-button type="text" @click="onDeleteRowClick(value.filters, scope.$index)">删除</el-button>
           </template>
         </el-table-column>
@@ -43,7 +44,7 @@
         </el-table-column>
         <el-table-column label="绑定事件名">
           <template scope="scope">
-            <el-input v-model="scope.row.event" placeholder="请输入Click对应的事件名"></el-input>
+            <el-input v-model="scope.row.event" placeholder="请输入 click 对应的事件名"></el-input>
           </template>
         </el-table-column>
         <el-table-column label="类型">
@@ -54,7 +55,8 @@
         <el-table-column label="操作" fixed="right" width="135" align="center">
           <template scope="scope">
             <el-button v-if="scope.$index > 0" type="text" @click="onUpMoveClick(value.buttons, scope.$index)">上移</el-button>
-            <el-button v-if="scope.$index < value.buttons.length - 1" type="text" @click="onDownMoveClick(value.buttons, scope.$index)">下移</el-button>
+            <el-button v-if="scope.$index < value.buttons.length - 1" type="text"
+                       @click="onDownMoveClick(value.buttons, scope.$index)">下移</el-button>
             <el-button type="text" @click="onDeleteRowClick(value.buttons, scope.$index)">删除</el-button>
           </template>
         </el-table-column>
@@ -63,7 +65,7 @@
     <div class="m-card">
       <h5 class="u-title">列表项</h5>
       <div class="f-mb10">
-        <el-button size="small" @click="onAddColClick">新增列</el-button>
+        <el-button size="small" @click="onAddColClick">新增列表项</el-button>
       </div>
       <el-table :data="value.cols">
         <el-table-column label="标题">
@@ -71,9 +73,9 @@
             <el-input v-model="scope.row.title" placeholder="请输入列标题"></el-input>
           </template>
         </el-table-column>
-        <el-table-column label="Key">
+        <el-table-column label="属性名">
           <template scope="scope">
-            <el-input v-model="scope.row.key" placeholder="请输入Key"></el-input>
+            <el-input v-model="scope.row.key" placeholder="请输入对应属性名"></el-input>
           </template>
         </el-table-column>
         <el-table-column label="过滤器">
@@ -93,8 +95,34 @@
         <el-table-column label="操作" fixed="right" width="135" align="center">
           <template scope="scope">
             <el-button v-if="scope.$index > 0" type="text" @click="onUpMoveClick(value.cols, scope.$index)">上移</el-button>
-            <el-button v-if="scope.$index < value.cols.length - 1" type="text" @click="onDownMoveClick(value.cols, scope.$index)">下移</el-button>
+            <el-button v-if="scope.$index < value.cols.length - 1" type="text"
+                       @click="onDownMoveClick(value.cols, scope.$index)">下移</el-button>
             <el-button type="text" @click="onDeleteRowClick(value.cols, scope.$index)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="f-mt20 f-mb10">
+        <span class="f-mr10">操作列</span>
+        <el-switch v-model="value.operatorCol" on-text="启用" off-text="停用"></el-switch>
+        <el-button v-if="value.operatorCol" size="mini" class="f-ml10" @click="onAddOperatorClick">新增按钮</el-button>
+      </div>
+      <el-table v-if="value.operatorCol" :data="value.operatorButtons">
+        <el-table-column label="按钮文字">
+          <template scope="scope">
+            <el-input v-model="scope.row.title" placeholder="请输入按钮文本"></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column label="绑定事件名">
+          <template scope="scope">
+            <el-input v-model="scope.row.event" placeholder="请输入 click 对应的事件名"></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" fixed="right" width="135" align="center">
+          <template scope="scope">
+            <el-button v-if="scope.$index > 0" type="text" @click="onUpMoveClick(value.operatorButtons, scope.$index)">上移</el-button>
+            <el-button v-if="scope.$index < value.operatorButtons.length - 1" type="text"
+                       @click="onDownMoveClick(value.operatorButtons, scope.$index)">下移</el-button>
+            <el-button type="text" @click="onDeleteRowClick(value.operatorButtons, scope.$index)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -103,6 +131,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'listConfig',
   props: {
@@ -114,7 +143,9 @@ export default {
     }
   },
   data() {
-    return {};
+    return {
+      operatorEnable: false
+    };
   },
   methods: {
     onAddFieldClick() {
@@ -139,6 +170,12 @@ export default {
         fixed: ''
       });
     },
+    onAddOperatorClick() {
+      this.value.operatorButtons.push({
+        title: '',
+        event: ''
+      });
+    },
     onUpMoveClick(list, currentIndex) {
       if (currentIndex === 0) {
         return;
@@ -157,7 +194,7 @@ export default {
     },
     onDeleteRowClick(list, index) {
       list.splice(index, 1);
-    },
+    }
   }
 };
 </script>
