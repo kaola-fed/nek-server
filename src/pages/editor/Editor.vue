@@ -12,11 +12,11 @@
              @dragstart="onPreviewDragStart" @dragover.prevent.stop="onComponentDragOver" @drop="onPreviewDrop"
              @click="onPreviewClick"
         ></div>
-        <side-bar :tabs="codeBars" placement="bottom"></side-bar>
+        <side-bar :tabs="codeBars" placement="bottom" :default-open="false"></side-bar>
       </div>
       <side-bar :tabs="rightBars" placement="right" @changed="rightSideBarView = $event.name">
         <keep-alive>
-          <component :is="rightSideBarView"
+          <component :is="rightSideBarView" :node-id="currentNodeId"
                      :attributes="currentAttributes" :model="currentComponent"
                      @change="onPropChange"
           ></component>
@@ -37,27 +37,11 @@ import DirectoryBar from './components/DirectoryBar.vue';
 import PropsBar from './components/PropsBar.vue';
 import PreviewButton from './components/PreviewButton.vue';
 
-import NekComponent from '@/widget/NekComponent';
 import VNodeTree from '@/../core/VNodeTree';
 
 import { getLibraries } from '@/api/library';
 
 const NSID = 'ns-id';
-
-const addAttributes = (fragment, id) => {
-  if (Array.isArray(fragment)) {
-    for (let i of fragment) {
-      if (i.setAttribute) {
-        i.setAttribute(NSID, id);
-        i.setAttribute('draggable', true);
-      }
-    }
-  } else {
-    fragment.setAttribute(NSID, id);
-    fragment.setAttribute('draggable', true);
-  }
-  return fragment;
-};
 
 export default {
   components: {
@@ -219,12 +203,9 @@ export default {
       const vNode = this.$nsVNodes.getNode(this.currentNodeId);
       vNode.setAttribute(event.name, event.value);
 
-      const tpl = this.$nsVNodes.getTemplate(vNode.id);
+      const newNode = this.$nsVNodes.render(vNode.id);
       const oldNode = this.getNodeByNSId(this.currentNodeId);
-
-      NekComponent.replace(tpl, oldNode, {
-        beforeReplace: f => addAttributes(f, this.currentNodeId)
-      });
+      oldNode.parentNode.replaceChild(newNode, oldNode);
     },
 
     /*====== 组件变化处理函数 ======*/
@@ -236,9 +217,11 @@ export default {
         return;
       }
 
-      let parentId = 0;
+      let parentId = this.$nsVNodes.root.id;
       if (parentNode) {
         parentId = parentNode.getAttribute(NSID);
+      } else {
+        parentNode = this.$refs.preview;
       }
 
       const attributes = {};
@@ -257,10 +240,8 @@ export default {
         attributes
       });
 
-      const tpl = this.$nsVNodes.getTemplate(vNode.id);
-      NekComponent.inject(tpl, parentNode || this.$refs.preview, {
-        beforeInsert: f => addAttributes(f, vNode.id)
-      });
+      const newNode = this.$nsVNodes.render(vNode.id);
+      parentNode.insertBefore(newNode, nextBrother);
     },
 
     // 修改父节点

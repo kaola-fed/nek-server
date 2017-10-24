@@ -4,6 +4,10 @@
     <div class="m-list-editor">
       <div class="m-left">
         <div class="g-preview">
+          <div ref="breadcrumb"></div>
+          <div ref="tabs"></div>
+          <div ref="list"></div>
+          <div ref="pager"></div>
         </div>
         <side-bar placement="bottom" maxSize="40%" :defaultOpen="false">
         </side-bar>
@@ -77,7 +81,7 @@ import SideBar from '../components/SideBar.vue';
 import ListConfig from './components/ListConfig.vue';
 import PreviewButton from '../components/PreviewButton.vue';
 
-//import NekComponent from '@/widget/NekComponent';
+import NekComponent from '@/widget/NekComponent';
 import VNodeTree from '@/../core/VNodeTree';
 
 export default {
@@ -89,6 +93,46 @@ export default {
   },
   mounted() {
     this.$nsVNodes = new VNodeTree();
+
+    // 初始化值
+    this.breadcrumbNode = null;
+    this.multiTabsNode = null;
+    this.listNode = null;
+
+    // 获取项目配置，数据到watch中更新
+    this.breadcrumbEnable = true;
+  },
+  watch: {
+    breadcrumbEnable(newValue) {
+      if (newValue) {
+        this.breadcrumbNode = this.$nsVNodes.addNode('kl-crumb', this.$nsVNodes.root.id, null, { libName: 'NEKUI' });
+        this.breadcrumbHomeNode = this.$nsVNodes.addNode('kl-crumb-item', this.breadcrumbNode.id, null, { libName: 'NEKUI' });
+        this.$nsVNodes.addNode('kl-icon', this.breadcrumbHomeNode.id, null, {
+          libName: 'NEKUI',
+          attributes: {
+            type: 'home2',
+            color: '#E31436'
+          }
+        });
+
+        this.breadcrumbs.forEach((el) => {
+          const tmp = this.$nsVNodes.addNode('kl-crumb-item', this.breadcrumbNode.id, null, {
+            libName: 'NEKUI',
+            attributes: {
+              href: el.link
+            }
+          });
+          this.$nsVNodes.addTextNode(el.title, tmp.id);
+        });
+
+        const tpl = this.$nsVNodes.getTemplate(this.breadcrumbNode.id);
+        NekComponent.inject(tpl, this.$refs.breadcrumb);
+      } else {
+        this.$nsVNodes.removeNode(this.breadcrumbNode.id);
+        this.breadcrumbNode = null;
+        this.$refs.breadcrumb.innerHTML = '';
+      }
+    }
   },
   data() {
     return {
@@ -102,10 +146,10 @@ export default {
 
       configActiveNames: ['breadcrumb', 'tabs', 'list'],
 
-      breadcrumbEnable: true,
+      breadcrumbEnable: null,
       breadcrumbs: [this.newBreadcrumbItem()],
 
-      multiTabEnable: false,
+      multiTabEnable: null,
       multiTabs: [this.newTabItem()],
       copyTab: -1,
 
@@ -114,6 +158,7 @@ export default {
     };
   },
   methods: {
+    /* 面包屑 */
     onAddBreadcrumbClick() {
       if (this.breadcrumbs.length < 3) {
         this.breadcrumbs.push(this.newBreadcrumbItem());
@@ -124,6 +169,8 @@ export default {
         this.breadcrumbs.splice(index, 1);
       }
     },
+
+    /* 多Tab */
     onMultiTabEnableChange() {
       this.currentTab = '0';
     },
@@ -154,6 +201,8 @@ export default {
       this.multiTabs.splice(index, 1);
       this.listConfigs.splice(index, 1);
     },
+
+    /* 列表 */
     onCopyClick() {
       this.copyTab = parseInt(this.currentTab);
       this.$message.success('页面配置已复制');
@@ -178,6 +227,8 @@ export default {
       this.$forceUpdate();
       this.$message.success('已粘贴');
     },
+
+    /* 通用函数 */
 
     getRandomId() {
       return `${+new Date()}_${Math.round(Math.random() * 10000)}`;

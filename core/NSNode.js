@@ -3,17 +3,18 @@ let counterTimer = null;
 
 export default class NSNode {
   constructor(id, options) {
-    const opts = {
+    const { tagName, libName, parent, children, attributes, events } = {
       tagName: 'div',
       libName: 'native',
       parent: null,
       children: [],
       attributes: {},
       events: {},
+      // 文本节点专用，tagName为null
+      text: '',
 
       ...options
     };
-    const { tagName, libName, parent, children, attributes, events } = opts;
 
     this.id = id;
     this.tagName = tagName;
@@ -38,6 +39,14 @@ export default class NSNode {
     ++counter;
     return new Date().getTime().toString(16) + counter.toString(16).padStart(5, '0');
   }
+
+  static createTextNode(text, parentId) {
+    return new NSNode(NSNode.generateId(), {
+      tagName: null,
+      parent: parentId,
+      text
+    });
+  };
 
   /* 子元素操作 */
 
