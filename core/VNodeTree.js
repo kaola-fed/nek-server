@@ -37,6 +37,7 @@ export default class VNodeTree {
     const node = this.__nodeTree[nodeId];
     const parentNode = this.__nodeTree[node.parent];
     parentNode.removeChild(nodeId);
+    node.forEach(el => this.removeNode(el));
     delete this.__nodeTree[nodeId];
 
     return node;

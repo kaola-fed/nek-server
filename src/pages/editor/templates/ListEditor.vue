@@ -13,7 +13,7 @@
           <el-collapse-item title="面包屑" name="breadcrumb">
             <el-switch v-model="breadcrumbEnable" class="f-mb10" on-text="启用" off-text="停用"></el-switch>
             <template v-if="breadcrumbEnable">
-              <el-row v-for="(item, index) in breadcrumbs" :key="item.id" :gutter="20">
+              <el-row v-for="(item, index) in breadcrumbs" :key="item.id + index" :gutter="20">
                 <el-col :span="2"><label class="el-form-item__label">第{{ index + 1 }}级</label></el-col>
                 <el-col :span="8"><el-input placeholder="标题" v-model="item.title"></el-input></el-col>
                 <el-col :span="8"><el-input placeholder="转跳链接（可选）" v-model="item.link"></el-input></el-col>
@@ -28,7 +28,7 @@
           <el-collapse-item title="多Tab" name="tabs" class="m-config-tabs">
             <el-switch v-model="multiTabEnable" class="f-mb10" on-text="启用" off-text="停用" @change="onMultiTabEnableChange"></el-switch>
             <template v-if="multiTabEnable">
-              <el-row v-for="(item, index) in multiTabs" :key="item.id" :gutter="20">
+              <el-row v-for="(item, index) in multiTabs" :key="item.id + index" :gutter="20">
                 <el-col :span="2"><label class="el-form-item__label">Tab {{ index }}</label></el-col>
                 <el-col :span="8"><el-input placeholder="标题" v-model="item.title"></el-input></el-col>
                 <el-col :span="8"><el-input placeholder="Tab key（可选）" v-model="item.key"></el-input></el-col>
@@ -52,7 +52,7 @@
             <el-tabs v-if="multiTabEnable" v-model="currentTab" type="border-card">
               <el-tab-pane
                 v-for="(item, index) in multiTabs"
-                :key="item.id"
+                :key="item.id + index"
                 :label="item.title || `Tab ${index}`"
                 :name="`${index}`"
               >
@@ -77,12 +77,18 @@ import SideBar from '../components/SideBar.vue';
 import ListConfig from './components/ListConfig.vue';
 import PreviewButton from '../components/PreviewButton.vue';
 
+//import NekComponent from '@/widget/NekComponent';
+import VNodeTree from '@/../core/VNodeTree';
+
 export default {
   components: {
     ToolsBar,
     SideBar,
     ListConfig,
     PreviewButton
+  },
+  mounted() {
+    this.$nsVNodes = new VNodeTree();
   },
   data() {
     return {

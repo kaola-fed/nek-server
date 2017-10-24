@@ -69,7 +69,6 @@ export default {
     PreviewButton,
   },
   async mounted() {
-    this.preview = this.$refs.preview;
     this.$nsVNodes = new VNodeTree();
 
     const { data } = await getLibraries({ names: 'nekui' });
@@ -183,7 +182,6 @@ export default {
 
       this.dragX = clientX;
       this.dragY = clientY;
-      console.log(event);
     },
 
     onPreviewDrop(event) {
@@ -224,7 +222,9 @@ export default {
       const tpl = this.$nsVNodes.getTemplate(vNode.id);
       const oldNode = this.getNodeByNSId(this.currentNodeId);
 
-      this.replace(tpl, oldNode, { id: this.currentNodeId });
+      NekComponent.replace(tpl, oldNode, {
+        beforeReplace: f => addAttributes(f, this.currentNodeId)
+      });
     },
 
     /*====== 组件变化处理函数 ======*/
@@ -258,7 +258,9 @@ export default {
       });
 
       const tpl = this.$nsVNodes.getTemplate(vNode.id);
-      this.inject(tpl, parentNode, { id: vNode.id });
+      NekComponent.inject(tpl, parentNode || this.$refs.preview, {
+        beforeInsert: f => addAttributes(f, vNode.id)
+      });
     },
 
     // 修改父节点
@@ -339,31 +341,6 @@ export default {
       this.currentNodeId = null;
       this.currentNodeDOM = null;
     },
-
-    inject(tpl, parent, { direction, id }) {
-      parent = parent || this.$refs.preview;
-
-      const RootComponent = new NekComponent({
-        template: tpl
-      });
-      RootComponent.$inject(parent, {
-        direction,
-        beforeInsert: f => addAttributes(f, id)
-      });
-
-      return RootComponent;
-    },
-
-    replace(tpl, oldNode, { id }) {
-      const RootComponent = new NekComponent({
-        template: tpl
-      });
-      RootComponent.$replace(oldNode, {
-        beforeReplace: f => addAttributes(f, id)
-      });
-
-      return RootComponent;
-    }
   }
 };
 </script>

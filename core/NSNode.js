@@ -10,6 +10,7 @@ export default class NSNode {
       children: [],
       attributes: {},
       events: {},
+
       ...options
     };
     const { tagName, libName, parent, children, attributes, events } = opts;

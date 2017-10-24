@@ -10,7 +10,13 @@ install(Regular);
 const NekComponent = Regular.extend();
 
 // 覆盖原有$inject，加入对fragment的处理等
-NekComponent.prototype.$inject = function(node, { direction = 'bottom', beforeInsert }) {
+NekComponent.prototype.$inject = function(node, options) {
+  const { direction, beforeInsert } = {
+    direction: 'bottom',
+    beforeInsert: null,
+    ...options
+  };
+
   let group = this;
   let fragment = combine.node(group.group || group);
   if (node === false) {
@@ -42,7 +48,13 @@ NekComponent.prototype.$inject = function(node, { direction = 'bottom', beforeIn
   return group;
 };
 
-NekComponent.prototype.$replace = function(oldNode, { beforeReplace }) {
+// 自定$replace，替换原有DOM
+NekComponent.prototype.$replace = function(oldNode, options) {
+  const { beforeReplace } = {
+    beforeReplace: null,
+    ...options
+  };
+
   if (!oldNode) {
     throw Error('Need to provide an old node');
   }
@@ -71,6 +83,43 @@ NekComponent.prototype.$replace = function(oldNode, { beforeReplace }) {
 
   return group;
 
+};
+
+// 添加静态函数，用于直接插入DOM中
+NekComponent.inject = (tpl, parent, options) => {
+  if (!parent) {
+    throw new Error('Must provide a parent node');
+  }
+
+  const { direction, beforeInsert } = {
+    direction: 'bottom',
+    beforeInsert: null,
+    ...options
+  };
+
+  const RootComponent = new NekComponent({
+    template: tpl
+  });
+  RootComponent.$inject(parent, {
+    direction,
+    beforeInsert
+  });
+
+  return RootComponent;
+};
+
+// 静态函数，替换目标node为新node
+NekComponent.replace = (tpl, oldNode, options) => {
+  const { beforeReplace } = { beforeReplace: null, ...options };
+
+  const RootComponent = new NekComponent({
+    template: tpl
+  });
+  RootComponent.$replace(oldNode, {
+    beforeReplace
+  });
+
+  return RootComponent;
 };
 
 export default NekComponent;

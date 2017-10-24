@@ -16,6 +16,7 @@
         <a class="m-button" @click="item.onClick"><i :class="item.icon"></i></a>
       </el-tooltip>
     </div>
+    <span class="u-tools-message">{{ message }}</span>
   </div>
 </template>
 
@@ -29,7 +30,8 @@ export default {
     buttons: {
       type: Array,
       default: () => []
-    }
+    },
+    message: String
   },
   data() {
     return {};
@@ -78,6 +80,11 @@ export default {
       text-align: center;
       text-decoration: none;
     }
+  }
+
+  .u-tools-message {
+    color: white;
+    font-size: 14px;
   }
 }
 
