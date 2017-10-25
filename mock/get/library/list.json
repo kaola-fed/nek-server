@@ -8,6 +8,7 @@
         "name": "KlRow",
         "tag": "kl-row",
         "isLayout": true,
+        "bodyClass": ["g-row"],
         "attributes": {
           "class": {
             "type": "string",
@@ -39,6 +40,7 @@
         "name": "KlCol",
         "tag": "kl-col",
         "isLayout": true,
+        "bodyClass": ["g-col"],
         "attributes": {
           "class": {
             "type": "string",
@@ -74,6 +76,7 @@
         "name": "KlCard",
         "tag": "kl-card",
         "isLayout": true,
+        "bodyClass": ["card_bd"],
         "attributes": {
           "class": {
             "type": "string",
@@ -143,6 +146,45 @@
             "default": false
           }
         }
+      },
+      {
+        "name": "KLCrumb",
+        "tag": "kl-crumb",
+        "isLayout": true,
+        "bodyClass": ["kl-m-crumb"],
+        "attributes": {
+          "separator": {
+            "type": "string",
+            "default": "/"
+          }
+        }
+      },
+      {
+        "name": "KLCrumbItem",
+        "tag": "kl-crumb-item",
+        "isLayout": true,
+        "bodyClass": ["crumb_link", "crumb_ct"],
+        "attributes": {}
+      },
+      {
+        "name": "KLIcon",
+        "tag": "kl-icon",
+        "isLayout": false,
+        "attributes": {}
+      },
+      {
+        "name": "KLTabs",
+        "tag": "kl-tabs",
+        "isLayout": true,
+        "bodyClass": ["tabs_bd"],
+        "attributes": {}
+      },
+      {
+        "name": "KLTab",
+        "tag": "kl-tab",
+        "isLayout": true,
+        "bodyClass": null,
+        "attributes": {}
       }
     ]
   }]

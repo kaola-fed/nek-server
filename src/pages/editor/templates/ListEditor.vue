@@ -15,18 +15,15 @@
       <side-bar placement="right" maxSize="50%" type="light">
         <el-collapse v-model="configActiveNames">
           <el-collapse-item title="面包屑" name="breadcrumb">
-            <el-switch v-model="breadcrumbEnable" class="f-mb10" on-text="启用" off-text="停用"></el-switch>
-            <template v-if="breadcrumbEnable">
-              <el-row v-for="(item, index) in breadcrumbs" :key="item.id + index" :gutter="20">
-                <el-col :span="2"><label class="el-form-item__label">第{{ index + 1 }}级</label></el-col>
-                <el-col :span="8"><el-input placeholder="标题" v-model="item.title"></el-input></el-col>
-                <el-col :span="8"><el-input placeholder="转跳链接（可选）" v-model="item.link"></el-input></el-col>
-                <el-col :span="6">
-                  <el-button class="u-icon-btn" icon="plus" v-if="breadcrumbs.length < 3 && index === breadcrumbs.length - 1" @click="onAddBreadcrumbClick"></el-button>
-                  <el-button class="u-icon-btn" icon="minus" v-if="breadcrumbs.length > 1" @click="onDeleteBreadcrumbClick(index)"></el-button>
-                </el-col>
-              </el-row>
-            </template>
+            <el-row v-for="(item, index) in breadcrumbs" :key="item.id + index" :gutter="20">
+              <el-col :span="2"><label class="el-form-item__label">第{{ index + 1 }}级</label></el-col>
+              <el-col :span="8"><el-input placeholder="标题" v-model="item.title"></el-input></el-col>
+              <el-col :span="8"><el-input placeholder="转跳链接（可选）" v-model="item.link"></el-input></el-col>
+              <el-col :span="6">
+                <el-button class="u-icon-btn" icon="plus" v-if="breadcrumbs.length < 3 && index === breadcrumbs.length - 1" @click="onAddBreadcrumbClick"></el-button>
+                <el-button class="u-icon-btn" icon="minus" v-if="breadcrumbs.length > 1" @click="onDeleteBreadcrumbClick(index)"></el-button>
+              </el-col>
+            </el-row>
           </el-collapse-item>
 
           <el-collapse-item title="多Tab" name="tabs" class="m-config-tabs">
@@ -84,6 +81,10 @@ import PreviewButton from '../components/PreviewButton.vue';
 import NekComponent from '@/widget/NekComponent';
 import VNodeTree from '@/../core/VNodeTree';
 
+import { getLibraries } from '@/api/library';
+
+const LIB_NAME = 'NEK-UI';
+
 export default {
   components: {
     ToolsBar,
@@ -91,33 +92,33 @@ export default {
     ListConfig,
     PreviewButton
   },
-  mounted() {
+  created() {
+    // 点击预览区的链接时阻止转跳
+    window.onbeforeunload = function() {
+      return '确认要离开当前页面？';
+    };
+  },
+  destroyed() {
+    window.onbeforeunload = null;
+  },
+  async mounted() {
     this.$nsVNodes = new VNodeTree();
+    const { data } = await getLibraries({ names: 'nekui' });
+    this.$nsVNodes.librarySet = data;
 
-    // 初始化值
-    this.breadcrumbNode = null;
-    this.multiTabsNode = null;
-    this.listNode = null;
+    this.initBreadcrumb();
 
-    // 获取项目配置，数据到watch中更新
-    this.breadcrumbEnable = true;
+    // 获取项目配置，更新数据
   },
   watch: {
-    breadcrumbEnable(newValue) {
-      if (newValue) {
-        this.breadcrumbNode = this.$nsVNodes.addNode('kl-crumb', this.$nsVNodes.root.id, null, { libName: 'NEKUI' });
-        this.breadcrumbHomeNode = this.$nsVNodes.addNode('kl-crumb-item', this.breadcrumbNode.id, null, { libName: 'NEKUI' });
-        this.$nsVNodes.addNode('kl-icon', this.breadcrumbHomeNode.id, null, {
-          libName: 'NEKUI',
-          attributes: {
-            type: 'home2',
-            color: '#E31436'
-          }
-        });
+    breadcrumbs: {
+      deep: true,
+      handler: function(newValue) {
+        this.breadcrumbVNode.children.splice(1);
 
-        this.breadcrumbs.forEach((el) => {
-          const tmp = this.$nsVNodes.addNode('kl-crumb-item', this.breadcrumbNode.id, null, {
-            libName: 'NEKUI',
+        newValue.forEach((el) => {
+          const tmp = this.$nsVNodes.addNode('kl-crumb-item', this.breadcrumbVNode.id, null, {
+            libName: LIB_NAME,
             attributes: {
               href: el.link
             }
@@ -125,12 +126,9 @@ export default {
           this.$nsVNodes.addTextNode(el.title, tmp.id);
         });
 
-        const tpl = this.$nsVNodes.getTemplate(this.breadcrumbNode.id);
-        NekComponent.inject(tpl, this.$refs.breadcrumb);
-      } else {
-        this.$nsVNodes.removeNode(this.breadcrumbNode.id);
-        this.breadcrumbNode = null;
         this.$refs.breadcrumb.innerHTML = '';
+        const breadTpl = this.$nsVNodes.getTemplate(this.breadcrumbVNode.id);
+        NekComponent.inject(breadTpl, this.$refs.breadcrumb);
       }
     }
   },
@@ -146,7 +144,6 @@ export default {
 
       configActiveNames: ['breadcrumb', 'tabs', 'list'],
 
-      breadcrumbEnable: null,
       breadcrumbs: [this.newBreadcrumbItem()],
 
       multiTabEnable: null,
@@ -158,6 +155,21 @@ export default {
     };
   },
   methods: {
+    /* 各种初始化 */
+    initBreadcrumb() {
+      this.breadcrumbVNode = this.$nsVNodes.addNode('kl-crumb', null, null, {libName: LIB_NAME});
+      const breadcrumbHomeNode = this.$nsVNodes.addNode('kl-crumb-item', this.breadcrumbVNode.id, null, {libName: LIB_NAME});
+      this.$nsVNodes.addNode('kl-icon', breadcrumbHomeNode.id, null, {
+        libName: LIB_NAME,
+        attributes: {
+          type: 'home2',
+          color: '#E31436'
+        }
+      });
+      const breadTpl = this.$nsVNodes.getTemplate(this.breadcrumbVNode.id);
+      NekComponent.inject(breadTpl, this.$refs.breadcrumb);
+    },
+
     /* 面包屑 */
     onAddBreadcrumbClick() {
       if (this.breadcrumbs.length < 3) {
@@ -217,14 +229,17 @@ export default {
       }
       const copy = this.listConfigs[this.copyTab];
       const { filters, buttons, cols, operatorButtons, ...others } = copy;
-      this.listConfigs[this.currentTab] = {
+
+      const currentIndex = this.listConfigs.findIndex(el => el.id === this.currentTab);
+      const newTab = {
         filters: filters.map(el => ({ ...el })),
         buttons: buttons.map(el => ({ ...el })),
         cols: cols.map(el => ({ ...el })),
         operatorButtons: operatorButtons.map(el => ({ ...el })),
         ...others
       };
-      this.$forceUpdate();
+      this.listConfigs.splice(currentIndex, 1, newTab);
+
       this.$message.success('已粘贴');
     },
 
@@ -239,7 +254,7 @@ export default {
       return filters.length + buttons.length + cols.length + operatorButtons.length === 0 && !operatorCol;
     },
     newBreadcrumbItem() {
-      return { id: this.getRandomId(), title: '', link: '' };
+      return { id: this.getRandomId(), title: '', link: '', nodeId: null };
     },
     newTabItem(key) {
       return {

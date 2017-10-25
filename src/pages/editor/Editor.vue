@@ -8,6 +8,7 @@
         </keep-alive>
       </side-bar>
       <div class="g-preview-wrapper">
+        <highlight-current :nodeId="currentNodeId" ></highlight-current>
         <div ref="preview" class="g-preview" id="ns-preview" ns-id="0"
              @dragstart="onPreviewDragStart" @dragover.prevent.stop="onComponentDragOver" @drop="onPreviewDrop"
              @click="onPreviewClick"
@@ -35,6 +36,7 @@ import SideBar from './components/SideBar.vue';
 import ComponentBar from './components/ComponentsBar.vue';
 import DirectoryBar from './components/DirectoryBar.vue';
 import PropsBar from './components/PropsBar.vue';
+import HighlightCurrent from './components/HighlightCurrent.vue';
 import PreviewButton from './components/PreviewButton.vue';
 
 import VNodeTree from '@/../core/VNodeTree';
@@ -50,6 +52,7 @@ export default {
     ComponentBar,
     DirectoryBar,
     PropsBar,
+    HighlightCurrent,
     PreviewButton,
   },
   async mounted() {
@@ -57,6 +60,7 @@ export default {
 
     const { data } = await getLibraries({ names: 'nekui' });
     this.libraries = data;
+    this.$nsVNodes.librarySet = data;
     this.$forceUpdate();
   },
   data() {
@@ -83,7 +87,6 @@ export default {
       currentComponent: null,
 
       currentNodeId: null,
-      currentNodeDOM: null,
 
       dragX: null,
       dragY: null,
@@ -104,21 +107,6 @@ export default {
 
       return Object.keys(attributes).sort().map(el => ({ name: el, ...attributes[el] }));
     },
-    librarySet() {
-      if (!this.libraries) {
-        return {};
-      }
-
-      const set = {};
-      this.libraries.forEach((lib) => {
-        set[lib.name] = {};
-        lib.components.forEach((c) => {
-          set[lib.name][c.tag] = c;
-        });
-      });
-
-      return set;
-    }
   },
   watch: {
     currentNodeId(newValue, oldValue) {
@@ -133,16 +121,6 @@ export default {
         const index = this.toolsBarButtons.find(el => el.tip === '删除选中组件');
         this.toolsBarButtons.splice(index, 1);
       }
-    },
-    currentNodeDOM(newValue, oldValue) {
-      // 不要用watch来更新currentNodeId
-
-      if (oldValue !== null && oldValue.classList) {
-        oldValue.classList.remove('current');
-      }
-      if (newValue !== null && newValue.classList) {
-        newValue.classList.add('current');
-      }
     }
   },
   methods: {
@@ -154,7 +132,6 @@ export default {
       event.dataTransfer.dropEffect = 'move';
       const node = this.getFirstNSNode(event.path);
       this.currentNodeId = node.getAttribute(NSID);
-      this.currentNodeDOM = node;
       event.dataTransfer.setData('nsId', this.currentNodeId);
     },
 
@@ -187,12 +164,10 @@ export default {
 
       if (!target || target.id === 'ns-preview') {
         this.currentNodeId = null;
-        this.currentNodeDOM = null;
         return;
       }
 
       this.currentNodeId = target.getAttribute(NSID);
-      this.currentNodeDOM = target;
     },
 
     onPropChange(event) {
@@ -217,7 +192,7 @@ export default {
         return;
       }
 
-      let parentId = this.$nsVNodes.root.id;
+      let parentId = null;
       if (parentNode) {
         parentId = parentNode.getAttribute(NSID);
       } else {
@@ -277,13 +252,12 @@ export default {
       node.parentNode.removeChild(node);
 
       this.currentNodeId = null;
-      this.currentNodeDOM = null;
     },
 
     /*====== 工具函数等 ======*/
 
     getComponentConfig(libName, tagName) {
-      const lib = this.librarySet[libName];
+      const lib = this.$nsVNodes.librarySet[libName];
       if (!lib) {
         return null;
       }
@@ -320,7 +294,6 @@ export default {
 
     clearCurrent() {
       this.currentNodeId = null;
-      this.currentNodeDOM = null;
     },
   }
 };
@@ -357,11 +330,6 @@ export default {
       }
     }
   }
-
-}
-
-[ns-id].current {
-  box-shadow: 0 0 5px rgba(0, 100, 255, 0.6) !important;
 }
 
 .g-row {

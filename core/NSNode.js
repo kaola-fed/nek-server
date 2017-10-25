@@ -3,7 +3,7 @@ let counterTimer = null;
 
 export default class NSNode {
   constructor(id, options) {
-    const { tagName, libName, parent, children, attributes, events } = {
+    const { tagName, libName, parent, children, attributes, events, text } = {
       tagName: 'div',
       libName: 'native',
       parent: null,
@@ -25,6 +25,8 @@ export default class NSNode {
 
     this.attributes = attributes;
     this.events = events;
+
+    this.text = text;
   }
 
   /* 静态函数 */
