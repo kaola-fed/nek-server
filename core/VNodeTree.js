@@ -139,10 +139,13 @@ export default class VNodeTree {
   // 删除节点及其子节点
   removeNode(nodeId) {
     const node = this.__updateTree[nodeId];
-    const parentNode = this.__updateTree[node.parent];
-    parentNode.removeChild(nodeId);
     node.children.forEach(el => this.removeNode(el));
-    delete this.__updateTree[nodeId];
+
+    if (nodeId !== this.__rootId) {
+      const parentNode = this.__updateTree[node.parent];
+      parentNode.removeChild(nodeId);
+      delete this.__updateTree[nodeId];
+    }
 
     return node;
   }
