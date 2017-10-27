@@ -94,5 +94,9 @@ export default {
     }
 
     cancelFullScreen.call(document);
+  },
+
+  getElementByNSId(id) {
+    return document.querySelector(`[ns-id="${id}"]`);
   }
 };

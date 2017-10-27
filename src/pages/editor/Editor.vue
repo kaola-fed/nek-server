@@ -40,6 +40,7 @@ import HighlightCurrent from './components/HighlightCurrent.vue';
 import PreviewButton from './components/PreviewButton.vue';
 
 import VNodeTree from '@/../core/VNodeTree';
+import _ from '@/widget/util';
 
 import { getLibraries } from '@/api/library';
 
@@ -179,7 +180,7 @@ export default {
       vNode.setAttribute(event.name, event.value);
 
       const newNode = this.$nsVNodes.render(vNode.id);
-      const oldNode = this.getNodeByNSId(this.currentNodeId);
+      const oldNode = _.getElementByNSId(this.currentNodeId);
       oldNode.parentNode.replaceChild(newNode, oldNode);
     },
 
@@ -221,7 +222,7 @@ export default {
 
     // 修改父节点
     updateHandler(nodeId, newParentNode) {
-      const node = this.getNodeByNSId(nodeId);
+      const node = _.getElementByNSId(nodeId);
       if (node.contains(newParentNode)) {
         return;
       }
@@ -230,7 +231,7 @@ export default {
       // TODO: nextBrotherId
       const oldParentId = this.$nsVNodes.moveNode(nodeId, newParentId);
 
-      const oldParentNode = this.getNodeByNSId(oldParentId);
+      const oldParentNode = _.getElementByNSId(oldParentId);
       if (oldParentId === newParentId) {
         return;
       }
@@ -248,7 +249,7 @@ export default {
 
       this.$nsVNodes.removeNode(this.currentNodeId);
 
-      const node = this.getNodeByNSId(this.currentNodeId);
+      const node = _.getElementByNSId(this.currentNodeId);
       node.parentNode.removeChild(node);
 
       this.currentNodeId = null;
