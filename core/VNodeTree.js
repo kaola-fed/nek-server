@@ -16,12 +16,16 @@ export default class VNodeTree {
     let attr = '';
     for (let i in attributes) {
       if (attributes.hasOwnProperty(i)) {
+        if (attributes[i] == null) {
+          continue;
+        }
+
         if (typeof attributes[i] === 'string') {
           attr += ` ${i}="${attributes[i]}"`;
           continue;
         }
         if (typeof attributes[i] === 'number') {
-          attr += ` ${i}={${attributes[i]}`;
+          attr += ` ${i}={${attributes[i]}}`;
           continue;
         }
 
@@ -71,8 +75,13 @@ export default class VNodeTree {
 
   // 将获取到的数组形式的配置转换为key-value形式
   set librarySet(value) {
-    if (value) {
+    if (!value) {
       this.__libConfig = {};
+      return;
+    }
+    if (!Array.isArray(value)) {
+      this.__libConfig = value;
+      return;
     }
 
     const set = {};
