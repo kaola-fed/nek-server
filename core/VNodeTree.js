@@ -7,10 +7,14 @@ import NekComponent from '@/widget/NekComponent';
 export default class VNodeTree {
   constructor(rootId = '0', options = null) {
     this.__rootId = `${rootId}`;
+    // 用于生成最终代码的树
     this.__nodeTree = {
       [rootId]: new NSNode('0', options)
     };
+    // 用于更新
     this.__updateTree = lodash.cloneDeep(this.__nodeTree);
+
+    // 组件库配置
     this.__libConfig = {};
   }
 
@@ -123,6 +127,7 @@ export default class VNodeTree {
     return this.__updateTree[nodeId];
   }
 
+  // 新增文本节点
   addTextNode(text, parentId, nextBrotherId) {
     const node = NSNode.createTextNode(text, parentId);
     this.__updateTree[node.id] = node;
@@ -131,6 +136,7 @@ export default class VNodeTree {
     return node;
   }
 
+  // 删除节点及其子节点
   removeNode(nodeId) {
     const node = this.__updateTree[nodeId];
     const parentNode = this.__updateTree[node.parent];
@@ -141,6 +147,7 @@ export default class VNodeTree {
     return node;
   }
 
+  // 移动节点
   moveNode(nodeId, newParentId, nextBrotherId) {
     const node = this.__updateTree[nodeId];
     const oldParentId = node.parent;
@@ -155,12 +162,15 @@ export default class VNodeTree {
     return oldParentId;
   }
 
+  // 更新节点属性/事件等属性，不涉及结构的变化
   updateNode(nodeId, data) {
     Object.assign(this.__updateTree[nodeId].attributes, data.attributes || {});
     Object.assign(this.__updateTree[nodeId].events, data.events || {});
   }
 
+  // virtual DOM diff 并更新 DOM
   $update(setAttrs) {
+    // 广度优先遍历，从最高层开始逐层检查
     let queue = [this.__rootId];
     let updateNodeIds = [];
     while (queue.length > 0) {
@@ -169,6 +179,7 @@ export default class VNodeTree {
       const newTreeNode = this.__updateTree[nodeId];
 
       // 当前节点不同，重新渲染
+      // TODO： 细化子节点差异的判断
       if (!(lodash.eq(oldTreeNode.attributes, newTreeNode.attributes) &&
           lodash.eq(oldTreeNode.events, newTreeNode.events) &&
           lodash.eq(oldTreeNode.children, newTreeNode.children))) {
@@ -178,9 +189,12 @@ export default class VNodeTree {
       }
     }
 
+    // 更新数据到真正用于渲染的树
     this.__nodeTree = lodash.cloneDeep(this.__updateTree);
 
+    // 更新DOM
     for (let id of updateNodeIds) {
+      // 生成fragment
       const tpl = this.getTemplate(id);
       const node = document.createDocumentFragment();
       NekComponent.inject(tpl, node, { beforeInsert: (fragment) => {
@@ -196,6 +210,7 @@ export default class VNodeTree {
         return fragment;
       }});
 
+      // 判断是插入还是替换
       const oldNode = _.getElementByNSId(id);
       if (oldNode) {
         oldNode.parentNode.replaceChild(node, oldNode);
@@ -203,15 +218,21 @@ export default class VNodeTree {
         const vNode = this.__nodeTree[id];
         const parentNode = _.getElementByNSId(vNode.parent);
         const parentVNode = this.__nodeTree[vNode.parent];
-        const nextBrotherId = parentVNode.children.findIndex(el => el === id) + 1;
+        const nextBrotherIndex = parentVNode.children.findIndex(el => el === id) + 1;
 
-        parentNode.insertChild(node, nextBrotherId);
+        let nextBrotherNode = null;
+        if (nextBrotherIndex < parentVNode.children.length) {
+          nextBrotherNode = _.getElementByNSId(parentVNode.children[nextBrotherIndex]);
+        }
+
+        parentNode.insertBefore(node, nextBrotherNode);
       }
     }
   }
 
   /* 生成 */
 
+  // 生成模板
   getTemplate(nodeId) {
     nodeId = nodeId || this.__rootId;
     const vNode = this.__nodeTree[nodeId];
@@ -222,7 +243,7 @@ export default class VNodeTree {
       return text || '';
     }
 
-    return `<${tagName}${VNodeTree.getAttributesStr(attributes)}>${children.map(el => this.getTemplate(el)).join('')}</${tagName}>`;
+    return `<${tagName}${VNodeTree.getAttributesStr(attributes)} ns-id="${nodeId}">${children.map(el => this.getTemplate(el)).join('')}</${tagName}>`;
   }
 
   // 弃用

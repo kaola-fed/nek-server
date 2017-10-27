@@ -103,7 +103,7 @@ export default {
       }
 
       const vNode = this.$nsVNodes.getNode(this.currentNodeId);
-      const componentConfig = this.getComponentConfig(vNode.libName, vNode.tagName);
+      const componentConfig = this.getComponentConfig(vNode.libName, vNode.tagName) || {};
       const attributes = {
         ...componentConfig.attributes,
         ...vNode.attributes
@@ -128,8 +128,6 @@ export default {
     }
   },
   methods: {
-    /*====== 业务逻辑 ======*/
-
     /*====== 事件绑定 ======*/
 
     onPreviewDragStart(event) {
@@ -320,9 +318,13 @@ export default {
         background-color: white;
         overflow-y: auto;
         overflow-x: hidden;
-        padding: 10px;
         box-shadow: 0 0 3px 3px rgba(43, 43, 43, 0.1);
         border-radius: 3px;
+
+        [ns-id="0"] {
+          border: 1px dashed #ddd;
+          padding: 10px;
+        }
       }
     }
   }
