@@ -1,3 +1,5 @@
+import lodash from 'lodash';
+
 import NSNode from './NSNode';
 import NekComponent from '@/widget/NekComponent';
 
@@ -7,6 +9,7 @@ export default class VNodeTree {
     this.__nodeTree = {
       [rootId]: new NSNode('0', options)
     };
+    this.__updateTree = lodash.cloneDeep(this.__nodeTree);
     this.__libConfig = {};
   }
 
@@ -69,6 +72,10 @@ export default class VNodeTree {
 
   /* Getter && Setter */
 
+  get rootId() {
+    return this.__rootId;
+  }
+
   get librarySet() {
     return this.__libConfig;
   }
@@ -109,43 +116,89 @@ export default class VNodeTree {
       parent: parentId || this.__rootId
     };
     const nodeId = NSNode.generateId();
-    this.__nodeTree[nodeId] = new NSNode(nodeId, nodeOptions);
-    this.__nodeTree[nodeOptions.parent].insertChild(nodeId, nextBrotherId);
+    this.__updateTree[nodeId] = new NSNode(nodeId, nodeOptions);
+    this.__updateTree[nodeOptions.parent].insertChild(nodeId, nextBrotherId);
 
-    return this.__nodeTree[nodeId];
+    return this.__updateTree[nodeId];
   }
 
   addTextNode(text, parentId, nextBrotherId) {
     const node = NSNode.createTextNode(text, parentId);
-    this.__nodeTree[node.id] = node;
-    this.__nodeTree[parentId].insertChild(node.id, nextBrotherId);
+    this.__updateTree[node.id] = node;
+    this.__updateTree[parentId].insertChild(node.id, nextBrotherId);
 
     return node;
   }
 
   removeNode(nodeId) {
-    const node = this.__nodeTree[nodeId];
-    const parentNode = this.__nodeTree[node.parent];
+    const node = this.__updateTree[nodeId];
+    const parentNode = this.__updateTree[node.parent];
     parentNode.removeChild(nodeId);
     node.children.forEach(el => this.removeNode(el));
-    delete this.__nodeTree[nodeId];
+    delete this.__updateTree[nodeId];
 
     return node;
   }
 
   moveNode(nodeId, newParentId, nextBrotherId) {
-    const node = this.__nodeTree[nodeId];
+    const node = this.__updateTree[nodeId];
     const oldParentId = node.parent;
     if (oldParentId === newParentId) {
       return oldParentId;
     }
 
-    this.__nodeTree[oldParentId].removeChild(nodeId);
-    this.__nodeTree[newParentId].insertChild(nodeId, nextBrotherId);
+    this.__updateTree[oldParentId].removeChild(nodeId);
+    this.__updateTree[newParentId].insertChild(nodeId, nextBrotherId);
     node.parent = newParentId;
 
     return oldParentId;
   }
+
+  updateNode(nodeId, data) {
+    Object.assign(this.__updateTree[nodeId].attributes, data.attributes || {});
+    Object.assign(this.__updateTree[nodeId].events, data.events || {});
+  }
+
+  $update(beforeInsert) {
+    let queue = [this.__rootId];
+    let updateNodeIds = [];
+    while (queue.length > 0) {
+      const nodeId = queue.shift();
+      const oldTreeNode = this.__nodeTree[nodeId];
+      const newTreeNode = this.__updateTree[nodeId];
+
+      // 当前节点不同，重新渲染
+      if (!(lodash.eq(oldTreeNode.attributes, newTreeNode.attributes) &&
+          lodash.eq(oldTreeNode.events, newTreeNode.events) &&
+          lodash.eq(oldTreeNode.children, newTreeNode.children))) {
+        updateNodeIds.push(nodeId);
+      } else {
+        queue = queue.concat(oldTreeNode.children);
+      }
+    }
+
+    this.__nodeTree = lodash.cloneDeep(this.__updateTree);
+
+    for (let id of updateNodeIds) {
+      const tpl = this.getTemplate(id);
+      const node = document.createDocumentFragment();
+      NekComponent.inject(tpl, node, { beforeInsert: f => beforeInsert(f, id) });
+
+      const oldNode = document.querySelector(`[ns-id="${id}"]`);
+      if (oldNode) {
+        oldNode.parentNode.replaceChild(node, oldNode);
+      } else {
+        const vNode = this.__nodeTree[id];
+        const parentNode = document.querySelector(`[ns-id=${vNode.parent}]`);
+        const parentVNode = this.__nodeTree[vNode.parent];
+        const nextBrotherId = parentVNode.children.findIndex(el => el === id) + 1;
+
+        parentNode.insertChild(node, nextBrotherId);
+      }
+    }
+  }
+
+  /* 生成 */
 
   getTemplate(nodeId) {
     nodeId = nodeId || this.__rootId;

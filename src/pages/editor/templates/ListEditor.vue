@@ -4,10 +4,8 @@
     <div class="m-list-editor">
       <div class="m-left">
         <div class="g-preview">
-          <div ref="breadcrumb"></div>
-          <div ref="tabs"></div>
-          <div ref="list"></div>
-          <div ref="pager"></div>
+          <div ref="preview">
+          </div>
         </div>
         <side-bar placement="bottom" maxSize="40%" :defaultOpen="false">
         </side-bar>
@@ -73,17 +71,31 @@
 </template>
 
 <script>
+import lodash from 'lodash';
+
 import ToolsBar from '../components/ToolsBar.vue';
 import SideBar from '../components/SideBar.vue';
 import ListConfig from './components/ListConfig.vue';
 import PreviewButton from '../components/PreviewButton.vue';
 
-import NekComponent from '@/widget/NekComponent';
 import VNodeTree from '@/../core/VNodeTree';
 
 import { getLibraries } from '@/api/library';
 
 const LIB_NAME = 'NEK-UI';
+
+const beforeInsert = (fragment, nodeId) => {
+  if (Array.isArray(fragment)) {
+    for (let i of fragment) {
+      if (i.setAttribute) {
+        i.setAttribute('ns-id', nodeId);
+      }
+    }
+  } else {
+    fragment.setAttribute('ns-id', nodeId);
+  }
+  return fragment;
+};
 
 export default {
   components: {
@@ -103,6 +115,14 @@ export default {
   },
   async mounted() {
     this.$nsVNodes = new VNodeTree();
+    this.$refs.preview.setAttribute('ns-id', this.$nsVNodes.rootId);
+
+    // 获取项目数据
+    this.pageInfo = {
+      title: 'Test Page'
+    };
+
+    // 获取组件配置
     const { data } = await getLibraries({ names: 'nekui' });
     this.$nsVNodes.librarySet = data;
 
@@ -114,21 +134,21 @@ export default {
     breadcrumbs: {
       deep: true,
       handler: function(newValue) {
+        for (let i = 1; i < this.breadcrumbVNode.children.length; ++i) {
+          this.$nsVNodes.removeNode(this.breadcrumbVNode.children[i]);
+        }
         this.breadcrumbVNode.children.splice(1);
 
         newValue.forEach((el) => {
-          const tmp = this.$nsVNodes.addNode('kl-crumb-item', this.breadcrumbVNode.id, null, {
-            libName: LIB_NAME,
+          this.addVNode('kl-crumb-item', this.breadcrumbVNode.id, null, {
             attributes: {
+              content: el.title,
               href: el.link
             }
           });
-          this.$nsVNodes.addTextNode(el.title, tmp.id);
         });
 
-        this.$refs.breadcrumb.innerHTML = '';
-        const breadTpl = this.$nsVNodes.getTemplate(this.breadcrumbVNode.id);
-        NekComponent.inject(breadTpl, this.$refs.breadcrumb);
+        this.$nsVNodes.$update(beforeInsert);
       }
     }
   },
@@ -157,17 +177,15 @@ export default {
   methods: {
     /* 各种初始化 */
     initBreadcrumb() {
-      this.breadcrumbVNode = this.$nsVNodes.addNode('kl-crumb', null, null, {libName: LIB_NAME});
-      const breadcrumbHomeNode = this.$nsVNodes.addNode('kl-crumb-item', this.breadcrumbVNode.id, null, {libName: LIB_NAME});
-      this.$nsVNodes.addNode('kl-icon', breadcrumbHomeNode.id, null, {
-        libName: LIB_NAME,
+      this.breadcrumbVNode = this.addVNode('kl-crumb');
+      const breadcrumbHomeNode = this.addVNode('kl-crumb-item', this.breadcrumbVNode.id);
+      this.addVNode('kl-icon', breadcrumbHomeNode.id, null, {
         attributes: {
           type: 'home2',
-          color: '#E31436'
+          color: '#E31436',
         }
       });
-      const breadTpl = this.$nsVNodes.getTemplate(this.breadcrumbVNode.id);
-      NekComponent.inject(breadTpl, this.$refs.breadcrumb);
+      this.$nsVNodes.$update(beforeInsert);
     },
 
     /* 面包屑 */
@@ -228,16 +246,8 @@ export default {
         return;
       }
       const copy = this.listConfigs[this.copyTab];
-      const { filters, buttons, cols, operatorButtons, ...others } = copy;
-
       const currentIndex = this.listConfigs.findIndex(el => el.id === this.currentTab);
-      const newTab = {
-        filters: filters.map(el => ({ ...el })),
-        buttons: buttons.map(el => ({ ...el })),
-        cols: cols.map(el => ({ ...el })),
-        operatorButtons: operatorButtons.map(el => ({ ...el })),
-        ...others
-      };
+      const newTab = lodash.cloneDeep(copy);
       this.listConfigs.splice(currentIndex, 1, newTab);
 
       this.$message.success('已粘贴');
@@ -247,6 +257,12 @@ export default {
 
     getRandomId() {
       return `${+new Date()}_${Math.round(Math.random() * 10000)}`;
+    },
+    addVNode(tagName, parentId = null, nextBrotherId = null, options = null) {
+      return this.$nsVNodes.addNode(tagName, parentId, nextBrotherId, {
+        libName: LIB_NAME,
+        ...options
+      });
     },
     isListEmpty(index) {
       const config = this.listConfigs[index];
