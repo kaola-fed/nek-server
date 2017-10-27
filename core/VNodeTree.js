@@ -1,6 +1,7 @@
 import lodash from 'lodash';
 
 import NSNode from './NSNode';
+import _ from '@/widget/util';
 import NekComponent from '@/widget/NekComponent';
 
 export default class VNodeTree {
@@ -159,7 +160,7 @@ export default class VNodeTree {
     Object.assign(this.__updateTree[nodeId].events, data.events || {});
   }
 
-  $update(beforeInsert) {
+  $update(setAttrs) {
     let queue = [this.__rootId];
     let updateNodeIds = [];
     while (queue.length > 0) {
@@ -182,14 +183,25 @@ export default class VNodeTree {
     for (let id of updateNodeIds) {
       const tpl = this.getTemplate(id);
       const node = document.createDocumentFragment();
-      NekComponent.inject(tpl, node, { beforeInsert: f => beforeInsert(f, id) });
+      NekComponent.inject(tpl, node, { beforeInsert: (fragment) => {
+        if (Array.isArray(fragment)) {
+          for (let i of fragment) {
+            if (i.setAttribute) {
+              setAttrs(i, id);
+            }
+          }
+        } else {
+          setAttrs(fragment, id)
+        }
+        return fragment;
+      }});
 
-      const oldNode = document.querySelector(`[ns-id="${id}"]`);
+      const oldNode = _.getElementByNSId(id);
       if (oldNode) {
         oldNode.parentNode.replaceChild(node, oldNode);
       } else {
         const vNode = this.__nodeTree[id];
-        const parentNode = document.querySelector(`[ns-id=${vNode.parent}]`);
+        const parentNode = _.getElementByNSId(vNode.parent);
         const parentVNode = this.__nodeTree[vNode.parent];
         const nextBrotherId = parentVNode.children.findIndex(el => el === id) + 1;
 
@@ -213,6 +225,7 @@ export default class VNodeTree {
     return `<${tagName}${VNodeTree.getAttributesStr(attributes)}>${children.map(el => this.getTemplate(el)).join('')}</${tagName}>`;
   }
 
+  // 弃用
   render(nodeId, parentNode) {
     nodeId = nodeId || this.__rootId;
     const vNode = this.__nodeTree[nodeId];

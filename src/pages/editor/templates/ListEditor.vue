@@ -84,19 +84,6 @@ import { getLibraries } from '@/api/library';
 
 const LIB_NAME = 'NEK-UI';
 
-const beforeInsert = (fragment, nodeId) => {
-  if (Array.isArray(fragment)) {
-    for (let i of fragment) {
-      if (i.setAttribute) {
-        i.setAttribute('ns-id', nodeId);
-      }
-    }
-  } else {
-    fragment.setAttribute('ns-id', nodeId);
-  }
-  return fragment;
-};
-
 export default {
   components: {
     ToolsBar,
@@ -148,7 +135,7 @@ export default {
           });
         });
 
-        this.$nsVNodes.$update(beforeInsert);
+        this.updatePreview();
       }
     }
   },
@@ -185,7 +172,7 @@ export default {
           color: '#E31436',
         }
       });
-      this.$nsVNodes.$update(beforeInsert);
+      this.updatePreview();
     },
 
     /* 面包屑 */
@@ -258,12 +245,6 @@ export default {
     getRandomId() {
       return `${+new Date()}_${Math.round(Math.random() * 10000)}`;
     },
-    addVNode(tagName, parentId = null, nextBrotherId = null, options = null) {
-      return this.$nsVNodes.addNode(tagName, parentId, nextBrotherId, {
-        libName: LIB_NAME,
-        ...options
-      });
-    },
     isListEmpty(index) {
       const config = this.listConfigs[index];
       const { filters, buttons, cols, operatorCol, operatorButtons } = config;
@@ -288,6 +269,21 @@ export default {
         operatorButtons: []
       };
     },
+
+    /* vNodeTree函数二次封装 */
+
+    addVNode(tagName, parentId = null, nextBrotherId = null, options = null) {
+      return this.$nsVNodes.addNode(tagName, parentId, nextBrotherId, {
+        libName: LIB_NAME,
+        ...options
+      });
+    },
+
+    updatePreview() {
+      this.$nsVNodes.$update((item, nodeId) => {
+        item.setAttribute('ns-id', nodeId);
+      });
+    }
   }
 };
 </script>

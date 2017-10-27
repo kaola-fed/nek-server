@@ -9,10 +9,12 @@
       </side-bar>
       <div class="g-preview-wrapper">
         <highlight-current :nodeId="currentNodeId" ></highlight-current>
-        <div ref="preview" class="g-preview" id="ns-preview" ns-id="0"
+        <div class="g-preview" id="ns-preview"
              @dragstart="onPreviewDragStart" @dragover.prevent.stop="onComponentDragOver" @drop="onPreviewDrop"
              @click="onPreviewClick"
-        ></div>
+        >
+          <div ref="preview"></div>
+        </div>
         <side-bar :tabs="codeBars" placement="bottom" :default-open="false"></side-bar>
       </div>
       <side-bar :tabs="rightBars" placement="right" @changed="rightSideBarView = $event.name">
@@ -58,6 +60,7 @@ export default {
   },
   async mounted() {
     this.$nsVNodes = new VNodeTree();
+    this.$refs.preview.setAttribute('ns-id', this.$nsVNodes.rootId);
 
     const { data } = await getLibraries({ names: 'nekui' });
     this.libraries = data;
@@ -176,12 +179,11 @@ export default {
         return;
       }
 
-      const vNode = this.$nsVNodes.getNode(this.currentNodeId);
-      vNode.setAttribute(event.name, event.value);
+      this.$nsVNodes.updateNode(this.currentNodeId, {
+        attributes: { [event.name]: event.value }
+      });
 
-      const newNode = this.$nsVNodes.render(vNode.id);
-      const oldNode = _.getElementByNSId(this.currentNodeId);
-      oldNode.parentNode.replaceChild(newNode, oldNode);
+      this.updatePreview();
     },
 
     /*====== 组件变化处理函数 ======*/
@@ -211,13 +213,12 @@ export default {
         }
       }
 
-      const vNode = this.$nsVNodes.addNode(tagName, parentId, nextBrother, {
+      this.$nsVNodes.addNode(tagName, parentId, nextBrother, {
         libName,
         attributes
       });
 
-      const newNode = this.$nsVNodes.render(vNode.id);
-      parentNode.insertBefore(newNode, nextBrother);
+      this.updatePreview();
     },
 
     // 修改父节点
@@ -229,16 +230,9 @@ export default {
 
       const newParentId = newParentNode.getAttribute(NSID);
       // TODO: nextBrotherId
-      const oldParentId = this.$nsVNodes.moveNode(nodeId, newParentId);
+      this.$nsVNodes.moveNode(nodeId, newParentId);
 
-      const oldParentNode = _.getElementByNSId(oldParentId);
-      if (oldParentId === newParentId) {
-        return;
-      }
-
-      oldParentNode.removeChild(node);
-      // TODO: 换成insertBefore，参数加上兄弟节点
-      newParentNode.appendChild(node);
+      this.updatePreview();
     },
 
     // 删除节点
@@ -248,9 +242,7 @@ export default {
       }
 
       this.$nsVNodes.removeNode(this.currentNodeId);
-
-      const node = _.getElementByNSId(this.currentNodeId);
-      node.parentNode.removeChild(node);
+      this.updatePreview();
 
       this.currentNodeId = null;
     },
@@ -289,13 +281,16 @@ export default {
       return null;
     },
 
-    getNodeByNSId(id) {
-      return document.querySelector(`[ns-id="${id}"]`);
-    },
-
     clearCurrent() {
       this.currentNodeId = null;
     },
+
+    updatePreview() {
+      this.$nsVNodes.$update((item, nodeId) => {
+        item.setAttribute('ns-id', nodeId);
+        item.setAttribute('draggable', true);
+      });
+    }
   }
 };
 </script>
