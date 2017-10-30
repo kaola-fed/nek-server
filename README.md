@@ -34,12 +34,12 @@ $ yarn
 ## 运行指令
 
 ```
-$ npm run client-dev    # 前端开发
-$ npm run client-build  # 前端部署
-$ npm run server-dev    # 后端开发，如果需要访问页面，需要先build前端
-$ npm run server-build  # 后端编译
-$ npm build             # 部署前端与后端
-$ npm start             # 启动
+$ npm run client-dev          # 前端开发
+$ npm run client-build mock   # 前端部署，mock为参数，指定服务器在 /config/client.js 的 dev.proxyTable 中配置
+$ npm run server-dev          # 后端开发，如果需要访问页面，需要先build前端
+$ npm run server-build        # 后端编译
+$ npm build                   # 部署前端与后端
+$ npm start                   # 启动
 ```
 
 ## 说明
