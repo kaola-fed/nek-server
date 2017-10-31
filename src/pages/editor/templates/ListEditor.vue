@@ -7,8 +7,6 @@
           <div ref="preview">
           </div>
         </div>
-        <side-bar placement="bottom" maxSize="40%" :defaultOpen="false">
-        </side-bar>
       </div>
       <side-bar placement="right" maxSize="50%" type="light">
         <el-collapse v-model="configActiveNames">
@@ -104,7 +102,7 @@ export default {
     this.$nsVNodes = new VNodeTree();
     this.$refs.preview.setAttribute('ns-id', this.$nsVNodes.rootId);
 
-    // 获取项目数据
+    // 设置项目页面无关的数据
     this.pageInfo = {
       title: 'Test Page'
     };
@@ -114,8 +112,11 @@ export default {
     this.$nsVNodes.librarySet = data;
 
     this.initBreadcrumb();
+    this.initForm();
 
-    // 获取项目配置，更新数据
+    this.updatePreview();
+
+    // 更改项目页面配置，更新数据
   },
   watch: {
     breadcrumbs: {
@@ -137,7 +138,27 @@ export default {
 
         this.updatePreview();
       }
-    }
+    },
+    multiTabEnable: function(newValue) {
+      if (newValue) {
+        this.multiTabsVNode = this.addVNode('kl-tabs', this.formCardVNode.id, this.searchVNode.id);
+        this.updateTabVNodes(this.multiTabs);
+      } else if (this.multiTabsVNode) {
+        this.$nsVNodes.removeNode(this.multiTabsVNode.id);
+        this.multiTabsVNode = null;
+      }
+
+      this.updatePreview();
+    },
+    multiTabs: {
+      deep: true,
+      handler: function(newValue) {
+        this.multiTabsVNode.children.forEach(el => this.$nsVNodes.removeNode(el));
+        this.multiTabsVNode.children = [];
+        this.updateTabVNodes(newValue);
+        this.updatePreview();
+      }
+    },
   },
   data() {
     return {
@@ -162,17 +183,31 @@ export default {
     };
   },
   methods: {
-    /* 各种初始化 */
+    /* 几个主要节点的初始化 */
+
+    // 面包屑
     initBreadcrumb() {
-      this.breadcrumbVNode = this.addVNode('kl-crumb');
-      const breadcrumbHomeNode = this.addVNode('kl-crumb-item', this.breadcrumbVNode.id);
-      this.addVNode('kl-icon', breadcrumbHomeNode.id, null, {
-        attributes: {
-          type: 'home2',
-          color: '#E31436',
-        }
+      this.breadcrumbVNode = this.$nsVNodes.addFromObject({
+        tagName: 'kl-crumb',
+        libName: LIB_NAME,
+        children: [{
+          tagName: 'kl-crumb-item',
+          libName: LIB_NAME,
+          children: [{
+            tagName: 'kl-icon',
+            libName: LIB_NAME,
+            attributes: { type: 'home2', color: '#E31436' }
+          }]
+        }]
       });
-      this.updatePreview();
+    },
+
+    // 搜索区域表单
+    initForm() {
+      this.formCardVNode = this.addVNode('kl-card', null, null, { attributes: { title: this.pageInfo.title } });
+      this.searchVNode = this.addVNode('kl-search', this.formCardVNode.id);
+      const formVNode = this.addVNode('kl-form', this.searchVNode.id);
+      this.filterVNode = this.addVNode('kl-row', formVNode.id);
     },
 
     /* 面包屑 */
@@ -217,6 +252,13 @@ export default {
 
       this.multiTabs.splice(index, 1);
       this.listConfigs.splice(index, 1);
+    },
+    updateTabVNodes(tabs) {
+      for (let i of tabs) {
+        if (i.title) {
+          this.addVNode('kl-tab', this.multiTabsVNode.id, null, { attributes: { title: i.title, key: i.key } });
+        }
+      }
     },
 
     /* 列表 */
@@ -317,11 +359,9 @@ export default {
       .g-preview {
         flex: 1;
         margin: 10px;
-        background-color: white;
         overflow-y: auto;
         overflow-x: hidden;
         padding: 10px;
-        box-shadow: 0 0 3px 3px rgba(43, 43, 43, 0.1);
         border-radius: 3px;
       }
     }

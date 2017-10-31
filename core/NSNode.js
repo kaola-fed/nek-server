@@ -59,7 +59,7 @@ export default class NSNode {
       return;
     }
 
-    let beforeIndex = this.children.findIndex(el => el.id === beforeId);
+    let beforeIndex = this.children.findIndex(el => el === beforeId);
     beforeIndex = beforeIndex < 0 ? this.children.length : beforeIndex;
     this.children.splice(beforeIndex, 0, childId);
   }
@@ -73,13 +73,13 @@ export default class NSNode {
       return;
     }
 
-    let beforeIndex = this.children.findIndex(el => el.id === beforeId);
+    let beforeIndex = this.children.findIndex(el => el === beforeId);
     beforeIndex = beforeIndex < 0 ? this.children.length : beforeIndex;
     this.children.splice(beforeIndex, 0, ...childIds);
   }
 
   removeChild(childId) {
-    const index = this.children.findIndex(el => el.id === childId);
+    const index = this.children.findIndex(el => el === childId);
     if (index < 0) {
       return;
     }

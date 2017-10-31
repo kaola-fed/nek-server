@@ -32,7 +32,7 @@ export default class VNodeTree {
           attr += ` ${i}="${attributes[i]}"`;
           continue;
         }
-        if (typeof attributes[i] === 'number') {
+        if (typeof attributes[i] !== 'object') {
           attr += ` ${i}={${attributes[i]}}`;
           continue;
         }
@@ -142,6 +142,23 @@ export default class VNodeTree {
     const node = NSNode.createTextNode(text, parentId);
     this.__updateTree[node.id] = node;
     this.__updateTree[parentId].insertChild(node.id, nextBrotherId);
+
+    return node;
+  }
+
+  // 从一个嵌套结构中转换到当前树里
+  addFromObject(treeObj, parentId) {
+    const {
+      tagName,
+      text,
+      children,
+      ...others
+    } = treeObj;
+    parentId = parentId || this.__rootId;
+    const node = tagName ? this.addNode(tagName, parentId, null, others) : this.addTextNode(text, parentId);
+    if (children && children.length > 0) {
+      children.forEach(el => this.addFromObject(el, node.id));
+    }
 
     return node;
   }
