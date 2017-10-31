@@ -11,11 +11,10 @@ const NekComponent = Regular.extend();
 
 // 覆盖原有$inject，加入对fragment的处理等
 NekComponent.prototype.$inject = function(node, options) {
-  const { direction, beforeInsert } = {
-    direction: 'bottom',
-    beforeInsert: null,
-    ...options
-  };
+  const {
+    direction = 'bottom',
+    beforeInsert = null
+  } = options || {};
 
   let group = this;
   let fragment = combine.node(group.group || group);
@@ -50,10 +49,9 @@ NekComponent.prototype.$inject = function(node, options) {
 
 // 自定$replace，替换原有DOM
 NekComponent.prototype.$replace = function(oldNode, options) {
-  const { beforeReplace } = {
-    beforeReplace: null,
-    ...options
-  };
+  const {
+    beforeReplace = null
+  } = options || {};
 
   if (!oldNode) {
     throw Error('Need to provide an old node');
@@ -91,11 +89,10 @@ NekComponent.inject = (tpl, parent, options) => {
     throw new Error('Must provide a parent node');
   }
 
-  const { direction, beforeInsert } = {
-    direction: 'bottom',
-    beforeInsert: null,
-    ...options
-  };
+  const {
+    direction = 'bottom',
+    beforeInsert = null
+  } = options || {};
 
   const RootComponent = new NekComponent({
     template: tpl
@@ -110,7 +107,7 @@ NekComponent.inject = (tpl, parent, options) => {
 
 // 静态函数，替换目标node为新node
 NekComponent.replace = (tpl, oldNode, options) => {
-  const { beforeReplace } = { beforeReplace: null, ...options };
+  const { beforeReplace = null } = options || {};
 
   const RootComponent = new NekComponent({
     template: tpl

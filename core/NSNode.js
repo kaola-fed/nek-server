@@ -3,18 +3,16 @@ let counterTimer = null;
 
 export default class NSNode {
   constructor(id, options) {
-    const { tagName, libName, parent, children, attributes, events, text } = {
-      tagName: 'div',
-      libName: 'native',
-      parent: null,
-      children: [],
-      attributes: {},
-      events: {},
+    const {
+      tagName = 'div',
+      libName = 'native',
+      parent = null,
+      children = [],
+      attributes = {},
+      events = {},
       // 文本节点专用，tagName为null
-      text: '',
-
-      ...options
-    };
+      text = '',
+    } = options || {};
 
     this.id = id;
     this.tagName = tagName;
@@ -61,7 +59,8 @@ export default class NSNode {
       return;
     }
 
-    const beforeIndex = this.children.findIndex(el => el.id === beforeId);
+    let beforeIndex = this.children.findIndex(el => el.id === beforeId);
+    beforeIndex = beforeIndex < 0 ? this.children.length : beforeIndex;
     this.children.splice(beforeIndex, 0, childId);
   }
 
@@ -74,12 +73,16 @@ export default class NSNode {
       return;
     }
 
-    const beforeIndex = this.children.findIndex(el => el.id === beforeId);
+    let beforeIndex = this.children.findIndex(el => el.id === beforeId);
+    beforeIndex = beforeIndex < 0 ? this.children.length : beforeIndex;
     this.children.splice(beforeIndex, 0, ...childIds);
   }
 
   removeChild(childId) {
     const index = this.children.findIndex(el => el.id === childId);
+    if (index < 0) {
+      return;
+    }
     this.children.splice(index, 1);
   }
 

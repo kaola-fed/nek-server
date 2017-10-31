@@ -113,6 +113,16 @@ export default class VNodeTree {
     return this.__nodeTree[nodeId];
   }
 
+  getNextBrotherId(nodeId) {
+    const node = this.__nodeTree[nodeId];
+    const parent = this.__nodeTree[node.parent];
+    const index = parent.children.findIndex(el => el === nodeId);
+    if (index < 0) {
+      return null;
+    }
+    return parent.children[index + 1] || null;
+  }
+
   // 插入根节点的时候parentId传null或者不传
   addNode(tagName, parentId = null, nextBrotherId = null, options = null) {
     const nodeOptions = {
