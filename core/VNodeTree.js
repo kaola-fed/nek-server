@@ -205,18 +205,18 @@ export default class VNodeTree {
     let updateNodeIds = [];
     while (queue.length > 0) {
       const nodeId = queue.shift();
-      const oldTreeNode = this.__nodeTree[nodeId];
-      const newTreeNode = this.__updateTree[nodeId];
 
+      // TODO: 解决HTML上的标记问题后取消注释，删掉下面没注释的那行
+      // const oldTreeNode = this.__nodeTree[nodeId];
+      // const newTreeNode = this.__updateTree[nodeId];
       // 当前节点不同，重新渲染
-      // TODO： 细化子节点差异的判断
-      if (!(lodash.eq(oldTreeNode.attributes, newTreeNode.attributes) &&
-          lodash.eq(oldTreeNode.events, newTreeNode.events) &&
-          lodash.eq(oldTreeNode.children, newTreeNode.children))) {
-        updateNodeIds.push(nodeId);
-      } else {
-        queue = queue.concat(oldTreeNode.children);
-      }
+      // if (!NSNode.eq(oldTreeNode, newTreeNode)) {
+      //   updateNodeIds.push(nodeId);
+      // } else {
+      //   queue = queue.concat(oldTreeNode.children);
+      // }
+
+      updateNodeIds.push(nodeId);
     }
 
     // 更新数据到真正用于渲染的树

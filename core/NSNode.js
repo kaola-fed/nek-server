@@ -1,6 +1,20 @@
 let counter = 0;
 let counterTimer = null;
 
+function isSameObject(obj1, obj2) {
+  const obj1Keys = new Set(Object.keys(obj1));
+  const obj2Keys = new Set(Object.keys(obj2));
+  if (obj1Keys.size !== obj2Keys.size) {
+    return false;
+  }
+  for (let i of obj1Keys) {
+    if (!obj2Keys.has(i) || obj2Keys[i] !== obj1Keys[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
 export default class NSNode {
   constructor(id, options) {
     const {
@@ -47,6 +61,25 @@ export default class NSNode {
       text
     });
   };
+
+  static eq(node1, node2) {
+    // 对比属性和事件
+    if (!isSameObject(node1.attributes, node2.attributes) || !isSameObject(node1.events, node2.events)) {
+      return false;
+    }
+
+    // TODO： 更改子节点的差异对比，与diff里做配合，尽量减小更新开销
+    if (node1.children.length !== node2.children.length) {
+      return false;
+    }
+    for (let i = 0; i < node1.children.length; ++i) {
+      if (node1.children[i] !== node2.children[i]) {
+        return false;
+      }
+    }
+
+    return true;
+  }
 
   /* 子元素操作 */
 

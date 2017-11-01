@@ -113,11 +113,13 @@ export default {
 
     this.initBreadcrumb();
     this.initForm();
+    this.initList();
 
     this.updatePreview();
 
     // 更改项目页面配置，更新数据
   },
+  // TODO: 完善watch中的子节点的差异对比和修改方式
   watch: {
     breadcrumbs: {
       deep: true,
@@ -159,6 +161,78 @@ export default {
         this.updatePreview();
       }
     },
+    buttonsData: {
+      deep: true,
+      handler: function(newValue) {
+        if (newValue && newValue.length > 0) {
+          if (!this.otherButtonsVNode) {
+            this.otherButtonsVNode = this.addVNode('kl-card', null, this.listCardVNode.id, { attributes: { isShowLine: false } });
+          }
+          this.otherButtonsVNode.children.forEach(el => this.$nsVNodes.removeNode(el));
+          this.otherButtonsVNode.children = [];
+
+          newValue.forEach((el) => {
+            const attributes = { title: el.title };
+            if (el.type && el.type !== 'default') {
+              attributes.type = el.type;
+            }
+            this.addVNode('kl-button', this.otherButtonsVNode.id, null, { attributes });
+          });
+        } else if (this.otherButtonsVNode) {
+          this.$nsVNodes.removeNode(this.otherButtonsVNode);
+        }
+
+        this.updatePreview();
+      }
+    },
+    colsData: {
+      deep: true,
+      handler: function(newValue) {
+        this.listVNode.children.forEach(el => this.$nsVNodes.removeNode(el));
+        this.listVNode.children = [];
+        newValue.forEach((el) => {
+          const attributes = {
+            name: el.title,
+            key: el.key
+          };
+          if (el.fixed) {
+            attributes.fixed = el.fixed;
+          }
+          this.addVNode('kl-table-col', this.listVNode.id, null, { attributes });
+        });
+
+        this.updatePreview();
+      }
+    },
+    colOperators: {
+      deep: true,
+      handler: function(newValue) {
+        if (newValue) {
+          if (!this.opColVNode) {
+            this.opColVNode = this.addVNode('kl-table-col', this.listVNode.id, null, {
+              attributes: {name: '操作', fixed: 'right'}
+            });
+            this.opColTplVNode = this.addVNode('kl-table-template', this.opColVNode.id, null, {
+              attributes: {type: 'item'}
+            });
+          }
+
+          let text = '';
+          newValue.forEach((el) => {
+            text += `{'<a href="javascript:">${el.title}</a>'}`;
+          });
+          if (this.opColTplVNode.children.length > 0) {
+            this.$nsVNodes.removeNode(this.opColTplVNode.children[0]);
+          }
+          this.$nsVNodes.addTextNode(text, this.opColTplVNode.id);
+        } else if (this.opColVNode) {
+          this.$nsVNodes.removeNode(this.opColVNode.id);
+          this.opColVNode = null;
+        }
+
+        this.updatePreview();
+      }
+    }
   },
   data() {
     return {
@@ -181,6 +255,23 @@ export default {
       currentTab: '',
       listConfigs: [this.newColItem()],
     };
+  },
+  computed: {
+    filterData() {
+      return this.listConfigs[0].filters;
+    },
+    buttonsData() {
+      return this.listConfigs[0].buttons;
+    },
+    colsData() {
+      return this.listConfigs[0].cols;
+    },
+    colOperators() {
+      if (this.listConfigs[0].operatorCol) {
+        return this.listConfigs[0].operatorButtons;
+      }
+      return null;
+    }
   },
   methods: {
     /* 几个主要节点的初始化 */
@@ -206,8 +297,15 @@ export default {
     initForm() {
       this.formCardVNode = this.addVNode('kl-card', null, null, { attributes: { title: this.pageInfo.title } });
       this.searchVNode = this.addVNode('kl-search', this.formCardVNode.id);
-      const formVNode = this.addVNode('kl-form', this.searchVNode.id);
-      this.filterVNode = this.addVNode('kl-row', formVNode.id);
+      this.filtersVNode = this.addVNode('kl-row', this.searchVNode.id);
+    },
+
+    initList() {
+      this.listCardVNode = this.addVNode('kl-card', null, null, { attributes: { isShowLine: false } });
+      this.listVNode = this.addVNode('kl-table', this.listCardVNode.id);
+      this.pagerVNode = this.addVNode('kl-pager', this.listCardVNode.id, null, {
+        attributes: { sumTotal: 100, pageSize: 10, current: 1 }
+      });
     },
 
     /* 面包屑 */
