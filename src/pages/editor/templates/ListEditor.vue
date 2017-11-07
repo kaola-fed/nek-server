@@ -8,7 +8,7 @@
           </div>
         </div>
       </div>
-      <side-bar placement="right" maxSize="50%" type="light">
+      <div class="m-right">
         <el-collapse v-model="configActiveNames">
           <el-collapse-item title="面包屑" name="breadcrumb">
             <el-row v-for="(item, index) in breadcrumbs" :key="item.id + index" :gutter="20">
@@ -61,7 +61,7 @@
             </div>
           </el-collapse-item>
         </el-collapse>
-      </side-bar>
+      </div>
     </div>
 
     <preview-button></preview-button>
@@ -235,8 +235,17 @@ export default {
     colsData: {
       deep: true,
       handler: function(newValue) {
-        this.listVNode.children.forEach(el => this.$nsVNodes.removeNode(el));
-        this.listVNode.children = [];
+        if (!this.opColVNode) {
+          this.listVNode.children.forEach(el => this.$nsVNodes.removeNode(el));
+          console.log(this.$nsVNodes, this.listVNode.children);
+          this.listVNode.children = [];
+        } else {
+          for (let i = 0; i < this.listVNode.children.length - 1; ++i) {
+            this.$nsVNodes.removeNode(this.listVNode.children[i]);
+          }
+          this.listVNode.children.splice(0, this.listVNode.children.length - 1);
+        }
+
         newValue.forEach((el) => {
           const attributes = {
             name: el.title,
@@ -245,7 +254,7 @@ export default {
           if (el.fixed) {
             attributes.fixed = el.fixed;
           }
-          this.addVNode('kl-table-col', this.listVNode.id, null, { attributes });
+          this.addVNode('kl-table-col', this.listVNode.id, this.opColVNode, { attributes });
         });
 
         this.updatePreview();
@@ -515,18 +524,20 @@ export default {
     flex: 1;
 
     .m-left {
-      display: flex;
-      flex-direction: column;
       flex: 1;
 
       .g-preview {
-        flex: 1;
+        height: 100%;
         margin: 10px;
         overflow-y: auto;
         overflow-x: hidden;
         padding: 10px;
         border-radius: 3px;
       }
+    }
+
+    .m-right {
+      flex: 1;
     }
 
     .u-icon-btn {
