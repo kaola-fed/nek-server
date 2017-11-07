@@ -8,7 +8,7 @@
           </div>
         </div>
       </div>
-      <div class="m-right">
+      <side-bar placement="right" maxSize="50%" type="light">
         <el-collapse v-model="configActiveNames">
           <el-collapse-item title="面包屑" name="breadcrumb">
             <el-row v-for="(item, index) in breadcrumbs" :key="item.id + index" :gutter="20">
@@ -61,7 +61,7 @@
             </div>
           </el-collapse-item>
         </el-collapse>
-      </div>
+      </side-bar>
     </div>
 
     <preview-button></preview-button>
@@ -524,20 +524,18 @@ export default {
     flex: 1;
 
     .m-left {
+      display: flex;
+      flex-direction: column;
       flex: 1;
 
       .g-preview {
-        height: 100%;
+        flex: 1;
         margin: 10px;
         overflow-y: auto;
         overflow-x: hidden;
         padding: 10px;
         border-radius: 3px;
       }
-    }
-
-    .m-right {
-      flex: 1;
     }
 
     .u-icon-btn {
