@@ -82,11 +82,11 @@
             <el-input v-model="scope.row.key" placeholder="请输入对应属性名"></el-input>
           </template>
         </el-table-column>
-        <el-table-column label="过滤器">
-          <template scope="scope">
-            <el-select v-model="scope.row.type" placeholder="请选择过滤器"></el-select>
-          </template>
-        </el-table-column>
+        <!--<el-table-column label="过滤器">-->
+          <!--<template scope="scope">-->
+            <!--<el-select v-model="scope.row.type" placeholder="请选择过滤器"></el-select>-->
+          <!--</template>-->
+        <!--</el-table-column>-->
         <el-table-column label="固定列位置" width="200">
           <template scope="scope">
             <el-radio-group v-model="scope.row.fixed">
