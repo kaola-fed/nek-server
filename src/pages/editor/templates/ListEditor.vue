@@ -228,7 +228,8 @@ export default {
             this.addVNode('kl-button', this.otherButtonsVNode.id, null, { attributes, events });
           });
         } else if (this.otherButtonsVNode) {
-          this.$nsVNodes.removeNode(this.otherButtonsVNode);
+          this.$nsVNodes.removeNode(this.otherButtonsVNode.id);
+          this.otherButtonsVNode = null;
         }
 
         this.updatePreview();
@@ -241,7 +242,6 @@ export default {
       handler: function(newValue) {
         if (!this.opColVNode) {
           this.listVNode.children.forEach(el => this.$nsVNodes.removeNode(el));
-          console.log(this.$nsVNodes, this.listVNode.children);
           this.listVNode.children = [];
         } else {
           for (let i = 0; i < this.listVNode.children.length - 1; ++i) {
@@ -329,17 +329,17 @@ export default {
   },
   computed: {
     filterData() {
-      return this.listConfigs[0].filters;
+      return this.listConfigs[this.currentTab || 0].filters;
     },
     buttonsData() {
-      return this.listConfigs[0].buttons;
+      return this.listConfigs[this.currentTab || 0].buttons;
     },
     colsData() {
-      return this.listConfigs[0].cols;
+      return this.listConfigs[this.currentTab || 0].cols;
     },
     colOperators() {
-      if (this.listConfigs[0].operatorCol) {
-        return this.listConfigs[0].operatorButtons;
+      if (this.listConfigs[this.currentTab || 0].operatorCol) {
+        return this.listConfigs[this.currentTab || 0].operatorButtons;
       }
       return null;
     }
