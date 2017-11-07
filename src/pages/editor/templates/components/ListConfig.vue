@@ -116,9 +116,9 @@
             <el-input v-model="scope.row.title" placeholder="请输入按钮文本"></el-input>
           </template>
         </el-table-column>
-        <el-table-column label="链接/事件">
+        <el-table-column label="链接">
           <template scope="scope">
-            <el-input v-model="scope.row.link" placeholder="请输入链接或绑定的事件名"></el-input>
+            <el-input v-model="scope.row.link" placeholder="请输入链接"></el-input>
           </template>
         </el-table-column>
         <el-table-column label="操作" fixed="right" width="135" align="center">

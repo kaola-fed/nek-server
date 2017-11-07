@@ -293,7 +293,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .g-editor {
   position: relative;
   height: 100%;
