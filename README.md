@@ -43,6 +43,9 @@ $ npm start                   # 启动
 ```
 
 ## 说明
+### 后端开发注意
+在接入openid登录时，需要修改本地hosts，将nek-server.kaolafed.com绑定本地ip地址，访问时使用域名+端口访问
+`app/config.js`中涉及私密信息，所以添加到.gitignore文件
 
 ### babel配置
 由于前后端的babel配置存在一些差异，因此将配置文件分开，
