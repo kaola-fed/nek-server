@@ -1,7 +1,5 @@
-import * as LoginService from './../services/login';
 import * as CONFIG from './../config';
 import KoaOpenid from 'koa-openid';
-// import KoaOpenid from './../auth.js';
 
 const config = {
     client_id: CONFIG.client_id,
@@ -13,7 +11,6 @@ const koaOpenid = new KoaOpenid(config);
 export const index = async function(ctx, next) {
     return await koaOpenid.getUserInfo(ctx, next, function(result) {
         if(result.error) {
-            console.log(error);
             return ctx.redirect('/error');
         }
         ctx.session.user = result.userInfo;
