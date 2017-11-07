@@ -1,9 +1,20 @@
-import Koa from 'koa';
-import serve from 'koa-static';
 import path from 'path';
 
-const app = new Koa();
+import Koa from 'koa';
+import serve from 'koa-static';
+import Session from 'koa-session';
+import views from 'koa-views';
+import routers from './routers/index';
+import * as CONFIG from './config';
 
-app.use(serve(path.resolve(__dirname, '../dist')));
+const app = new Koa();
+app.keys = ['nek-server'];
+
+app.use(Session(CONFIG.session, app));
+app.use(views(path.join(__dirname, './views'), {
+    extension: 'ejs'
+}));
+
+app.use(routers.routes()).use(routers.allowedMethods());
 
 app.listen(3000);
