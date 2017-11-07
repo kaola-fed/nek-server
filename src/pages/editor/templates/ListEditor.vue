@@ -112,6 +112,7 @@ export default {
     this.$nsVNodes.librarySet = data;
 
     this.initBreadcrumb();
+    this.initTab();
     this.initForm();
     this.initList();
 
@@ -121,6 +122,7 @@ export default {
   },
   // TODO: 完善watch中的子节点的差异对比和修改方式
   watch: {
+    // 面包屑更新
     breadcrumbs: {
       deep: true,
       handler: function(newValue) {
@@ -141,9 +143,11 @@ export default {
         this.updatePreview();
       }
     },
+
+    // 多Tab启用/停用
     multiTabEnable: function(newValue) {
       if (newValue) {
-        this.multiTabsVNode = this.addVNode('kl-tabs', this.formCardVNode.id, this.searchVNode.id);
+        this.multiTabsVNode = this.addVNode('kl-tabs', this.tabsVNode.id);
         this.updateTabVNodes(this.multiTabs);
       } else if (this.multiTabsVNode) {
         this.$nsVNodes.removeNode(this.multiTabsVNode.id);
@@ -152,6 +156,8 @@ export default {
 
       this.updatePreview();
     },
+
+    // 多Tab内容更新
     multiTabs: {
       deep: true,
       handler: function(newValue) {
@@ -161,6 +167,45 @@ export default {
         this.updatePreview();
       }
     },
+
+    // 筛选项更新
+    filterData: {
+      deep: true,
+      handler: function(newValue) {
+        this.filtersVNode.children.forEach(el => this.$nsVNodes.removeNode(el));
+        this.filtersVNode.children = [];
+
+        newValue.forEach((el) => {
+          const fieldAttrs = {};
+          if (el.key) {
+            fieldAttrs.value = {
+              type: 'var',
+              value: `condition.${el.key}`
+            };
+          }
+
+          this.$nsVNodes.addFromObject({
+            tagName: 'kl-col',
+            libName: LIB_NAME,
+            attributes: { span: 4 },
+            children: [{
+              tagName: 'kl-form-item',
+              libName: LIB_NAME,
+              attributes: { title: el.title },
+              children: [{
+                tagName: el.type,
+                libName: LIB_NAME,
+                attributes: fieldAttrs
+              }]
+            }]
+          }, this.filtersVNode.id);
+        });
+
+        this.updatePreview();
+      }
+    },
+
+    // 其他按钮更新
     buttonsData: {
       deep: true,
       handler: function(newValue) {
@@ -185,6 +230,8 @@ export default {
         this.updatePreview();
       }
     },
+
+    // 列更新
     colsData: {
       deep: true,
       handler: function(newValue) {
@@ -204,6 +251,8 @@ export default {
         this.updatePreview();
       }
     },
+
+    // 操作列更新
     colOperators: {
       deep: true,
       handler: function(newValue) {
@@ -293,9 +342,14 @@ export default {
       });
     },
 
+    // 搜索多Tab
+    initTab() {
+      this.tabsVNode = this.addVNode('kl-card', null, null, { attributes: { title: this.pageInfo.title } });
+    },
+
     // 搜索区域表单
     initForm() {
-      this.formCardVNode = this.addVNode('kl-card', null, null, { attributes: { title: this.pageInfo.title } });
+      this.formCardVNode = this.addVNode('kl-card', null, null, { attributes: { isShowLine: false, class: 'f-undertab' } });
       this.searchVNode = this.addVNode('kl-search', this.formCardVNode.id);
       this.filtersVNode = this.addVNode('kl-row', this.searchVNode.id);
     },
@@ -304,7 +358,7 @@ export default {
       this.listCardVNode = this.addVNode('kl-card', null, null, { attributes: { isShowLine: false } });
       this.listVNode = this.addVNode('kl-table', this.listCardVNode.id);
       this.pagerVNode = this.addVNode('kl-pager', this.listCardVNode.id, null, {
-        attributes: { sumTotal: 100, pageSize: 10, current: 1 }
+        attributes: { sumTotal: 233, pageSize: 10, current: 1 }
       });
     },
 
@@ -436,6 +490,17 @@ export default {
 
   .el-tabs--border-card >.el-tabs__header {
     background-color: #f2f2f2;
+  }
+}
+
+/* 预览区域中的class配置 */
+.g-preview {
+  .f-undertab {
+    margin-top: -30px;
+    padding-top: 0;
+    border-top: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
   }
 }
 </style>

@@ -18,7 +18,11 @@
         </el-table-column>
         <el-table-column label="类型">
           <template scope="scope">
-            <el-select v-model="scope.row.type" placeholder="请选择筛选项类型"></el-select>
+            <el-select v-model="scope.row.type" placeholder="请选择筛选项类型">
+              <el-option value="kl-input" label="输入框"></el-option>
+              <el-option value="kl-select" label="选择框"></el-option>
+              <el-option value="kl-date-picker" label="日期选择"></el-option>
+            </el-select>
           </template>
         </el-table-column>
         <el-table-column label="操作" fixed="right" width="135" align="center">
@@ -152,7 +156,7 @@ export default {
       this.value.filters.push({
         title: '',
         key: '',
-        type: '',
+        type: 'kl-input',
       });
     },
     onAddButtonClick() {
