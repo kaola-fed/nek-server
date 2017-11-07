@@ -49,6 +49,17 @@ export default class VNodeTree {
     return attr;
   }
 
+  static getEventsStr(events) {
+    let attr = '';
+    for (let i in events) {
+      if (events.hasOwnProperty(i)) {
+        attr += ` on-${i}={this.${events[i]}($event)`;
+      }
+    }
+
+    return attr;
+  }
+
   static findNodeBody(node, config) {
     if (!config.isLayout) {
       return null;
@@ -235,7 +246,7 @@ export default class VNodeTree {
             }
           }
         } else {
-          setAttrs(fragment, id)
+          setAttrs(fragment, id);
         }
         return fragment;
       }});
@@ -262,7 +273,7 @@ export default class VNodeTree {
 
   /* 生成 */
 
-  // 生成模板
+  // 生成附带ns-id的模板
   getTemplate(nodeId) {
     nodeId = nodeId || this.__rootId;
     const vNode = this.__nodeTree[nodeId];
@@ -274,6 +285,72 @@ export default class VNodeTree {
     }
 
     return `<${tagName}${VNodeTree.getAttributesStr(attributes)} ns-id="${nodeId}">${children.map(el => this.getTemplate(el)).join('')}</${tagName}>`;
+  }
+
+  build() {
+    return {
+      js: this.__genJS(),
+      html: this.__genHTML()
+    };
+  }
+
+  __genJS() {
+    let eventStr = '';
+    for (let i in this.__nodeTree) {
+      if (this.__nodeTree.hasOwnProperty(i)) {
+        const events = this.__nodeTree[i].events;
+        const keys = Object.keys(events);
+
+        if (!keys.length) {
+          continue;
+        }
+
+        for (let e of keys) {
+          eventStr += `
+        
+        ${events[e]}: function(event) {
+            console.log(event);
+        }`;
+        }
+      }
+    }
+
+    // TODO: 从配置文件读取模板
+    return `NEJ.define([
+    'pro/base/util',
+    'pro/widget/BaseComponent',
+    'text!./page.html',
+], function(_, BaseComponent, tpl){
+    return BaseComponent.extend({
+        template: tpl,
+        config: function(data) {
+            this.supr(data);
+            _.extend(data, {});
+        },
+        
+        // 监听事件${eventStr}
+        
+        // 网络请求
+    });
+});
+    `;
+  }
+
+  // 生成格式化的HTML
+  __genHTML(nodeId, level = 0) {
+    nodeId = nodeId || this.__rootId;
+    const vNode = this.__nodeTree[nodeId];
+
+    const { tagName, attributes, events, children, text } = vNode;
+
+    const intend = new Array(level).fill('    ').join('');
+
+    if (!tagName) {
+      return `${intend}${text || ''}`;
+    }
+
+    return `${intend}<${tagName}${VNodeTree.getAttributesStr(attributes)}${VNodeTree.getEventsStr(events)}>` +
+      `${children.length ? `\n${children.map(el => this.__genHTML(el, level + 1)).join('\n')}\n${intend}` : ''}</${tagName}>`;
   }
 
   // 弃用

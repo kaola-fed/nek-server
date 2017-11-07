@@ -218,10 +218,14 @@ export default {
 
           newValue.forEach((el) => {
             const attributes = { title: el.title };
+            let events;
             if (el.type && el.type !== 'default') {
               attributes.type = el.type;
             }
-            this.addVNode('kl-button', this.otherButtonsVNode.id, null, { attributes });
+            if (el.event) {
+              events = { click: el.event };
+            }
+            this.addVNode('kl-button', this.otherButtonsVNode.id, null, { attributes, events });
           });
         } else if (this.otherButtonsVNode) {
           this.$nsVNodes.removeNode(this.otherButtonsVNode);
@@ -277,7 +281,7 @@ export default {
 
           let text = '';
           newValue.forEach((el) => {
-            text += `{'<a href="javascript:">${el.title}</a>'}`;
+            text += `{'<a href="${el.link || 'javascript:'}">${el.title}</a>'}`;
           });
           if (this.opColTplVNode.children.length > 0) {
             this.$nsVNodes.removeNode(this.opColTplVNode.children[0]);
@@ -298,7 +302,16 @@ export default {
         tip: '进入编辑器',
         icon: 'iconfont-edit',
         onClick: () => {
-          this.$router.push({ name: 'editor', id: this.$route.query.id });
+          this.$confirm('进入拖拽编辑模式后将不能再使用模板编辑模式，确认要继续？', '提示')
+            .then(() => this.$router.push({ name: 'editor', id: this.$route.query.id }));
+        }
+      }, {
+        tip: '生成代码',
+        icon: 'el-icon-check',
+        onClick: () => {
+          const { html, js } = this.$nsVNodes.build();
+          console.log(html);
+          console.log(js);
         }
       }],
 
