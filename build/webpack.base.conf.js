@@ -44,26 +44,7 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [resolve('core'), resolve('src'), resolve('test')],
-        query: {
-          babelrc: false,
-          "presets": [
-            ["env", {
-              "modules": false,
-              "targets": {
-                "browsers": ["> 1%", "last 2 versions", "not ie <= 8"]
-              }
-            }],
-            "stage-2"
-          ],
-          "plugins": ["transform-runtime"],
-          "env": {
-            "test": {
-              "presets": ["env", "stage-2"],
-              "plugins": ["istanbul"]
-            }
-          }
-        }
+        include: [resolve('core'), resolve('src'), resolve('test')]
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
