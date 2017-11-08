@@ -13,3 +13,6 @@ yarn-error.log*
 *.njsproj
 *.sln
 .vscode
+
+# ignore this file
+/server.sh

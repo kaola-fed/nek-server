@@ -58,7 +58,7 @@ $ npm run build
 127.0.0.1 nek-server.kaolafed.com
 ```
 
-之后需要在`/server.sh`文件下修改几个环境变量为对应的值，然后运行该脚本。
+之后需要在`/server.sh`文件下修改几个环境变量为对应的值，然后运行该脚本。`server.sh`已经加入.gitignore套餐，可以自行修改。
 Windows下需要安装一个shell工具，或者直接在WebStorm中进行环境变量的配置。
 
 ```bash
@@ -78,3 +78,6 @@ $ ./server.sh start
 ### babel配置
 由于前后端的babel配置存在一些差异，因此将配置文件分开，
 `.babelrc`文件中的是后端的babel配置，`build/webpack.base.conf.js`里`/\.js$/`下的配置为前端的babel配置
+
+### 后端开发注意事项
+在开发时使用了`nodemon`进行文件更新监控，如果在`ctrl+c`之后重新运行时提示端口被占用的话，需要自行kill掉原有进程
