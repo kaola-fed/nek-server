@@ -12,9 +12,10 @@ app.keys = ['nek-server'];
 
 app.use(Session(CONFIG.session, app));
 app.use(views(path.join(__dirname, './views'), {
-    extension: 'ejs'
+  extension: 'ejs'
 }));
 
+app.use(serve(path.resolve(__dirname, '../dist')));
 app.use(routers.routes()).use(routers.allowedMethods());
 
 app.listen(3000);
