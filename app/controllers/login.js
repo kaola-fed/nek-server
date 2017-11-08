@@ -1,16 +1,11 @@
-import * as CONFIG from './../config';
+import { openIDConfig } from '../config';
 import KoaOpenid from 'koa-openid';
 
-const config = {
-  clientId: CONFIG.client_id,
-  clientSecret: CONFIG.client_secret,
-  redirectUri: CONFIG.redirect_uri
-};
-const koaOpenid = new KoaOpenid(config);
+const koaOpenid = new KoaOpenid(openIDConfig);
 
 export const index = async function(ctx, next) {
   return await koaOpenid.getUserInfo(ctx, next, (result) => {
-    if(result.error) {
+    if (result.error) {
       return ctx.redirect('/error');
     }
     ctx.session.user = result.userInfo;
