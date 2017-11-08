@@ -3,12 +3,7 @@ import KoaOpenid from 'koa-openid';
 export const index = async (ctx) => {
     const user = ctx.session.user;
     if(!user) {
-        const config = {
-            client_id: CONFIG.client_id,
-            client_secret: CONFIG.client_secret,
-            redirect_uri: CONFIG.redirect_uri
-        }
-        const koaOpenid = new KoaOpenid(config);
+        const koaOpenid = new KoaOpenid(CONFIG);
         return await koaOpenid.goLogin(ctx);
     }
     const title = "NEK SERVER";
