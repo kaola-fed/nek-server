@@ -17,8 +17,8 @@
     "precommit": "lint-staged"
   },
   "lint-staged": {
-    "src/**/*.{js,vue}": "eslint",
-    "app/**/*.js": "eslint"
+    "src/**/*.{js,vue}": "npm run lint-fix",
+    "app/**/*.js": "npm run lint-fix"
   },
   "dependencies": {
     "ejs": "^2.5.7",
