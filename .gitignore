@@ -15,4 +15,4 @@ yarn-error.log*
 .vscode
 
 # ignore this file
-/server.sh
+#/server.sh
