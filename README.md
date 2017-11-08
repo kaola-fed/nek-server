@@ -31,22 +31,53 @@ $ npm i
 $ yarn
 ```
 
-## 运行指令
+## 运行
 
+### 前端开发
+
+前端开发时可以使用`server`参数来选择代理服务器，或使用`mock`来使用mock数据。
+服务器在`/config/client.js`文件下的`dev.proxyTable`中配置。
+
+```bash
+$ npm run client-dev mock     # mock server
+$ npm run client-dev [server] # proxy server
 ```
-$ npm run client-dev          # 前端开发
-$ npm run client-build mock   # 前端部署，mock为参数，指定服务器在 /config/client.js 的 dev.proxyTable 中配置
-$ npm run server-dev          # 后端开发，如果需要访问页面，需要先build前端
-$ npm run server-build        # 后端编译
-$ npm build                   # 部署前端与后端
-$ npm start                   # 启动
+
+### 前端生成
+
+生成的文件在`/dist`目录下
+
+```bash
+$ npm run build
+```
+
+### 后端开发
+
+后端开发时需要先修改本地host
+```
+127.0.0.1 nek-server.kaolafed.com
+```
+
+之后需要在`/server.sh`文件下修改几个环境变量为对应的值，然后运行该脚本。`server.sh`已经加入.gitignore套餐，可以自行修改。
+Windows下需要安装一个shell工具，或者直接在WebStorm中进行环境变量的配置。
+
+```bash
+$ ./server.sh run server-dev  # 后端开发模式，如果需要访问页面，需要先build前端
+```
+
+### 后端运行
+
+在运行前先要编译，然后使用脚本来启动
+```bash
+$ npm run server-build
+$ ./server.sh start
 ```
 
 ## 说明
-### 后端开发注意
-在接入openid登录时，需要修改本地hosts，将nek-server.kaolafed.com绑定本地ip地址，访问时使用域名+端口访问
-`app/config.js`中涉及私密信息，所以添加到.gitignore文件
 
 ### babel配置
 由于前后端的babel配置存在一些差异，因此将配置文件分开，
 `.babelrc`文件中的是后端的babel配置，`build/webpack.base.conf.js`里`/\.js$/`下的配置为前端的babel配置
+
+### 后端开发注意事项
+在开发时使用了`nodemon`进行文件更新监控，如果在`ctrl+c`之后重新运行时提示端口被占用的话，需要自行kill掉原有进程
