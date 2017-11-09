@@ -20,7 +20,25 @@ export default class VNodeTree {
 
   /* 静态函数 */
 
-  static getAttributesStr(attributes) {
+  static getAttrStr(key, type, value, debug) {
+    switch (typeof type) {
+      case 'string':
+        return ` ${key}="${value}"`;
+      case 'boolean':
+      case 'number':
+      case 'object':
+        return ` ${key}={${value}}`;
+      case 'var':
+        if (debug) {
+          return '';
+        }
+        return ` ${key}={${value}}`;
+      default:
+        break;
+    }
+  }
+
+  static getAttributesStr(attributes, debug) {
     let attr = '';
     for (let i in attributes) {
       if (attributes.hasOwnProperty(i)) {
@@ -28,21 +46,9 @@ export default class VNodeTree {
           continue;
         }
 
-        if (typeof attributes[i] === 'string') {
-          attr += ` ${i}="${attributes[i]}"`;
-          continue;
-        }
-        if (typeof attributes[i] !== 'object') {
-          attr += ` ${i}={${attributes[i]}}`;
-          continue;
-        }
-
-        const { type, value } = attributes[i];
-        if (type === 'string') {
-          attr += ` ${i}="${value}"`;
-        } else {
-          attr += ` ${i}={${value}}`;
-        }
+        const type = attributes[i].type || typeof attributes[i];
+        const value = attributes[i].value || attributes[i];
+        attr += VNodeTree.getAttrStr(i, type, value, debug);
       }
     }
 
@@ -177,6 +183,9 @@ export default class VNodeTree {
   // 删除节点及其子节点
   removeNode(nodeId) {
     const node = this.__updateTree[nodeId];
+    if (!node) {
+      return;
+    }
     node.children.forEach(el => this.removeNode(el));
 
     if (nodeId !== this.__rootId) {
@@ -284,7 +293,7 @@ export default class VNodeTree {
       return text || '';
     }
 
-    return `<${tagName}${VNodeTree.getAttributesStr(attributes)} ns-id="${nodeId}">${children.map(el => this.getTemplate(el)).join('')}</${tagName}>`;
+    return `<${tagName}${VNodeTree.getAttributesStr(attributes, true)} ns-id="${nodeId}">${children.map(el => this.getTemplate(el)).join('')}</${tagName}>`;
   }
 
   build() {

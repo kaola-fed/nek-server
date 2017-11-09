@@ -12,7 +12,7 @@
         <slot></slot>
       </div>
     </div>
-    <div class="u-toggle-btn" @click="toggle" :style="toggleButtonStyle">
+    <div v-if="toggleable" class="u-toggle-btn" @click="toggle" :style="toggleButtonStyle">
       <i :class="getToggleIcon()"></i>
     </div>
   </div>
@@ -44,6 +44,10 @@ export default {
       default: 'dark' // dark | light
     },
     defaultOpen: {
+      type: Boolean,
+      default: true
+    },
+    toggleable: {
       type: Boolean,
       default: true
     }

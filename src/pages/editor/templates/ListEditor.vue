@@ -8,7 +8,7 @@
           </div>
         </div>
       </div>
-      <side-bar placement="right" maxSize="50%" type="light">
+      <side-bar placement="right" maxSize="50%" type="light" :toggleable="false">
         <el-collapse v-model="configActiveNames">
           <el-collapse-item title="面包屑" name="breadcrumb">
             <el-row v-for="(item, index) in breadcrumbs" :key="item.id + index" :gutter="20">
@@ -79,6 +79,7 @@ import PreviewButton from '../components/PreviewButton.vue';
 import VNodeTree from '@/../core/VNodeTree';
 
 import { getLibraries } from '@/api/library';
+import { getListTemplate } from '@/api/project';
 
 const LIB_NAME = 'NEK-UI';
 
@@ -102,14 +103,18 @@ export default {
     this.$nsVNodes = new VNodeTree();
     this.$refs.preview.setAttribute('ns-id', this.$nsVNodes.rootId);
 
+    this.$watch('updateTree', this.nsVNodeWatcher, {
+      deep: true
+    });
+
     // 设置项目页面无关的数据
     this.pageInfo = {
       title: 'Test Page'
     };
 
     // 获取组件配置
-    const { data } = await getLibraries({ names: 'nekui' });
-    this.$nsVNodes.librarySet = data;
+    const lib = await getLibraries({ names: 'nekui' });
+    this.$nsVNodes.librarySet = lib.data;
 
     this.initBreadcrumb();
     this.initTab();
@@ -119,28 +124,27 @@ export default {
     this.updatePreview();
 
     // 更改项目页面配置，更新数据
+    const { data } = await getListTemplate({ id: 0 });
+    this.breadcrumbs = data.breadcrumbs;
+    this.multiTabEnable = data.tabsEnable;
+    this.multiTabs = data.tabs;
+    this.listConfigs = data.lists;
+
+    this.$forceUpdate();
   },
   // TODO: 完善watch中的子节点的差异对比和修改方式
   watch: {
+    needUpdate: {
+      handler: function(newValue) {
+        this.updateWatcher(newValue);
+      }
+    },
+
     // 面包屑更新
     breadcrumbs: {
       deep: true,
       handler: function(newValue) {
-        for (let i = 1; i < this.breadcrumbVNode.children.length; ++i) {
-          this.$nsVNodes.removeNode(this.breadcrumbVNode.children[i]);
-        }
-        this.breadcrumbVNode.children.splice(1);
-
-        newValue.forEach((el) => {
-          this.addVNode('kl-crumb-item', this.breadcrumbVNode.id, null, {
-            attributes: {
-              content: el.title,
-              href: el.link
-            }
-          });
-        });
-
-        this.updatePreview();
+        this.breadcrumbsWatcher(newValue);
       }
     },
 
@@ -154,17 +158,14 @@ export default {
         this.multiTabsVNode = null;
       }
 
-      this.updatePreview();
+      this.needUpdate = true;
     },
 
     // 多Tab内容更新
     multiTabs: {
       deep: true,
       handler: function(newValue) {
-        this.multiTabsVNode.children.forEach(el => this.$nsVNodes.removeNode(el));
-        this.multiTabsVNode.children = [];
-        this.updateTabVNodes(newValue);
-        this.updatePreview();
+        this.multiTabsWatcher(newValue);
       }
     },
 
@@ -172,36 +173,7 @@ export default {
     filterData: {
       deep: true,
       handler: function(newValue) {
-        this.filtersVNode.children.forEach(el => this.$nsVNodes.removeNode(el));
-        this.filtersVNode.children = [];
-
-        newValue.forEach((el) => {
-          const fieldAttrs = {};
-          if (el.key) {
-            fieldAttrs.value = {
-              type: 'var',
-              value: `condition.${el.key}`
-            };
-          }
-
-          this.$nsVNodes.addFromObject({
-            tagName: 'kl-col',
-            libName: LIB_NAME,
-            attributes: { span: 4 },
-            children: [{
-              tagName: 'kl-form-item',
-              libName: LIB_NAME,
-              attributes: { title: el.title },
-              children: [{
-                tagName: el.type,
-                libName: LIB_NAME,
-                attributes: fieldAttrs
-              }]
-            }]
-          }, this.filtersVNode.id);
-        });
-
-        this.updatePreview();
+        this.filterDataWatcher(newValue);
       }
     },
 
@@ -209,30 +181,7 @@ export default {
     buttonsData: {
       deep: true,
       handler: function(newValue) {
-        if (newValue && newValue.length > 0) {
-          if (!this.otherButtonsVNode) {
-            this.otherButtonsVNode = this.addVNode('kl-card', null, this.listCardVNode.id, { attributes: { isShowLine: false } });
-          }
-          this.otherButtonsVNode.children.forEach(el => this.$nsVNodes.removeNode(el));
-          this.otherButtonsVNode.children = [];
-
-          newValue.forEach((el) => {
-            const attributes = { title: el.title };
-            let events;
-            if (el.type && el.type !== 'default') {
-              attributes.type = el.type;
-            }
-            if (el.event) {
-              events = { click: el.event };
-            }
-            this.addVNode('kl-button', this.otherButtonsVNode.id, null, { attributes, events });
-          });
-        } else if (this.otherButtonsVNode) {
-          this.$nsVNodes.removeNode(this.otherButtonsVNode.id);
-          this.otherButtonsVNode = null;
-        }
-
-        this.updatePreview();
+        this.buttonsDataWatcher(newValue);
       }
     },
 
@@ -240,28 +189,7 @@ export default {
     colsData: {
       deep: true,
       handler: function(newValue) {
-        if (!this.opColVNode) {
-          this.listVNode.children.forEach(el => this.$nsVNodes.removeNode(el));
-          this.listVNode.children = [];
-        } else {
-          for (let i = 0; i < this.listVNode.children.length - 1; ++i) {
-            this.$nsVNodes.removeNode(this.listVNode.children[i]);
-          }
-          this.listVNode.children.splice(0, this.listVNode.children.length - 1);
-        }
-
-        newValue.forEach((el) => {
-          const attributes = {
-            name: el.title,
-            key: el.key
-          };
-          if (el.fixed) {
-            attributes.fixed = el.fixed;
-          }
-          this.addVNode('kl-table-col', this.listVNode.id, this.opColVNode, { attributes });
-        });
-
-        this.updatePreview();
+        this.colsDataWatcher(newValue);
       }
     },
 
@@ -269,35 +197,14 @@ export default {
     colOperators: {
       deep: true,
       handler: function(newValue) {
-        if (newValue) {
-          if (!this.opColVNode) {
-            this.opColVNode = this.addVNode('kl-table-col', this.listVNode.id, null, {
-              attributes: {name: '操作', fixed: 'right'}
-            });
-            this.opColTplVNode = this.addVNode('kl-table-template', this.opColVNode.id, null, {
-              attributes: {type: 'item'}
-            });
-          }
-
-          let text = '';
-          newValue.forEach((el) => {
-            text += `{'<a href="${el.link || 'javascript:'}">${el.title}</a>'}`;
-          });
-          if (this.opColTplVNode.children.length > 0) {
-            this.$nsVNodes.removeNode(this.opColTplVNode.children[0]);
-          }
-          this.$nsVNodes.addTextNode(text, this.opColTplVNode.id);
-        } else if (this.opColVNode) {
-          this.$nsVNodes.removeNode(this.opColVNode.id);
-          this.opColVNode = null;
-        }
-
-        this.updatePreview();
+        this.colOperatorsWatcher(newValue);
       }
     }
   },
   data() {
     return {
+      $nsVNodes: null,
+
       toolsBarButtons: [{
         tip: '进入编辑器',
         icon: 'iconfont-edit',
@@ -325,6 +232,7 @@ export default {
 
       currentTab: '',
       listConfigs: [this.newColItem()],
+      needUpdate: false
     };
   },
   computed: {
@@ -372,7 +280,7 @@ export default {
     // 搜索区域表单
     initForm() {
       this.formCardVNode = this.addVNode('kl-card', null, null, { attributes: { isShowLine: false, class: 'f-undertab' } });
-      this.searchVNode = this.addVNode('kl-search', this.formCardVNode.id);
+      this.searchVNode = this.addVNode('kl-search', this.formCardVNode.id, null, { attributes: { isShowMore: false } });
       this.filtersVNode = this.addVNode('kl-row', this.searchVNode.id);
     },
 
@@ -499,7 +407,154 @@ export default {
       this.$nsVNodes.$update((item, nodeId) => {
         item.setAttribute('ns-id', nodeId);
       });
-    }
+    },
+
+    /* debounce watchers */
+
+    breadcrumbsWatcher: lodash.debounce(function(newValue) {
+      for (let i = 1; i < this.breadcrumbVNode.children.length; ++i) {
+        this.$nsVNodes.removeNode(this.breadcrumbVNode.children[i]);
+      }
+      this.breadcrumbVNode.children.splice(1);
+
+      newValue.forEach((el) => {
+        this.addVNode('kl-crumb-item', this.breadcrumbVNode.id, null, {
+          attributes: {
+            content: el.title,
+            href: el.link
+          }
+        });
+      });
+
+      this.needUpdate = true;
+    }, 500),
+
+    multiTabsWatcher: lodash.debounce(function(newValue) {
+      this.multiTabsVNode.children.forEach(el => this.$nsVNodes.removeNode(el));
+      this.multiTabsVNode.children = [];
+      this.updateTabVNodes(newValue);
+
+      this.needUpdate = true;
+    }, 500),
+
+    filterDataWatcher: lodash.debounce(function(newValue) {
+      this.filtersVNode.children.forEach(el => this.$nsVNodes.removeNode(el));
+      this.filtersVNode.children = [];
+
+      newValue.forEach((el) => {
+        const fieldAttrs = {};
+        if (el.key) {
+          fieldAttrs.value = {
+            type: 'var',
+            value: `condition.${el.key}`
+          };
+        }
+
+        this.$nsVNodes.addFromObject({
+          tagName: 'kl-col',
+          libName: LIB_NAME,
+          attributes: { span: 4 },
+          children: [{
+            tagName: 'kl-form-item',
+            libName: LIB_NAME,
+            attributes: { title: el.title },
+            children: [{
+              tagName: el.type,
+              libName: LIB_NAME,
+              attributes: fieldAttrs
+            }]
+          }]
+        }, this.filtersVNode.id);
+      });
+
+      this.needUpdate = true;
+    }, 500),
+
+    buttonsDataWatcher: lodash.debounce(function(newValue) {
+      if (newValue && newValue.length > 0) {
+        if (!this.otherButtonsVNode) {
+          this.otherButtonsVNode = this.addVNode('kl-card', null, this.listCardVNode.id, { attributes: { isShowLine: false } });
+        }
+        this.otherButtonsVNode.children.forEach(el => this.$nsVNodes.removeNode(el));
+        this.otherButtonsVNode.children = [];
+
+        newValue.forEach((el) => {
+          const attributes = { title: el.title };
+          let events;
+          if (el.type && el.type !== 'default') {
+            attributes.type = el.type;
+          }
+          if (el.event) {
+            events = { click: el.event };
+          }
+          this.addVNode('kl-button', this.otherButtonsVNode.id, null, { attributes, events });
+        });
+      } else if (this.otherButtonsVNode) {
+        this.$nsVNodes.removeNode(this.otherButtonsVNode.id);
+        this.otherButtonsVNode = null;
+      }
+
+      this.needUpdate = true;
+    }, 500),
+
+    colsDataWatcher: lodash.debounce(function(newValue) {
+      if (!this.opColVNode) {
+        this.listVNode.children.forEach(el => this.$nsVNodes.removeNode(el));
+        this.listVNode.children = [];
+      } else {
+        for (let i = 0; i < this.listVNode.children.length - 1; ++i) {
+          this.$nsVNodes.removeNode(this.listVNode.children[i]);
+        }
+        this.listVNode.children.splice(0, this.listVNode.children.length - 1);
+      }
+
+      newValue.forEach((el) => {
+        const attributes = {
+          name: el.title,
+          key: el.key
+        };
+        if (el.fixed) {
+          attributes.fixed = el.fixed;
+        }
+        this.addVNode('kl-table-col', this.listVNode.id, this.opColVNode, { attributes });
+      });
+
+      this.needUpdate = true;
+    }, 500),
+
+    colOperatorsWatcher: lodash.debounce(function(newValue) {
+      if (newValue) {
+        if (!this.opColVNode) {
+          this.opColVNode = this.addVNode('kl-table-col', this.listVNode.id, null, {
+            attributes: {name: '操作', fixed: 'right'}
+          });
+          this.opColTplVNode = this.addVNode('kl-table-template', this.opColVNode.id, null, {
+            attributes: {type: 'item'}
+          });
+        }
+
+        let text = '';
+        newValue.forEach((el) => {
+          text += `{'<a href="${el.link || 'javascript:'}">${el.title}</a>'}`;
+        });
+        if (this.opColTplVNode.children.length > 0) {
+          this.$nsVNodes.removeNode(this.opColTplVNode.children[0]);
+        }
+        this.$nsVNodes.addTextNode(text, this.opColTplVNode.id);
+      } else if (this.opColVNode) {
+        this.$nsVNodes.removeNode(this.opColVNode.id);
+        this.opColVNode = null;
+      }
+
+      this.needUpdate = true;
+    }, 500),
+
+    updateWatcher: lodash.debounce(function(newValue) {
+      if (newValue) {
+        this.updatePreview();
+        this.needUpdate = false;
+      }
+    }, 100),
   }
 };
 </script>
