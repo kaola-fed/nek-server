@@ -247,18 +247,7 @@ export default class VNodeTree {
       // 生成fragment
       const tpl = this.getTemplate(id);
       const node = document.createDocumentFragment();
-      NekComponent.inject(tpl, node, { beforeInsert: (fragment) => {
-        if (Array.isArray(fragment)) {
-          for (let i of fragment) {
-            if (i.setAttribute) {
-              setAttrs(i, id);
-            }
-          }
-        } else {
-          setAttrs(fragment, id);
-        }
-        return fragment;
-      }});
+      NekComponent.inject(tpl, node);
 
       // 判断是插入还是替换
       const oldNode = _.getElementByNSId(id);
