@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 export SESSION_KEY=koa_sess;
-export CLIENT_ID=xxx;
-export CLIENT_SECRET=xxx;
+export CLIENT_ID=8204e7aec45311e79a4c5cf3fc793244;
+export CLIENT_SECRET=e38726ff38cb4778a08cb762fe02358f8204edf8c45311e79a4c5cf3fc793244;
+export NODE_ENV=e38726ff38cb4778a08cb762fe02358f8204edf8c45311e79a4c5cf3fc793244;
 npm $*

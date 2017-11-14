@@ -58,7 +58,9 @@ $ npm run build
 127.0.0.1 nek-server.kaolafed.com
 ```
 
-之后需要在`/server.sh`文件下修改几个环境变量为对应的值，然后运行该脚本。`server.sh`已经加入.gitignore套餐，可以自行修改。
+然后可以使用`/server.sh`脚本来启动项目，`/server.sh_tpl`为该脚本的模板，`server.sh`已加入gitignore，可以自行建立。
+
+需要在`/server.sh`文件下修改几个环境变量为对应的值，然后运行该脚本。
 Windows下需要安装一个shell工具，或者直接在WebStorm中进行环境变量的配置。
 
 ```bash
