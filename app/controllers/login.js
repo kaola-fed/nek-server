@@ -12,3 +12,18 @@ export const index = async function(ctx, next) {
     return ctx.redirect('/');
   });
 };
+
+export const isLogin = function(ctx, next) {
+  return ctx.body = {
+    code: 200,
+    data: ctx.session.user
+  };
+}
+
+export const logout = function(ctx, next) {
+  ctx.session.user = null;
+  return ctx.body = {
+    code: 200,
+    data: null
+  };
+}

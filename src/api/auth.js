@@ -8,9 +8,9 @@ export const login = async () => {
 };
 
 export const isLogin = async () => {
-  return await JSONAPI.post('/api/isLogin');
+  return await JSONAPI.post('/api/login/isLogin');
 };
 
 export const logout = async () => {
-  return await JSONAPI.post('/api/auth/logout');
+  return await JSONAPI.post('/api/login/logout');
 };
