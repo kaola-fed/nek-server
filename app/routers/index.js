@@ -2,9 +2,12 @@ import Router from 'koa-router';
 
 import HomeRoute from './home';
 import ProjectRoute from './project';
+import LoginRoute from './login';
 
 const routes = new Router();
-routes.use('', HomeRoute.routes(), HomeRoute.allowedMethods());
+
+routes.use('/api', HomeRoute.routes(), HomeRoute.allowedMethods());
+routes.use('/api/login', LoginRoute.routes(), LoginRoute.allowedMethods());
 routes.use('/api/project', ProjectRoute.routes(), ProjectRoute.allowedMethods());
 
 // 最后匹配，GET 请求并且不是接口的就渲染页面，404交给页面来做
