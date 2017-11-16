@@ -52,7 +52,7 @@ if (proxyEnv == 'mock') {
 } else if (proxyTable[proxyEnv]) {
   // proxy api requests
   console.log(`> Current proxy: ${proxyTable[proxyEnv]}`)
-  app.use(proxyMiddleware(proxyPrefix, {
+  app.use(proxyMiddleware(proxyPrefixes, {
     target: proxyTable[proxyEnv]
   }))
 }

@@ -36,7 +36,15 @@ function __responseSuccessInterceptor(response) {
 
 function __responseErrorInterceptor(error) {
   if (error.response) {
-    Message.error('请求失败');
+    let status = error.response.status;
+    if (status === 401 && window.location.pathname !== '/login') {
+      if(error.response.data && error.response.data.url) {
+        window.location = error.response.data.url;
+      }
+    }
+    if (status !== 460) {
+      Message.error('请求失败');
+    }
   }
   return Promise.reject(error);
 }
