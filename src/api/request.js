@@ -2,6 +2,7 @@ import axios from 'axios';
 import qs from 'qs';
 import { Message } from 'element-ui';
 import _ from '@/widget/util';
+import router from '@/router';
 
 const JSONAXIOS = axios.create({
   timeout: 50000,
@@ -26,7 +27,7 @@ function __responseSuccessInterceptor(response) {
     return Promise.resolve(data);
   } else if (data && data.code !== 200) {
     if (data.code === 401) {
-      // TODO: 登录处理
+      return router.push({ name: 'login' });
     }
     data.message && Message.error(data.message);
     return Promise.reject(data);

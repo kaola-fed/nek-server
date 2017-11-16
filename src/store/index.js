@@ -6,16 +6,10 @@ import mutations from './mutation';
 Vue.use(Vuex);
 
 const state = {
-  userInfo: {
-    username: sessionStorage.username || ''
-  }
+  userInfo: {}
 };
 
-const getters = {
-  isLogin(state) {
-    return !!(state.userInfo && state.userInfo.username);
-  }
-};
+const getters = {};
 
 const modules = {};
 

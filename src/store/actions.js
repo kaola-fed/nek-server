@@ -3,9 +3,9 @@ import { LOGIN_SUCCESS, LOGOUT_SUCCESS } from './mutation-types';
 import router from '@/router';
 
 export default {
-  async login({ commit }, payload) {
+  async isLogin({ commit }, payload) {
     try {
-      const res = await LoginAPI.login(payload);
+      const res = await LoginAPI.isLogin(payload);
       commit(LOGIN_SUCCESS, res);
       router.push(payload.returnUrl);
       return res;

@@ -9,17 +9,9 @@
 </template>
 
 <script>
-import store from '@/store';
 import Particles from 'particlesjs';
 
 export default {
-  beforeRouteEnter(to, from, next) {
-    if (store.getters.isLogin) {
-      next('/app/dashboard');
-    } else {
-      next();
-    }
-  },
   mounted() {
     Particles.init({
       selector: '#particles',
@@ -32,9 +24,7 @@ export default {
   },
   methods: {
     login() {
-      this.$store.dispatch('login', {
-        returnUrl: this.$route.params.returnUrl || '/app/dashboard'
-      });
+      window.location = '/openid';
     }
   }
 };

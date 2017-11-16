@@ -7,6 +7,10 @@ export const login = async () => {
   };
 };
 
+export const isLogin = async () => {
+  return await JSONAPI.post('/api/isLogin');
+};
+
 export const logout = async () => {
   return await JSONAPI.post('/api/auth/logout');
 };

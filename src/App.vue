@@ -9,13 +9,7 @@
 export default {
   name: 'app',
   beforeCreate() {
-    if (!this.$store.getters.isLogin) {
-      const params = {};
-      if (window.location.pathname !== '/login') {
-        params.returnUrl = window.location.pathname;
-      }
-      this.$router.push({ name: 'login', params });
-    }
+    this.$store.dispatch('isLogin');
   }
 };
 </script>
