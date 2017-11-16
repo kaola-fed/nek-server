@@ -1,5 +1,9 @@
 import fetch from 'node-fetch';
 
+import * as _ from '../utils/response';
+
+// 工具函数
+
 const translateData = (params, dataTypes) => {
   const rlt = {
     filters: [],
@@ -33,6 +37,8 @@ const translateData = (params, dataTypes) => {
 
   return rlt;
 };
+
+// Controllers
 
 export const nei = async (ctx) => {
   const path = '/api/nei/test'; //人拉人-获取商品列表
@@ -68,4 +74,20 @@ export const nei = async (ctx) => {
   }
 
   ctx.body = retObj;
+};
+
+export const create = async (ctx) => {
+  return ctx.body = _.success();
+};
+
+export const getList = async (ctx) => {
+  return ctx.body = _.success();
+};
+
+export const update = async (ctx) => {
+  return ctx.body = _.success();
+};
+
+export const detail = async (ctx) => {
+  return ctx.body = _.success();
 };
