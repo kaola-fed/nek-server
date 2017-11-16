@@ -6,8 +6,10 @@ import ProjectRoute from './project';
 const routes = new Router();
 routes.use('', HomeRoute.routes(), HomeRoute.allowedMethods());
 routes.use('/api/project', ProjectRoute.routes(), ProjectRoute.allowedMethods());
-routes.all('(.*)', (ctx) => {
-  console.log(ctx.request.url);
+routes.get('(.*)', (ctx) => {
+  if (!ctx.body && !/^\/api(\/.+|\/?)$/.test(ctx.request.url)) {
+    return ctx.render('index');
+  }
 });
 
 export default routes;
