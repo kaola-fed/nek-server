@@ -2,5 +2,6 @@
 export SESSION_KEY=koa_sess;
 export CLIENT_ID=xxx;         # input client id here
 export CLIENT_SECRET=xxx;     # input client secret here
+export MONGODB_URL=xxx;       # input mongodb url here
 export NODE_ENV=development;
 npm $*

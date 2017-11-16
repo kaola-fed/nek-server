@@ -38,11 +38,11 @@ function __responseErrorInterceptor(error) {
   if (error.response) {
     let status = error.response.status;
     if (status === 401 && window.location.pathname !== '/login') {
-      if(error.response.data && error.response.data.url) {
-        window.location = error.response.data.url;
+      if(error.response.data && error.response.data.message) {
+        window.location = error.response.data.message;
       }
     }
-    if (status !== 460) {
+    if (status !== 401) {
       Message.error('请求失败');
     }
   }

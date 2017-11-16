@@ -27,3 +27,7 @@ export const sessionConfig = {
   signed: true,
   rolling: false,
 };
+
+export const dbConfig = {
+  url: process.env.MONGODB_URL || ''
+}
