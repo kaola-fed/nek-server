@@ -6,12 +6,12 @@ export const success = (data) => {
 };
 
 // 传入参数有误
-export const paramsError = (message) => {
+export const paramsError = (message = 'Input params error') => {
   return JSON.stringify({ code: 400, message });
 };
 // 未登录
-export const unauthorized = () => {
-  return JSON.stringify({ code: 401 });
+export const unauthorized = (message = 'Unauthorized') => {
+  return JSON.stringify({ code: 401, message });
 };
 
 // 自定义错误
