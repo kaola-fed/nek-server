@@ -2,7 +2,7 @@
   <header class="header">
     <div class="header-title">NEK Server<router-link :to="{name: 'dashboard'}" class="header-title__link"></router-link></div>
     <div class="header-right">
-      hi&nbsp;<a class="header-right__link">{{ userInfo.username }}</a>&nbsp;<a class="header-right__link" @click="logout">退出</a>
+      hi&nbsp;<a class="header-right__link">{{ userInfo.fullname }}</a>&nbsp;<a class="header-right__link" @click="logout">退出</a>
     </div>
   </header>
 </template>

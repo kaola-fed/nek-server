@@ -5,9 +5,11 @@ import router from '@/router';
 export default {
   async isLogin({ commit }, payload) {
     try {
-      const res = await LoginAPI.isLogin(payload);
-      commit(LOGIN_SUCCESS, res);
-      router.push(payload.returnUrl);
+      const res = await LoginAPI.isLogin();
+      commit(LOGIN_SUCCESS, res.data);
+      if (payload && payload.returnUrl) {
+        router.push(payload.returnUrl);
+      }
       return res;
     } catch (err) {
       return err;
