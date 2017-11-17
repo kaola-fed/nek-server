@@ -5,6 +5,7 @@ import Koa from 'koa';
 import serve from 'koa-static';
 import Session from 'koa-session';
 import Views from 'koa-views';
+import bodyParser from 'koa-bodyparser';
 import mongoose from 'mongoose';
 
 import { sessionConfig, dbConfig } from './config';
@@ -39,6 +40,7 @@ app.use(Session(sessionConfig, app));
 
 app.use(serve(path.resolve(__dirname, '../dist')));
 app.use(Views(path.resolve(__dirname, '../dist'), { extension: 'html' }));
+app.use(bodyParser());
 app.use(routers.routes()).use(routers.allowedMethods());
 
 app.on('error', (err) => {

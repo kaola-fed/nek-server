@@ -5,7 +5,7 @@ import Auth from '../middlewares/auth';
 const route = new Router();
 
 route.get('/', LoginController.index);
-route.get('/logout', LoginController.logout);
+route.post('/logout', LoginController.logout);
 route.post('/isLogin', Auth, LoginController.isLogin);
 
 export default route;

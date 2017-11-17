@@ -7,36 +7,36 @@
       </el-col>
     </el-row>
     <el-row :gutter="20">
-      <el-col v-for="item in projects" :key="item.id || +new Date()" :sm="12" :md="8" :lg="6">
-        <div @click="onItemClick(item.id)" class="m-project-card">
+      <el-col v-for="item in projects" :key="item._id || +new Date()" :sm="12" :md="8" :lg="6">
+        <div @click="onItemClick(item._id)" class="m-project-card">
         <el-card :body-style="cardStyle">
           <div slot="header">
             <div class="f-tac">
               <h3 class="f-mb10">{{ item.name }}</h3>
-              <span>{{ item.updatedTime | date }}</span>
+              <span>{{ item.updatedAt | date }}</span>
             </div>
           </div>
-          <el-button type="text" icon="setting" @click.stop="onSettingClick(item.id)"></el-button>
-          <el-button type="text" icon="delete" @click.stop="onDeleteClick(item.id)"></el-button>
+          <el-button type="text" icon="setting" @click.stop="onSettingClick(item._id)"></el-button>
+          <el-button type="text" icon="delete" @click.stop="onDeleteClick(item._id)"></el-button>
         </el-card>
         </div>
       </el-col>
     </el-row>
-    <project-modal :id="currentProjectId" :visible="projectVisible" @close="onProjectModalClose"></project-modal>
+    <project-modal :id="currentProjectId" :visible="projectVisible" @close="onProjectModalClose" @refresh="getList"></project-modal>
   </div>
 </template>
 
 <script>
 import ProjectModal from './components/ProjectModal.vue';
 import { getDashboard } from '@/api/user';
+import { deleteProject } from '@/api/project';
 
 export default {
   components: {
     ProjectModal
   },
-  async mounted() {
-    const { data } = await getDashboard();
-    this.projects = data.projects;
+  mounted() {
+    this.getList();
   },
   computed: {
     cardStyle() {
@@ -56,6 +56,10 @@ export default {
     };
   },
   methods: {
+    async getList() {
+      const { data } = await getDashboard();
+      this.projects = data.projects;
+    },
     onCreateClick() {
       this.currentProjectId = null;
       this.projectVisible = true;
@@ -70,8 +74,14 @@ export default {
       this.currentProjectId = id;
       this.projectVisible = true;
     },
-    onDeleteClick() {
-      this.$confirm('确认要删除项目？', '删除项目');
+    async onDeleteClick(id) {
+      try {
+        await this.$confirm('确认要删除项目？', '删除项目');
+        await deleteProject({ id });
+        this.getList();
+      } catch (err) {
+        return;
+      }
     },
     onProjectModalClose() {
       this.projectVisible = false;

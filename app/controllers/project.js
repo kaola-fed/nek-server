@@ -1,6 +1,8 @@
 import fetch from 'node-fetch';
 
 import * as _ from '../utils/response';
+import UserModel from '../models/User';
+import ProjectModel from '../models/Project';
 
 // 工具函数
 
@@ -77,7 +79,15 @@ export const nei = async (ctx) => {
 };
 
 export const create = async (ctx) => {
-  return ctx.body = _.success();
+  const user = ctx.session.user;
+  const project = ctx.request.body;
+  project.members = [{ _id: user.id }];
+  const projectModel = await ProjectModel.insert(project);
+  UserModel.addProject(user.id, {
+    _id: projectModel._id,
+    name: projectModel.name
+  });
+  return ctx.body = _.success(project);
 };
 
 export const getList = async (ctx) => {
@@ -85,9 +95,34 @@ export const getList = async (ctx) => {
 };
 
 export const update = async (ctx) => {
-  return ctx.body = _.success();
+  const user = ctx.session.user;
+  const project = ctx.request.body;
+  const result = await ProjectModel.update({
+    _id: project.id,
+  }, project);
+  return ctx.body = _.success(result);
 };
 
 export const detail = async (ctx) => {
-  return ctx.body = _.success();
+  try {
+    const result = await ProjectModel.findById(ctx.query.id);
+    return ctx.body = _.success(result);
+  } catch (err) {
+    return ctx.body = _.paramsError();
+  }
 };
+
+export const deleteProject = async (ctx) => {
+  const projectId = ctx.query.id;
+  const user = ctx.session.user;
+  if(!projectId) {
+    return ctx.body = _.paramsError();
+  }
+  try {
+    await UserModel.deleteProject(user.id, projectId);
+    await ProjectModel.deleteById(projectId);
+  } catch (err) {
+    return ctx.body = _.error('删除失败，请检查参数');
+  }
+  return ctx.body = _.success();
+}

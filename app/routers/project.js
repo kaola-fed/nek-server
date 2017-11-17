@@ -7,10 +7,11 @@ import Auth from '../middlewares/auth';
 const route = new Router();
 route.use(Auth);
 
-route.get('/create', ProjectControllers.create);
+route.post('/create', ProjectControllers.create);
 route.get('/list', ProjectControllers.getList);
-route.get('/update', ProjectControllers.update);
+route.post('/update', ProjectControllers.update);
 route.get('/detail', ProjectControllers.detail);
 route.get('/nei', ProjectControllers.nei);
+route.get('/delete', ProjectControllers.deleteProject);
 
 export default route;
