@@ -7,6 +7,8 @@ const schema = mongoose.Schema({
     id: mongoose.Schema.ObjectId,
     tagName: String,
   }],
+}, {
+  timestamps: true,
 });
 
-mongoose.model('Library', schema);
+export default mongoose.model('Library', schema);

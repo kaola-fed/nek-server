@@ -8,6 +8,8 @@ const schema = mongoose.Schema({
   }],
   events: [{ name: String }],
   isLayout: Boolean,
+}, {
+  timestamps: true,
 });
 
-mongoose.model('Library', schema);
+export default mongoose.model('Library', schema);

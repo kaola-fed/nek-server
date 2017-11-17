@@ -2,13 +2,36 @@
   <div>
     <h1>项目详情</h1>
     <el-button @click="onCreateClick">新建页面</el-button>
-    <p>这里是目录</p>
-    <create-page-modal :visible="createPageVisible"></create-page-modal>
+    <div v-loading="loading">
+      <el-table striple :data="list" border tooltip-effect="dark">
+        <el-table-column align="left" prop="url" label="url" show-overflow-tooltip>
+          <template scope="scope">
+            <a href="javascript:;" @click="handleEdit(scope.row)"> {{ scope.row.url }} </a>
+          </template>
+        </el-table-column>
+        <el-table-column align="left" prop="name" label="描述" show-overflow-tooltip></el-table-column>
+        <el-table-column align="center" prop="type" label="类型" show-overflow-tooltip>
+          <template scope="scope">
+            {{scope.row.type === 1 ? '列表页' : '合同页' }}
+          </template>
+        </el-table-column>
+        <el-table-column align="center" prop="updatedAt" label="更新时间" show-overflow-tooltip></el-table-column>
+        <el-table-column align="center" label="操作" fixed="right">
+          <template scope="scope">
+            <el-button size="small" type="text" @click="handleEdit(scope.row)">预览</el-button>
+            <el-button size="small" type="text" @click="handleEdit(scope.row)">编辑</el-button>
+            <el-button size="small" type="text" @click="handleDelete(scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <create-page-modal :visible="createPageVisible" :projectId="projectId" @refresh="getList" @close="onCreatePageClose"></create-page-modal>
   </div>
 </template>
 
 <script>
 import CreatePageModal from './components/CreatePageModal.vue';
+import { getPageList, deletePage } from '@/api/project';
 
 export default {
   components: {
@@ -16,12 +39,58 @@ export default {
   },
   data() {
     return {
-      createPageVisible: false
+      createPageVisible: false,
+      loading: false,
+      list: []
     };
   },
+  computed: {
+    projectId() {
+      return this.$route.query.id;
+    }
+  },
+  mounted() {
+    this.getList();
+  },
   methods: {
+    async getList() {
+      this.loading = true;
+      try {
+        const { data } = await getPageList({id: this.projectId});
+        this.list = data;
+        this.loading = false;
+      } catch (err) {
+        this.loading = false;
+        return;
+      }
+    },
     onCreateClick() {
       this.createPageVisible = true;
+    },
+    onCreatePageClose() {
+      this.createPageVisible = false;
+    },
+    handleEdit(row) {
+      // console.log(row);
+      const routerName = row.type === 1 ? 'listTemplate' : 'editor';
+      this.$router.push({
+        name: routerName,
+        params: {
+          url: row.url
+        }
+      });
+    },
+    async handleDelete(row) {
+      if(!row._id) {
+        return;
+      }
+      try {
+        await this.$confirm('确认删除页面？', '提示', { type: 'warning' });
+        await deletePage({ id: this.projectId, pageId: row._id });
+        this.getList();
+      } catch (err) {
+        return;
+      }
     }
   }
 };

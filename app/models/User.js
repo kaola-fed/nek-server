@@ -7,6 +7,8 @@ const schema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Project',
   }],
+}, {
+  timestamps: true,
 });
 schema.statics = {
   async initUser(user) {
@@ -25,13 +27,13 @@ schema.statics = {
   async addProject(userId, project) {
     const userModel = await this.findOne({ _id: userId });
     userModel.projects.push(project);
-    return await this.update(userModel);
+    return await this.update({_id: userId}, userModel);
   },
   async deleteProject(userId, projectId) {
     const userModel = await this.findOne({ _id: userId });
     const index = userModel.projects.indexOf(projectId);
     userModel.projects.splice(index, 1);
-    return await this.update(userModel);
+    return await this.update({_id: userId}, userModel);
   }
 }
 

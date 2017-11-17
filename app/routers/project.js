@@ -13,5 +13,8 @@ route.post('/update', ProjectControllers.update);
 route.get('/detail', ProjectControllers.detail);
 route.get('/nei', ProjectControllers.nei);
 route.get('/delete', ProjectControllers.deleteProject);
+route.post('/createPage', ProjectControllers.createPage);
+route.get('/pageList', ProjectControllers.pageList);
+route.get('/deletePage', ProjectControllers.deletePage);
 
 export default route;

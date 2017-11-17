@@ -3,6 +3,7 @@ import fetch from 'node-fetch';
 import * as _ from '../utils/response';
 import UserModel from '../models/User';
 import ProjectModel from '../models/Project';
+import PageModel from '../models/Page';
 
 // 工具函数
 
@@ -83,10 +84,7 @@ export const create = async (ctx) => {
   const project = ctx.request.body;
   project.members = [{ _id: user.id }];
   const projectModel = await ProjectModel.insert(project);
-  UserModel.addProject(user.id, {
-    _id: projectModel._id,
-    name: projectModel.name
-  });
+  UserModel.addProject(user.id, projectModel._id);
   return ctx.body = _.success(project);
 };
 
@@ -125,4 +123,38 @@ export const deleteProject = async (ctx) => {
     return ctx.body = _.error('删除失败，请检查参数');
   }
   return ctx.body = _.success();
-}
+};
+
+export const createPage = async (ctx) => {
+  const postData = ctx.request.body;
+  const page = {
+    ...postData,
+    project: postData.projectId
+  };
+  try {
+    const { _id } = await PageModel.create(page);
+    ProjectModel.addPage(postData.projectId, _id);
+  } catch (err) {
+    return ctx.body = _.error('创建失败，请检查参数');
+  }
+  return ctx.body = _.success();
+};
+
+export const deletePage = async (ctx) => {
+  const { id, pageId } = ctx.query;
+  if(!id || !pageId) {
+    return ctx.body = _.error('删除失败, 请检查参数');
+  }
+  await PageModel.deleteById(pageId);
+  await ProjectModel.deletePage(id, pageId);
+  return ctx.body = _.success();
+};
+
+export const pageList = async (ctx) => {
+  const projectId = ctx.query.id;
+  if(!projectId) {
+    return ctx.body = _.error('请检查参数');
+  }
+  const { pages } = await ProjectModel.getPageListById(projectId);
+  return ctx.body = _.success(pages);
+};

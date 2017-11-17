@@ -43,7 +43,7 @@ export default {
         desc: '',
         git: '',
         neiKey: '',
-        type: ''
+        type: 1
       },
       rules: {
         name: required('项目名称'),
@@ -88,6 +88,7 @@ export default {
     },
     close() {
       this.$emit('close');
+      this.$refs.form.resetFields();
     }
   }
 };
