@@ -4,15 +4,15 @@ export const getListTemplate = ({ id }) => {
   return JSONAPI.get('/api/project/listTemplate', { params: {id} });
 };
 
-export const create = ({ name, desc, git, neiKey, type }) => {
+export const create = ({ name, desc, git, neiKey, type, library }) => {
   return JSONAPI.post('/api/project/create', {
-    name, desc, git, neiKey, type
+    name, desc, git, neiKey, type, library
   });
 };
 
-export const update = ({ id, name, desc, git, neiKey, type }) => {
+export const update = ({ id, name, desc, git, neiKey, type, library }) => {
   return JSONAPI.post('/api/project/update', {
-    id, name, desc, git, neiKey, type
+    id, name, desc, git, neiKey, type, library
   });
 };
 

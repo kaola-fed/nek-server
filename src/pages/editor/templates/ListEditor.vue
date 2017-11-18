@@ -78,7 +78,7 @@ import PreviewButton from '../components/PreviewButton.vue';
 
 import VNodeTree from '@/../core/VNodeTree';
 
-import { getLibraries } from '@/api/library';
+import { getComponentList } from '@/api/library';
 import { getListTemplate } from '@/api/project';
 
 const LIB_NAME = 'NEK-UI';
@@ -113,7 +113,7 @@ export default {
     };
 
     // 获取组件配置
-    const lib = await getLibraries({ names: 'nekui' });
+    const lib = await getComponentList({ id: this.$route.query.library });
     this.$nsVNodes.librarySet = lib.data;
 
     this.initBreadcrumb();

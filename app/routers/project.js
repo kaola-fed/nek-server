@@ -16,5 +16,6 @@ route.get('/delete', ProjectControllers.deleteProject);
 route.post('/createPage', ProjectControllers.createPage);
 route.get('/pageList', ProjectControllers.pageList);
 route.get('/deletePage', ProjectControllers.deletePage);
+route.get('/listTemplate', ProjectControllers.listTemplate);
 
 export default route;

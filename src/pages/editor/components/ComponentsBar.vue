@@ -1,15 +1,12 @@
 <template>
   <div class="g-components">
-    <template v-if="libraries && libraries.length > 0">
-      <ul v-for="lib in libraries" :key="lib.name" class="g-lib">
-        <li class="u-lib-header">{{ lib.name }} ({{ lib.version }})</li>
-        <li v-for="component in lib.components" :key="component.name" class="u-item"
-            draggable="true" @dragstart="handleDragStart($event, lib.name, component.tag)">
+      <ul class="g-lib">
+        <li class="u-lib-header">{{ library.name }} ({{ library.version }})</li>
+        <li v-for="component in library.components" :key="component.name" class="u-item"
+            draggable="true" @dragstart="handleDragStart($event, library.name, component.tag)">
           {{ component.name }}
         </li>
       </ul>
-    </template>
-    <div v-else>暂无组件</div>
   </div>
 </template>
 
@@ -17,11 +14,11 @@
 export default {
   name: 'ComponentBar',
   props: {
-    libraries: {
-      type: Array,
+    library: {
+      type: Object,
       required: true,
       default() {
-        return [];
+        return {};
       }
     }
   },

@@ -1,6 +1,6 @@
 <template>
   <el-dialog :title="!id ? '创建项目' : '编辑项目'" :visible="visible" @open="handleOpen">
-    <el-form :model="form" :rules="rules" ref="form">
+    <el-form :model="form" :rules="rules" ref="form" label-width="80px">
       <el-form-item label="项目名称" prop="name">
         <el-input v-model="form.name"></el-input>
       </el-form-item>
@@ -19,6 +19,12 @@
           </el-option>
         </el-select>
       </el-form-item>
+      <el-form-item label="组件库" prop="library">
+        <el-select v-model="form.library">
+          <el-option v-for="item in libraries" :key="item._id" :label="item.name" :value="item._id">
+          </el-option>
+        </el-select>
+      </el-form-item>
     </el-form>
   <span slot="footer" class="dialog-footer">
     <el-button @click="close">取消</el-button>
@@ -29,6 +35,7 @@
 
 <script>
 import { create, update, getDetail } from '@/api/project';
+import { getLibraries } from '@/api/library';
 export default {
   name: 'ProjectModal',
   props: {
@@ -36,38 +43,47 @@ export default {
     visible: Boolean
   },
   data() {
-    const required = message => ({ required: true, trigger: 'blur', message: `请输入${message}`});
+    const required = (message, trigger = 'blur') => ({ required: true, trigger, message: `请输入${message}`});
     return {
       form: {
         name: '',
         desc: '',
         git: '',
         neiKey: '',
-        type: 1
+        type: 1,
+        library: ''
       },
       rules: {
         name: required('项目名称'),
         git: required('Git 地址'),
-        neiKey: required('nei key')
+        neiKey: required('nei key'),
+        library: required('组件库', 'change')
       },
       types: [
         {id: 1, name: 'nej老项目'},
         {id: 2, name: 'webpack单页'},
         {id: 3, name: 'webpack多页'}
-      ]
+      ],
+      libraries: []
     };
   },
   methods: {
     async handleOpen() {
-      if(!this.id) {
-        return;
-      }
       try {
-        const { data } = await getDetail({ id: this.id });
-        this.form = data || {};
+        const { data } = await getLibraries();
+        this.libraries = data;
       } catch (err) {
-        return;
+        console.log(err);
       }
+      if(this.id) {
+        try {
+          const { data } = await getDetail({ id: this.id });
+          this.form = data || {};
+        } catch (err) {
+          return;
+        }
+      }
+
     },
     ok() {
       this.$refs.form.validate(async (valid) => {

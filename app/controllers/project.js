@@ -83,27 +83,41 @@ export const create = async (ctx) => {
   const user = ctx.session.user;
   const project = ctx.request.body;
   project.members = [{ _id: user.id }];
-  const projectModel = await ProjectModel.insert(project);
-  UserModel.addProject(user.id, projectModel._id);
-  return ctx.body = _.success(project);
+  try {
+    const projectModel = await ProjectModel.insert(project);
+    UserModel.addProject(user.id, projectModel._id);
+    return ctx.body = _.success(project);
+  } catch (err) {
+    return ctx.body = _.error('新建失败');
+  }
 };
 
 export const getList = async (ctx) => {
-  return ctx.body = _.success();
+  const userId = ctx.session.user.id;
+  try {
+    const projects = await ProjectModel.selectByUser(userId);
+    return ctx.body = _.success(projects);
+  } catch (err) {
+    return ctx.body = _.error('获取项目列表失败');
+  }
 };
 
 export const update = async (ctx) => {
-  const user = ctx.session.user;
   const project = ctx.request.body;
-  const result = await ProjectModel.update({
-    _id: project.id,
-  }, project);
-  return ctx.body = _.success(result);
+  if(!project.id) {
+    return ctx.body = _.paramsError()
+  }
+  try {
+    const result = await ProjectModel.modify(project.id, project);
+    return ctx.body = _.success(result);
+  } catch (err){
+    return ctx.body = _.error('更新失败');
+  }
 };
 
 export const detail = async (ctx) => {
   try {
-    const result = await ProjectModel.findById(ctx.query.id);
+    const result = await ProjectModel.selectById(ctx.query.id);
     return ctx.body = _.success(result);
   } catch (err) {
     return ctx.body = _.paramsError();
@@ -119,6 +133,7 @@ export const deleteProject = async (ctx) => {
   try {
     await UserModel.deleteProject(user.id, projectId);
     await ProjectModel.deleteById(projectId);
+    await PageModel.deleteByProject(projectId);
   } catch (err) {
     return ctx.body = _.error('删除失败，请检查参数');
   }
@@ -131,30 +146,44 @@ export const createPage = async (ctx) => {
     ...postData,
     project: postData.projectId
   };
+  if(!postData.projectId) {
+    return ctx.body = _.paramsError();
+  }
   try {
-    const { _id } = await PageModel.create(page);
-    ProjectModel.addPage(postData.projectId, _id);
+    await PageModel.create(page);
+    return ctx.body = _.success();
   } catch (err) {
     return ctx.body = _.error('创建失败，请检查参数');
   }
-  return ctx.body = _.success();
 };
 
 export const deletePage = async (ctx) => {
   const { id, pageId } = ctx.query;
   if(!id || !pageId) {
-    return ctx.body = _.error('删除失败, 请检查参数');
+    return ctx.body = _.paramsError();
   }
-  await PageModel.deleteById(pageId);
-  await ProjectModel.deletePage(id, pageId);
-  return ctx.body = _.success();
+  try {
+    await PageModel.deleteById(pageId);
+    return ctx.body = _.success();
+  } catch (err) {
+    return ctx.body = _.error('删除失败');
+  }
 };
 
 export const pageList = async (ctx) => {
   const projectId = ctx.query.id;
   if(!projectId) {
-    return ctx.body = _.error('请检查参数');
+    return ctx.body = _.paramsError();
   }
-  const { pages } = await ProjectModel.getPageListById(projectId);
-  return ctx.body = _.success(pages);
+  try {
+    const pages = await PageModel.selectByProject(projectId);
+    return ctx.body = _.success(pages);
+  } catch (err) {
+    return ctx.body = _.error('获取页面列表失败');
+  }
 };
+
+export const listTemplate = (ctx) => {
+  const pageId = ctx.query.id;
+  return ctx.body = require('../../mock/get/project/listTemplate.json');
+}

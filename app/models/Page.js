@@ -24,8 +24,14 @@ const schema = mongoose.Schema({
 });
 
 schema.statics = {
+  async selectByProject(project) {
+    return await this.find({ project });
+  },
   async deleteById(id) {
     return await this.remove({ _id: id });
+  },
+  async deleteByProject(project) {
+    return await this.remove({ project });
   }
 };
 

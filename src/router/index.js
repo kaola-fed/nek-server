@@ -68,6 +68,18 @@ export default new Router({
               component: resolve => require(['@/pages/app/project/Project.vue'], resolve)
             }
           ]
+        },
+        {
+          path: 'library',
+          name: 'library',
+          component: resolve => require(['@/components/layout/Main.vue'], resolve),
+          children: [
+            {
+              path: 'detail',
+              name: 'components',
+              component: resolve => require(['@/pages/app/library/Library.vue'], resolve)
+            }
+          ]
         }
       ]
     },

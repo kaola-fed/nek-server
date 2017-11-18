@@ -31,7 +31,7 @@
 
 <script>
 import CreatePageModal from './components/CreatePageModal.vue';
-import { getPageList, deletePage } from '@/api/project';
+import { getPageList, deletePage, getDetail } from '@/api/project';
 
 export default {
   components: {
@@ -41,7 +41,8 @@ export default {
     return {
       createPageVisible: false,
       loading: false,
-      list: []
+      list: [],
+      project: {}
     };
   },
   computed: {
@@ -51,6 +52,7 @@ export default {
   },
   mounted() {
     this.getList();
+    this.getProjectSetting();
   },
   methods: {
     async getList() {
@@ -64,6 +66,14 @@ export default {
         return;
       }
     },
+    async getProjectSetting() {
+      try {
+        const { data } = await getDetail({id: this.projectId});
+        this.project = data;
+      } catch (err) {
+        return;
+      }
+    },
     onCreateClick() {
       this.createPageVisible = true;
     },
@@ -71,12 +81,12 @@ export default {
       this.createPageVisible = false;
     },
     handleEdit(row) {
-      // console.log(row);
       const routerName = row.type === 1 ? 'listTemplate' : 'editor';
       this.$router.push({
         name: routerName,
-        params: {
-          url: row.url
+        query: {
+          url: row.url,
+          library: this.project.library
         }
       });
     },

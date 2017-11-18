@@ -4,7 +4,7 @@
     <div class="g-workspace">
       <side-bar :tabs="leftBars" @changed="leftSideBarView = $event.name">
         <keep-alive>
-          <component :is="leftSideBarView" :libraries="libraries" @dragStart="clearCurrent"></component>
+          <component :is="leftSideBarView" :library="library" @dragStart="clearCurrent"></component>
         </keep-alive>
       </side-bar>
       <div class="g-preview-wrapper">
@@ -44,7 +44,7 @@ import PreviewButton from './components/PreviewButton.vue';
 import VNodeTree from '@/../core/VNodeTree';
 import _ from '@/widget/util';
 
-import { getLibraries } from '@/api/library';
+import { getComponentList } from '@/api/library';
 
 const NSID = 'ns-id';
 
@@ -62,8 +62,8 @@ export default {
     this.$nsVNodes = new VNodeTree();
     this.$refs.preview.setAttribute('ns-id', this.$nsVNodes.rootId);
 
-    const { data } = await getLibraries({ names: 'nekui' });
-    this.libraries = data;
+    const { data } = await getComponentList({ id: this.$route.query.library });
+    this.library = data;
     this.$nsVNodes.librarySet = data;
     this.$forceUpdate();
   },
@@ -87,7 +87,7 @@ export default {
         { label: 'JavaScript' },
       ],
 
-      libraries: [],
+      library: {},
       currentComponent: null,
 
       currentNodeId: null,
