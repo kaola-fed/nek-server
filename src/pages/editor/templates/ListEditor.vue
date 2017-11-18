@@ -124,11 +124,19 @@ export default {
     this.updatePreview();
 
     // 更改项目页面配置，更新数据
-    const { data } = await getListTemplate({ id: 0 });
-    this.breadcrumbs = data.breadcrumbs;
-    this.multiTabEnable = data.tabsEnable;
-    this.multiTabs = data.tabs;
-    this.listConfigs = data.lists;
+    const { data } = await getListTemplate({ id: this.$route.query.id });
+    if(data.breadcrumbs) {
+      this.breadcrumbs = data.breadcrumbs;
+    }
+    if(data.tabsEnable) {
+      this.multiTabEnable = data.tabsEnable;
+    }
+    if(data.tabs) {
+      this.multiTabs = data.tabs;
+    }
+    if(data.lists) {
+      this.listConfigs = data.lists;
+    }
 
     this.$forceUpdate();
   },

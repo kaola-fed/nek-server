@@ -24,6 +24,9 @@ const schema = mongoose.Schema({
 });
 
 schema.statics = {
+  async selectById(id) {
+    return await this.findOne({ _id: id });
+  },
   async selectByProject(project) {
     return await this.find({ project });
   },

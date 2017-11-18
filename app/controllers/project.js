@@ -183,7 +183,15 @@ export const pageList = async (ctx) => {
   }
 };
 
-export const listTemplate = (ctx) => {
+export const listTemplate = async (ctx) => {
   const pageId = ctx.query.id;
-  return ctx.body = require('../../mock/get/project/listTemplate.json');
+  if(!pageId) {
+    return ctx.body = _.paramsError();
+  }
+  try {
+    const page = await PageModel.selectById(pageId);
+    return ctx.body = _.success(page);
+  } catch (err) {
+    return ctx.body = _.error('获取页面信息失败');
+  }
 }

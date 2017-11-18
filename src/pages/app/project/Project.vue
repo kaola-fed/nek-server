@@ -85,7 +85,7 @@ export default {
       this.$router.push({
         name: routerName,
         query: {
-          url: row.url,
+          id: row._id,
           library: this.project.library
         }
       });
