@@ -63,8 +63,16 @@ export default {
     this.$refs.preview.setAttribute('ns-id', this.$nsVNodes.rootId);
 
     const { data } = await getComponentList({ id: this.$route.query.library });
+    //转化组件库的格式
+    data.components.forEach((item) => {
+      const attributes = {};
+      item.attributes.forEach((attr) => {
+        attributes[attr.name] = attr;
+      });
+      item.attributes = attributes;
+    });
     this.library = data;
-    this.$nsVNodes.librarySet = data;
+    this.$nsVNodes.librarySet = [data];
     this.$forceUpdate();
   },
   data() {
@@ -153,7 +161,6 @@ export default {
       // 拖拽已有组件的时候带上
       const nsId = event.dataTransfer.getData('nsId');
       const parent = this.getFirstNSNode(event.path, true) || this.$refs.preview;
-
       if (nsId) {
         this.updateHandler(nsId, parent);
       } else {

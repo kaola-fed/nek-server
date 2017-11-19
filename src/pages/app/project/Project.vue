@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h1>项目详情</h1>
-    <el-button @click="onCreateClick">新建页面</el-button>
+    <h1>{{ project.name }}</h1>
+    <el-button class="f-fr f-mb10" type="primary" @click="onCreateClick">新建页面</el-button>
     <div v-loading="loading">
       <el-table striple :data="list" border tooltip-effect="dark">
         <el-table-column align="left" prop="url" label="url" show-overflow-tooltip>
@@ -12,7 +12,7 @@
         <el-table-column align="left" prop="name" label="描述" show-overflow-tooltip></el-table-column>
         <el-table-column align="center" prop="type" label="类型" show-overflow-tooltip>
           <template scope="scope">
-            {{scope.row.type === 1 ? '列表页' : '合同页' }}
+            {{scope.row.type === 1 ? '列表页' : '编辑页' }}
           </template>
         </el-table-column>
         <el-table-column align="center" prop="updatedAt" label="更新时间" show-overflow-tooltip></el-table-column>
@@ -31,7 +31,8 @@
 
 <script>
 import CreatePageModal from './components/CreatePageModal.vue';
-import { getPageList, deletePage, getDetail } from '@/api/project';
+import { getDetail } from '@/api/project';
+import { getPageList, deletePage } from '@/api/page';
 
 export default {
   components: {

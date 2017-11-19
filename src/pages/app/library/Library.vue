@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h1>组件库详情</h1>
-    <el-button @click="onCreateClick">新建组件</el-button>
+    <h1>{{ name }}{{ version }}</h1>
+    <el-button class="f-fr f-mb10" type="primary" @click="onCreateClick">新建组件</el-button>
     <div v-loading="loading">
       <el-table striple :data="list" border tooltip-effect="dark">
         <el-table-column align="left" prop="name" label="组件名" show-overflow-tooltip></el-table-column>
@@ -42,6 +42,8 @@ export default {
       componentVisible: false,
       currentComponentId: '',
       loading: false,
+      name: '',
+      version: '',
       list: []
     };
   },
@@ -59,6 +61,8 @@ export default {
       try {
         const { data } = await getComponentList({id: this.libraryId});
         this.list = data.components;
+        this.name = data.name;
+        this.version = `（${data.version}）`;
         this.loading = false;
       } catch (err) {
         this.loading = false;

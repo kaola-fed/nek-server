@@ -1,0 +1,157 @@
+import fetch from 'node-fetch';
+
+import * as _ from '../utils/response';
+import PageModel from '../models/Page';
+
+// 工具函数
+
+const translateData = (params, dataTypes) => {
+  const rlt = {
+    filters: [],
+    cols: [],
+    message: ''
+  };
+
+  rlt.filters = params.inputs.map((item) => {
+    return {
+      title: item.description,
+      key: item.name,
+      type: 'kl-input'
+    };
+  });
+
+  try {
+    const resultTypeId = params.outputs.find(item => item.name == 'result' || item.name == 'data').type;
+    const resultData = dataTypes.find(item => item.id == resultTypeId);
+    const listId = resultData.params.find(item => item.name == 'list').type;
+    const listParams = dataTypes.find(item => item.id == listId);
+    rlt.cols = listParams.params.map((item) => {
+      return {
+        title: item.description,
+        key: item.name,
+        typeName: item.typeName || 'String'
+      };
+    });
+  } catch (err) {
+    rlt.message = '响应信息格式错误';
+  }
+
+  return rlt;
+};
+
+// Controllers
+
+export const nei = async (ctx) => {
+  const { id, url } = ctx.query;
+  if(!id || !url) {
+    return ctx.body = _.paramsError();
+  }
+  let key;
+  try {
+    const pageModel = await PageModel.selectByIdWithPro(id);
+    key = pageModel.project.neiKey;
+  } catch (err) {
+    return ctx.body = _.error('获取配置失败，请检查项目配置key、页面url是否正确');
+  }
+  const neiUrl = 'https://nei.netease.com/api/projectres/';
+  const retObj = {
+    code: 200,
+    message: null,
+    data: {}
+  };
+
+  try {
+    const rlt = await fetch(`${neiUrl}?key=${key}&spectype=0`);
+    const { result } = await rlt.json();
+    const interfaces = result.interfaces.find(item => item.path == url);
+    const dataTypes = result.datatypes;
+    if (!interfaces) {
+      retObj.code = 400;
+      retObj.message = 'NEI项目中未查到对应URL，请检查';
+    } else {
+      const params = interfaces.params;
+      const rlt = translateData(params, dataTypes);
+      if (rlt.message) {
+        retObj.code = 400;
+        retObj.message = rlt.message;
+      }
+      delete rlt.message;
+      retObj.data = rlt;
+    }
+  } catch (err) {
+    retObj.code = 400;
+    retObj.message = '获取NEI接口失败，请检查key';
+  }
+
+  ctx.body = retObj;
+};
+
+export const createPage = async (ctx) => {
+  const postData = ctx.request.body;
+  const page = {
+    ...postData,
+    project: postData.projectId
+  };
+  if(!postData.projectId) {
+    return ctx.body = _.paramsError();
+  }
+  try {
+    await PageModel.create(page);
+    return ctx.body = _.success();
+  } catch (err) {
+    return ctx.body = _.error('创建失败，请检查参数');
+  }
+};
+
+export const updatePageDom = async (ctx) => {
+  const { id, dom } = ctx.request.body;
+  if(!id || !dom ) {
+    return ctx.body = _.paramsError();
+  }
+  try {
+    await PageModel.modifyDom(id, dom);
+    return ctx.body = _.success();
+  } catch (err) {
+    return ctx.body = _.error();
+  }
+};
+
+export const deletePage = async (ctx) => {
+  const { id, pageId } = ctx.query;
+  if(!id || !pageId) {
+    return ctx.body = _.paramsError();
+  }
+  try {
+    await PageModel.deleteById(pageId);
+    return ctx.body = _.success();
+  } catch (err) {
+    return ctx.body = _.error('删除失败');
+  }
+};
+
+export const pageList = async (ctx) => {
+  const projectId = ctx.query.id;
+  if(!projectId) {
+    return ctx.body = _.paramsError();
+  }
+  try {
+    const pages = await PageModel.selectByProject(projectId);
+    return ctx.body = _.success(pages);
+  } catch (err) {
+    return ctx.body = _.error('获取页面列表失败');
+  }
+};
+
+export const listTemplate = async (ctx) => {
+  const pageId = ctx.query.id;
+  if(!pageId) {
+    return ctx.body = _.paramsError();
+  }
+  try {
+    const { dom } = await PageModel.selectById(pageId);
+    const data = !!dom ? JSON.parse(dom) : {};
+    return ctx.body = _.success(data);
+  } catch (err) {
+    return ctx.body = _.error('获取页面信息失败');
+  }
+}

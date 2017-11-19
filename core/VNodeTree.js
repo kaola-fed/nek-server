@@ -281,8 +281,7 @@ export default class VNodeTree {
     if (!tagName) {
       return text || '';
     }
-
-    return `<${tagName}${VNodeTree.getAttributesStr(attributes, true)} ns-id="${nodeId}">${children.map(el => this.getTemplate(el)).join('')}</${tagName}>`;
+    return `<div r-nsid="${nodeId}"><${tagName}${VNodeTree.getAttributesStr(attributes, true)} ns-id="${nodeId}">${children.map(el => this.getTemplate(el)).join('')}</${tagName}></div>`;
   }
 
   build() {
@@ -305,7 +304,7 @@ export default class VNodeTree {
 
         for (let e of keys) {
           eventStr += `
-        
+
         ${events[e]}: function(event) {
             console.log(event);
         }`;
@@ -325,9 +324,9 @@ export default class VNodeTree {
             this.supr(data);
             _.extend(data, {});
         },
-        
+
         // 监听事件${eventStr}
-        
+
         // 网络请求
     });
 });
@@ -404,4 +403,3 @@ export default class VNodeTree {
     return parentNode;
   }
 }
-

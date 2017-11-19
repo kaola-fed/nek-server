@@ -39,7 +39,7 @@
 
           <el-collapse-item title="列表配置" name="list">
             <div class="f-mb10">
-              <el-button size="small">导入NEI生成配置</el-button>
+              <el-button size="small" @click="onImportClick">导入NEI生成配置</el-button>
               <el-button size="small" v-if="multiTabEnable" @click="onCopyClick">复制当前页面配置</el-button>
               <el-button size="small" v-if="multiTabEnable && copyTab > -1 && copyTab != currentTab" @click="onPasteClick">
                 粘贴页面配置（From tab: {{multiTabs[copyTab].title || `Tab ${copyTab}`}}）
@@ -79,7 +79,7 @@ import PreviewButton from '../components/PreviewButton.vue';
 import VNodeTree from '@/../core/VNodeTree';
 
 import { getComponentList } from '@/api/library';
-import { getListTemplate } from '@/api/project';
+import { getListTemplate, getPageNei, updatePageDom } from '@/api/page';
 
 const LIB_NAME = 'NEK-UI';
 
@@ -227,6 +227,7 @@ export default {
           const { html, js } = this.$nsVNodes.build();
           console.log(html);
           console.log(js);
+          this.saveDomJson();
         }
       }],
 
@@ -351,6 +352,25 @@ export default {
       }
     },
 
+    /* 导入nei配置 */
+    async onImportClick() {
+      try {
+        const { value } = await this.$prompt('请输入获取列表的url', '提示', {
+          inputPattern: /\S+/,
+          inputErrorMessage: 'url不能为空'
+        });
+        const { data } = await getPageNei({ id: this.$route.query.id, url: value });
+        if(data.filters && data.filters.length > 0) {
+          this.listConfigs[this.currentTab || 0].filters = data.filters;
+        }
+        if(data.cols && data.cols.length > 0) {
+          this.listConfigs[this.currentTab || 0].cols = data.cols;
+        }
+        this.$forceUpdate();
+      } catch (err) {
+        return;
+      }
+    },
     /* 列表 */
     onCopyClick() {
       this.copyTab = parseInt(this.currentTab);
@@ -372,6 +392,20 @@ export default {
       this.$message.success('已粘贴');
     },
 
+    /* 保存dom json */
+    async saveDomJson() {
+      const domObj = {
+        breadcrumbs: this.breadcrumbs,
+        tabsEnable: this.multiTabEnable,
+        tabs: this.multiTabs,
+        lists: this.listConfigs
+      };
+      try {
+        await updatePageDom({ id: this.$route.query.id, dom: JSON.stringify(domObj) });
+      } catch (err) {
+        return;
+      }
+    },
     /* 通用函数 */
 
     getRandomId() {

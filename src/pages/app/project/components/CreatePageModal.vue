@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import { createPage } from '@/api/project';
+import { createPage } from '@/api/page';
 
 export default {
   name: 'CreatePageModal',
