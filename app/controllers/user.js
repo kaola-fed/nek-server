@@ -1,10 +1,6 @@
-import * as _ from '../utils/response';
 import UserModel from '../models/User';
 
-export const dashboard = async (ctx) => {
-  const { username } = ctx.session.user;
+export const dashboard = async (username) => {
   const result = await UserModel.findByUsername(username);
-  return ctx.body = _.success({
-    projects: result.projects
-  });
-}
+  return result.projects;
+};
