@@ -1,5 +1,3 @@
-import fetch from 'node-fetch';
-
 import * as _ from '../utils/response';
 import UserModel from '../models/User';
 import ProjectModel from '../models/Project';
@@ -31,7 +29,7 @@ export const getList = async (ctx) => {
 export const update = async (ctx) => {
   const project = ctx.request.body;
   if(!project.id) {
-    return ctx.body = _.paramsError()
+    return ctx.body = _.paramsError();
   }
   try {
     const result = await ProjectModel.modify(project.id, project);

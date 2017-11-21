@@ -29,7 +29,9 @@ schema.statics = {
   async selectById(id) {
     return await this.findOne({ _id: id });
   },
-
+  async selectByIdWithLib(id) {
+    return await this.findOne({ _id: id }).populate('library');
+  },
   async selectByUser(userid) {
     return await this.find({ members: userid });
   },

@@ -124,6 +124,10 @@ export default class VNodeTree {
     this.__libConfig = set;
   }
 
+  get tree() {
+    return this.__nodeTree;
+  }
+
   /* 节点操作 */
 
   getNode(nodeId) {
