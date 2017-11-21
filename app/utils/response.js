@@ -15,6 +15,6 @@ export const unauthorized = (message = 'Unauthorized') => {
 };
 
 // 自定义错误
-export const error = (code, message) => {
+export const error = (message, code = 500) => {
   return JSON.stringify({ code, message });
 };

@@ -28,7 +28,7 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      local: 'http://127.0.0.1:80',
+      local: 'http://127.0.0.1:8066',
       server: 'http://nek-server.kaolafed.com:3000'
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"
