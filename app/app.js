@@ -6,6 +6,7 @@ import serve from 'koa-static';
 import Session from 'koa-session';
 import Views from 'koa-views';
 import bodyParser from 'koa-bodyparser';
+import logger from 'koa-logger';
 import mongoose from 'mongoose';
 
 import { sessionConfig, dbConfig } from './config';
@@ -35,6 +36,8 @@ conn.on('open', () => {
 //启动koa
 const app = new Koa();
 app.keys = ['nek-server'];
+
+app.use(logger);
 
 app.use(Session(sessionConfig, app));
 
