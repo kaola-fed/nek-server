@@ -19,3 +19,9 @@ export const getDetail = ({ id }) => {
 export const deleteProject = ({ id }) => {
   return JSONAPI.get('/api/project/delete', { params: {id} });
 };
+
+export const updateTpl = ({ id, type, tpl }) => {
+  return JSONAPI.post('/api/project/updateTpl', {
+    id, type, tpl
+  });
+};

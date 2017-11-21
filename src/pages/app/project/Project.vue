@@ -25,13 +25,27 @@
         </el-table-column>
       </el-table>
     </div>
+    <el-tabs type="border-card" class="f-mt10" v-model="currentTab" v-if="isShowTpl">
+      <el-tab-pane label="entry" name="entry">
+        <el-input type="textarea" class="m-textarea f-mb10" v-model="project.entry" placeholder="请输入entry模板"></el-input>
+        <el-row type="flex" justify="center">
+          <el-button type="primary" @click="handleSave('entry')">保存</el-button>
+        </el-row>
+      </el-tab-pane>
+      <el-tab-pane label="ftl" name="ftl">
+        <el-input type="textarea" class="m-textarea f-mb10" v-model="project.ftl" placeholder="请输入ftl模板"></el-input>
+        <el-row type="flex" justify="center">
+          <el-button type="primary" @click="handleSave('ftl')">保存</el-button>
+        </el-row>
+      </el-tab-pane>
+    </el-tabs>
     <create-page-modal :visible="createPageVisible" :projectId="projectId" @refresh="getList" @close="onCreatePageClose"></create-page-modal>
   </div>
 </template>
 
 <script>
 import CreatePageModal from './components/CreatePageModal.vue';
-import { getDetail } from '@/api/project';
+import { getDetail, updateTpl } from '@/api/project';
 import { getPageList, deletePage } from '@/api/page';
 
 export default {
@@ -43,12 +57,16 @@ export default {
       createPageVisible: false,
       loading: false,
       list: [],
-      project: {}
+      project: {},
+      currentTab: 'entry'
     };
   },
   computed: {
     projectId() {
       return this.$route.query.id;
+    },
+    isShowTpl() {
+      return this.project.type == 1;
     }
   },
   mounted() {
@@ -102,10 +120,23 @@ export default {
       } catch (err) {
         return;
       }
+    },
+    async handleSave(type) {
+      try {
+        await updateTpl({ id: this.projectId, type, tpl: this.project[type] });
+        this.$message.success('保存成功！');
+      } catch (err) {
+        return;
+      }
     }
   }
 };
 </script>
 
-<style scoped>
+<style>
+.m-textarea {
+  .el-textarea__inner {
+    min-height: 500px;
+  }
+}
 </style>

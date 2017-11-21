@@ -10,6 +10,7 @@ route.use(Auth);
 route.post('/create', ProjectController.create);
 route.get('/list', ProjectController.getList);
 route.post('/update', ProjectController.update);
+route.post('/updateTpl', ProjectController.updateTpl);
 route.get('/detail', ProjectController.detail);
 route.get('/delete', ProjectController.deleteProject);
 

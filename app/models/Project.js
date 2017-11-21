@@ -6,6 +6,8 @@ const schema = mongoose.Schema({
   git: String,
   neiKey:String,
   type: String,
+  ftl: String,
+  entry: String,
   // 组件库的_id以及版本
   library: {
     type: mongoose.Schema.Types.ObjectId,
@@ -14,10 +16,6 @@ const schema = mongoose.Schema({
   members: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-  }],
-  pages: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Page',
   }],
 }, {
   timestamps: true,
@@ -42,6 +40,10 @@ schema.statics = {
 
   async modify(id, project) {
     return await this.update( { _id: id }, project );
+  },
+
+  async modifyTpl(id, type, tpl) {
+    return await this.update( { _id: id }, { [type]: tpl });
   }
 };
 

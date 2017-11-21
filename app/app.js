@@ -37,7 +37,7 @@ conn.on('open', () => {
 const app = new Koa();
 app.keys = ['nek-server'];
 
-app.use(logger);
+app.use(logger());
 
 app.use(Session(sessionConfig, app));
 

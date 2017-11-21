@@ -154,4 +154,17 @@ export const listTemplate = async (ctx) => {
   } catch (err) {
     return ctx.body = _.error('获取页面信息失败');
   }
+};
+
+export const pageDetail = async (ctx) => {
+  const pageId = ctx.query.id;
+  if(!pageId) {
+    return ctx.body = _.paramsError();
+  }
+  try {
+    const pageModel = await PageModel.selectByIdWithPro(pageId);
+    return ctx.body = _.success(pageModel);
+  } catch (err) {
+    return ctx.body = _.error('获取页面信息失败');
+  }
 }

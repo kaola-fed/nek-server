@@ -9,7 +9,7 @@ import * as _ from '../utils/response';
 const route = new Router();
 route.use(Auth);
 route.get('/dashboard', async (ctx) => {
-  const projects = UserController.dashboard(ctx.session.user.username);
+  const projects = await UserController.dashboard(ctx.session.user.username);
   ctx.body = _.success({ projects });
 });
 

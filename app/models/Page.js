@@ -31,7 +31,7 @@ schema.statics = {
     return await this.find({ project });
   },
   async selectByIdWithPro(_id) {
-    return await this.findOne({ _id }).populate('project');
+    return await this.findOne({ _id }).populate('project').select('url name project');
   },
   async deleteById(_id) {
     return await this.remove({ _id });

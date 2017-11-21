@@ -41,6 +41,19 @@ export const update = async (ctx) => {
   }
 };
 
+export const updateTpl = async (ctx) => {
+  const project = ctx.request.body;
+  if(!project.id || !project.type) {
+    return ctx.body = _.paramsError();
+  }
+  try {
+    const result = await ProjectModel.modifyTpl(project.id, project.type, project.tpl);
+    return ctx.body = _.success(result);
+  } catch (err) {
+    return ctx.body = _.error('模板保存出错');
+  }
+};
+
 export const detail = async (ctx) => {
   try {
     const result = await ProjectModel.selectById(ctx.query.id);
