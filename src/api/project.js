@@ -6,9 +6,9 @@ export const create = ({ name, desc, git, neiKey, type, library }) => {
   });
 };
 
-export const update = ({ id, name, desc, git, neiKey, type, library }) => {
+export const update = ({ id, name, desc, git, neiKey, type, library, basePath, listPath, modalPath }) => {
   return JSONAPI.post('/api/project/update', {
-    id, name, desc, git, neiKey, type, library
+    id, name, desc, git, neiKey, type, library, basePath, listPath, modalPath
   });
 };
 

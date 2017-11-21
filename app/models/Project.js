@@ -5,7 +5,10 @@ const schema = mongoose.Schema({
   desc: String,
   git: String,
   neiKey:String,
-  type: String,
+  type: Number,
+  basePath: String,
+  listPath: String,
+  modalPath: String,
   ftl: String,
   entry: String,
   // 组件库的_id以及版本
