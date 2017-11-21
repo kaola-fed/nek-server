@@ -90,7 +90,7 @@ export default {
       }
       try {
         await this.$confirm('确认删除组件？', '提示', { type: 'warning' });
-        await deleteComponent({ id: this.libraryId, pageId: row._id });
+        await deleteComponent({ id: row._id });
         this.getList();
       } catch (err) {
         return;
