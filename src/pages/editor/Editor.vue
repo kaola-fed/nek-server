@@ -356,6 +356,15 @@ export default {
         .g-col {
           min-height: 45px;
           border: 1px dashed #ddd;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .m-form {
+          min-height: 60px;
+          border: 1px dashed #ddd;
+          display: flex;
         }
       }
     }

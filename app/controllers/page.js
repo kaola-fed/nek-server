@@ -210,3 +210,22 @@ export const gen = async (id) => {
 
   return result;
 };
+
+export const getTpl = async (id) => {
+  const { project } = await PageModel.selectByIdWithPro(id);
+  let result = { ftl: '', entry: ''};
+  switch (project.type) {
+    case ProjectTypes.NEJ:
+      result = {
+        ftl: project.ftl,
+        entry: project.entry
+      };
+      break;
+    case ProjectTypes.Webpack:
+    case ProjectTypes.WebpackMul:
+      break;
+    default:
+      break;
+  }
+  return result;
+}

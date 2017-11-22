@@ -1,4 +1,4 @@
-import 'babel-polyfill';
+// import 'babel-polyfill';
 
 import NSNode from './NSNode';
 import VNodeTree from './VNodeTree';

@@ -16,8 +16,7 @@ route.get('/page', async (ctx) => {
   const result = await PageController.gen(id);
 
   // 生成ftl/entry
-  const ftl = '';
-  const entry = '';
+  const { ftl, entry } = await PageController.getTpl(id);
 
   return ctx.body = _.success({
     ftl,
