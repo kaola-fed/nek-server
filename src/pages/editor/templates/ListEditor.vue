@@ -3,7 +3,7 @@
     <tools-bar projectName="Project" :buttons="toolsBarButtons"></tools-bar>
     <div class="m-list-editor">
       <div class="m-left">
-        <div class="g-preview">
+        <div class="g-preview" id="ns-preview">
           <div ref="preview">
           </div>
         </div>

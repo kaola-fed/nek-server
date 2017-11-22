@@ -65,6 +65,7 @@
 <script>
 import { create, update, getDetail } from '@/api/project';
 import { getLibraries } from '@/api/library';
+import { ProjectTypes } from '@/../utils/enums';
 export default {
   name: 'ProjectModal',
   props: {
@@ -95,9 +96,9 @@ export default {
         modalPath: required('BaseModal')
       },
       types: [
-        {id: 1, name: 'nej老项目'},
-        {id: 2, name: 'webpack单页'},
-        {id: 3, name: 'webpack多页'}
+        {id: ProjectTypes.NEJ, name: 'nej老项目'},
+        {id: ProjectTypes.Webpack, name: 'webpack单页'},
+        {id: ProjectTypes.WebpackMul, name: 'webpack多页'}
       ],
       libraries: []
     };
@@ -108,7 +109,7 @@ export default {
         const { data } = await getLibraries();
         this.libraries = data;
       } catch (err) {
-        console.log(err);
+        return;
       }
       if(this.id) {
         try {

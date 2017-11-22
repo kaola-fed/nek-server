@@ -11,7 +11,7 @@
         <highlight-current :nodeId="currentNodeId" ></highlight-current>
         <div class="g-preview" id="ns-preview"
              @dragstart="onPreviewDragStart" @dragover.prevent.stop="onComponentDragOver" @drop="onPreviewDrop"
-             @click="onPreviewClick"
+             @click="onPreviewClick" @insertNsid="onInsertNsid"
         >
           <div ref="preview"></div>
         </div>
@@ -137,7 +137,20 @@ export default {
   },
   methods: {
     /*====== 事件绑定 ======*/
-
+    onInsertNsid(event) {
+      const { elem, nsid } = event.detail;
+      for(let i=0, len=elem.childNodes.length; i<len; i++) {
+        if(elem.childNodes[i].nodeType == Node.ELEMENT_NODE) {
+          elem.childNodes[i].setAttribute('ns-id', nsid);
+          elem.childNodes[i].setAttribute('draggable', true);
+          //删除外层空div
+          setTimeout(() => {
+            const emptyDiv = document.getElementById(nsid);
+            emptyDiv.parentNode.replaceChild(emptyDiv.childNodes[i], emptyDiv);
+          }, 0);
+        }
+      }
+    },
     onPreviewDragStart(event) {
       event.dataTransfer.dropEffect = 'move';
       const node = this.getFirstNSNode(event.path);
@@ -300,7 +313,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .g-editor {
   position: relative;
   height: 100%;
@@ -332,18 +345,20 @@ export default {
           border: 1px dashed #ddd;
           padding: 10px;
         }
+
+        .g-row {
+          min-height: 50px;
+          border: 1px dashed #ddd;
+        }
+
+        .g-col {
+          min-height: 45px;
+          border: 1px dashed #ddd;
+        }
       }
     }
   }
 }
 
-.g-row {
-  min-height: 50px;
-  border: 1px dashed #ddd;
-}
 
-.g-col {
-  min-height: 45px;
-  border: 1px dashed #ddd;
-}
 </style>

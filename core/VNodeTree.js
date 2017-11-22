@@ -285,7 +285,7 @@ export default class VNodeTree {
     if (!tagName) {
       return text || '';
     }
-    return `<div r-nsid="${nodeId}"><${tagName}${VNodeTree.getAttributesStr(attributes, true)} ns-id="${nodeId}">${children.map(el => this.getTemplate(el)).join('')}</${tagName}></div>`;
+    return `<div r-nsid="${nodeId}" id="${nodeId}"><${tagName}${VNodeTree.getAttributesStr(attributes, true)} ns-id="${nodeId}">${children.map(el => this.getTemplate(el)).join('')}</${tagName}></div>`;
   }
 
   build() {

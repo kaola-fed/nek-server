@@ -9,8 +9,8 @@
       </el-form-item>
       <el-form-item label="页面模板">
         <el-radio-group v-model="form.type">
-          <el-radio-button :label="1">列表页</el-radio-button>
-          <el-radio-button :label="2">空白页</el-radio-button>
+          <el-radio-button :label="pageTypes.List">列表页</el-radio-button>
+          <el-radio-button :label="pageTypes.Empty">空白页</el-radio-button>
         </el-radio-group>
       </el-form-item>
     </el-form>
@@ -23,7 +23,7 @@
 
 <script>
 import { createPage } from '@/api/page';
-
+import { PageTypes } from '@/../utils/enums';
 export default {
   name: 'CreatePageModal',
   props: {
@@ -32,10 +32,11 @@ export default {
   },
   data() {
     return {
+      pageTypes: PageTypes,
       form: {
         url: '',
         name: '',
-        type: 1
+        type: PageTypes.List
       },
       rules: {
         url: [{
@@ -90,6 +91,7 @@ export default {
     },
     close() {
       this.$emit('close');
+      this.$refs.form.resetFields();
     }
   }
 };
