@@ -178,7 +178,7 @@ export const genList = (projectConfig, config) => {
     case ProjectTypes.NEJ:
       return codegen.buildNEJList(config, {
         jsConfig: {
-          ListPath: projectConfig.ListPath
+          ListPath: projectConfig.listPath
         }
       });
     case ProjectTypes.Webpack:
@@ -212,14 +212,12 @@ export const gen = async (id) => {
 };
 
 export const getTpl = async (id) => {
-  const { project } = await PageModel.selectByIdWithPro(id);
-  let result = { ftl: '', entry: ''};
+  const { url, project } = await PageModel.selectByIdWithPro(id);
+  const result = { ftl: '', entry: '', url, type: project.type };
   switch (project.type) {
     case ProjectTypes.NEJ:
-      result = {
-        ftl: project.ftl,
-        entry: project.entry
-      };
+      result.ftl = project.ftl;
+      result.entry = project.entry;
       break;
     case ProjectTypes.Webpack:
     case ProjectTypes.WebpackMul:

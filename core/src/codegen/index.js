@@ -43,7 +43,7 @@ const genNEJJS = (options) => {
 
   // 先硬编码，之后再改
   return `NEJ.define([
-    ${basePath},
+    '${basePath}',
     'text!./page.html',
 ], function(${name}, tpl){
     return ${name}.extend({
@@ -79,14 +79,13 @@ export const buildNEJList = (listConfig, options) => {
   const eventSet = new Set();
 
   const tree = transform.nejList(pageTitle, listConfig).tree;
-  console.log(tree);
+  // console.log(tree);
 
   const html = genHTML(tree, root, eventSet);
   let js = genNEJJS({
     basePath: jsConfig.ListPath,
     eventSet
   });
-
   return { html, js };
 };
 

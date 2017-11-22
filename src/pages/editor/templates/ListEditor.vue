@@ -219,8 +219,8 @@ export default {
         tip: '进入编辑器',
         icon: 'iconfont-edit',
         onClick: () => {
-          this.$confirm('进入拖拽编辑模式后将不能再使用模板编辑模式，确认要继续？', '提示')
-            .then(() => this.$router.push({ name: 'editor', id: this.$route.query.id }));
+          // this.$confirm('进入拖拽编辑模式后将不能再使用模板编辑模式，确认要继续？', '提示')
+            // .then(() => this.$router.push({ name: 'editor', id: this.$route.query.id }));
         }
       }, {
         tip: '生成代码',
