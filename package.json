@@ -33,6 +33,7 @@
     "lodash": "^4.17.4",
     "moment": "^2.18.1",
     "mongoose": "^4.11.11",
+    "nek-server-core": "file:core",
     "nek-ui": "^0.6.1",
     "node-fetch": "next",
     "particlesjs": "^2.0.2",

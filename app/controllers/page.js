@@ -1,7 +1,11 @@
 import fetch from 'node-fetch';
 
 import * as _ from '../utils/response';
+import { ProjectTypes, PageTypes } from '../utils/enums';
 import PageModel from '../models/Page';
+import ProjectModel from '../models/Project';
+
+import { codegen } from 'nek-server-core';
 
 // 工具函数
 
@@ -167,4 +171,42 @@ export const pageDetail = async (ctx) => {
   } catch (err) {
     return ctx.body = _.error('获取页面信息失败');
   }
-}
+};
+
+export const genList = (projectConfig, config) => {
+  switch (projectConfig.type) {
+    case ProjectTypes.NEJ:
+      return codegen.buildNEJList(config, {
+        jsConfig: {
+          ListPath: projectConfig.ListPath
+        }
+      });
+    case ProjectTypes.Webpack:
+      break;
+    default:
+      break;
+  }
+};
+
+export const gen = async (id) => {
+  const { type, dom, project } = await PageModel.selectById(id);
+  const projectConfig = await ProjectModel.selectByIdWithLib(project);
+  const config = JSON.parse(dom || '');
+
+  let result;
+  switch (type) {
+    case PageTypes.List:
+      result = genList(projectConfig, config);
+      break;
+    case PageTypes.Empty:
+      break;
+    default:
+      break;
+  }
+
+  if (!result) {
+    // ...
+  }
+
+  return result;
+};

@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import { VNodeTree } from 'nek-server-core';
 
 import ToolsBar from './components/ToolsBar.vue';
 import SideBar from './components/SideBar.vue';
@@ -41,8 +42,8 @@ import PropsBar from './components/PropsBar.vue';
 import HighlightCurrent from './components/HighlightCurrent.vue';
 import PreviewButton from './components/PreviewButton.vue';
 
-import VNodeTree from '@/../core/VNodeTree';
 import _ from '@/widget/util';
+import NekComponent from '@/widget/NekComponent';
 
 import { getComponentList } from '@/api/library';
 
@@ -60,6 +61,7 @@ export default {
   },
   async mounted() {
     this.$nsVNodes = new VNodeTree();
+    this.$nsVNodes.NekComponent = NekComponent;
     this.$refs.preview.setAttribute('ns-id', this.$nsVNodes.rootId);
 
     const { data } = await getComponentList({ id: this.$route.query.library });

@@ -70,13 +70,14 @@
 
 <script>
 import lodash from 'lodash';
+import { VNodeTree } from 'nek-server-core';
 
 import ToolsBar from '../components/ToolsBar.vue';
 import SideBar from '../components/SideBar.vue';
 import ListConfig from './components/ListConfig.vue';
 import PreviewButton from '../components/PreviewButton.vue';
 
-import VNodeTree from '@/../core/VNodeTree';
+import NekComponent from '@/widget/NekComponent';
 
 import { getComponentList } from '@/api/library';
 import { getListTemplate, getPageNei, updatePageDom } from '@/api/page';
@@ -101,6 +102,7 @@ export default {
   },
   async mounted() {
     this.$nsVNodes = new VNodeTree();
+    this.$nsVNodes.NekComponent = NekComponent;
     this.$refs.preview.setAttribute('ns-id', this.$nsVNodes.rootId);
 
     this.$watch('updateTree', this.nsVNodeWatcher, {

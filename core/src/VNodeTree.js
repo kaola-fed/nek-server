@@ -1,8 +1,10 @@
 import lodash from 'lodash';
 
 import NSNode from './NSNode';
-import _ from '@/widget/util';
-import NekComponent from '@/widget/NekComponent';
+
+function getElementByNSId(id) {
+  return document.querySelector(`[ns-id="${id}"]`);
+}
 
 export default class VNodeTree {
   constructor(rootId = '0', options = null) {
@@ -16,6 +18,8 @@ export default class VNodeTree {
 
     // 组件库配置
     this.__libConfig = {};
+
+    this.NekComponent = null;
   }
 
   /* 静态函数 */
@@ -251,26 +255,31 @@ export default class VNodeTree {
       // 生成fragment
       const tpl = this.getTemplate(id);
       const node = document.createDocumentFragment();
-      NekComponent.inject(tpl, node);
+      this.NekComponent.inject(tpl, node);
 
       // 判断是插入还是替换
-      const oldNode = _.getElementByNSId(id);
+      const oldNode = getElementByNSId(id);
       if (oldNode) {
         oldNode.parentNode.replaceChild(node, oldNode);
       } else {
         const vNode = this.__nodeTree[id];
-        const parentNode = _.getElementByNSId(vNode.parent);
+        const parentNode = getElementByNSId(vNode.parent);
         const parentVNode = this.__nodeTree[vNode.parent];
         const nextBrotherIndex = parentVNode.children.findIndex(el => el === id) + 1;
 
         let nextBrotherNode = null;
         if (nextBrotherIndex < parentVNode.children.length) {
-          nextBrotherNode = _.getElementByNSId(parentVNode.children[nextBrotherIndex]);
+          nextBrotherNode = getElementByNSId(parentVNode.children[nextBrotherIndex]);
         }
 
         parentNode.insertBefore(node, nextBrotherNode);
       }
     }
+  }
+
+  // 更新__nodeTree并且触发渲染
+  $apply() {
+    this.__nodeTree = this.__updateTree;
   }
 
   /* 生成 */
@@ -371,7 +380,7 @@ export default class VNodeTree {
 
     // 编译后加上ns-id插入
     const containerTemplate = `<${tagName}${VNodeTree.getAttributesStr(attributes)}></${tagName}>`;
-    NekComponent.inject(containerTemplate, parentNode, {
+    this.NekComponent.inject(containerTemplate, parentNode, {
       beforeInsert: (fragment) => {
         if (Array.isArray(fragment)) {
           for (let i of fragment) {
