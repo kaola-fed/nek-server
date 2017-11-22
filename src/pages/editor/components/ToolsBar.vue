@@ -5,11 +5,11 @@
     </router-link>
     <div class="m-tools">
       <el-tooltip content="保存" effect="light" placement="bottom">
-        <a class="m-button"><i class="iconfont-save"></i></a>
+        <a class="m-button"><i class="iconfont-save" @click="onSave"></i></a>
       </el-tooltip>
-      <el-tooltip content="预览" effect="light" placement="bottom">
+      <!-- <el-tooltip content="预览" effect="light" placement="bottom">
         <a class="m-button" @click="onPreviewClick"><i class="iconfont-start"></i></a>
-      </el-tooltip>
+      </el-tooltip> -->
       <!-- 自定义按钮 -->
       <el-tooltip v-for="(item, index) in buttons" :key="`toolBtn_${item.tip}_${index}`"
                   :content="item.tip" effect="light" placement="bottom">
@@ -39,6 +39,9 @@ export default {
   methods: {
     onPreviewClick() {
       _.requestFullScreen();
+    },
+    onSave() {
+      this.$emit('save');
     }
   }
 };

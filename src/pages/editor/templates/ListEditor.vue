@@ -1,6 +1,6 @@
 <template>
   <div class="g-editor">
-    <tools-bar projectName="Project" :buttons="toolsBarButtons"></tools-bar>
+    <tools-bar projectName="Project" @save="onSave"></tools-bar>
     <div class="m-list-editor">
       <div class="m-left">
         <div class="g-preview" id="ns-preview">
@@ -219,8 +219,8 @@ export default {
         tip: '进入编辑器',
         icon: 'iconfont-edit',
         onClick: () => {
-          // this.$confirm('进入拖拽编辑模式后将不能再使用模板编辑模式，确认要继续？', '提示')
-            // .then(() => this.$router.push({ name: 'editor', id: this.$route.query.id }));
+          this.$confirm('进入拖拽编辑模式后将不能再使用模板编辑模式，确认要继续？', '提示')
+            .then(() => this.$router.push({ name: 'editor', id: this.$route.query.id }));
         }
       }, {
         tip: '生成代码',
@@ -372,6 +372,16 @@ export default {
       } catch (err) {
         return;
       }
+    },
+
+    onSave() {
+      this.saveDomJson();
+      this.$notify({
+        title: '保存成功',
+        message: `nek server -k ${this.$route.query.id}`,
+        type: 'success',
+        duration: 0
+      });
     },
     /* 列表 */
     onCopyClick() {

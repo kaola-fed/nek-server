@@ -8,7 +8,7 @@
     "start": "node server/index.js",
     "build": "npm run client-build && npm run server-build",
     "dev": "npm run server-dev | npm run client-dev",
-    "server-dev": "nodemon app/index.js --exec babel-node",
+    "server-dev": "nodemon app/app.js --exec babel-node",
     "server-build": "babel -d server/ app/",
     "client-dev": "node build/dev-server.js",
     "client-build": "node build/build.js",
