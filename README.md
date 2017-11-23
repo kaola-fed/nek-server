@@ -79,7 +79,8 @@ $ ./server.sh start
 
 ### babel配置
 由于前后端的babel配置存在一些差异，因此将配置文件分开，
-`.babelrc`文件中的是后端的babel配置，`build/webpack.base.conf.js`里`/\.js$/`下的配置为前端的babel配置
+后端编译时使用`app/.babelrc`和`core/.babelrc`，这俩配置是一样的
+前端打包时，vue-loader会加载`/.babelrc`，js-loader会使用`build/webpack.base.conf.js`里`/\.js$/`下的配置
 
 ### 后端开发注意事项
 在开发时使用了`nodemon`进行文件更新监控，如果在`ctrl+c`之后重新运行时提示端口被占用的话，需要自行kill掉原有进程
