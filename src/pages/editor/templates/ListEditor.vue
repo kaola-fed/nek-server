@@ -243,7 +243,10 @@ export default {
 
       currentTab: '',
       listConfigs: [this.newColItem()],
-      needUpdate: false
+      needUpdate: false,
+
+      // 列表请求URL
+      url: ''
     };
   },
   computed: {
@@ -368,6 +371,7 @@ export default {
         if(data.cols && data.cols.length > 0) {
           this.listConfigs[this.currentTab || 0].cols = data.cols;
         }
+        this.url = value;
         this.$forceUpdate();
       } catch (err) {
         return;
@@ -422,7 +426,8 @@ export default {
         breadcrumbs: this.breadcrumbs,
         tabsEnable: this.multiTabEnable,
         tabs: this.multiTabs,
-        lists: this.listConfigs
+        lists: this.listConfigs,
+        url: this.url
       };
       try {
         await updatePageDom({ id: this.$route.query.id, dom: JSON.stringify(domObj) });
