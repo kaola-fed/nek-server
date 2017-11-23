@@ -19,7 +19,7 @@ const genHTML = (tree, nodeId, { eventSet, varSet, level = 0 }) => {
   for (let i in events) {
     if (events.hasOwnProperty(i)) {
       eventSet.add(events[i]);
-      eventStr += ` on-${i}={this.${events[i]}($event)`;
+      eventStr += ` on-${i}={this.${events[i]}($event)}`;
     }
   }
 
