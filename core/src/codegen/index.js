@@ -40,7 +40,9 @@ const genNEJJS = (options) => {
 
   // 事件函数
   let eventStr = '';
-  eventSet.forEach(el => eventStr += `${el}: function() {}`);
+  eventSet.forEach(el => eventStr += `${el}: function(event) {
+    console.log(event);
+  }`);
 
   let dataStr = '';
   varSet.forEach(el => dataStr += `${el}: null,\n`);
