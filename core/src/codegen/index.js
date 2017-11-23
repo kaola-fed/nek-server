@@ -3,7 +3,7 @@ import * as transform from './transform';
 
 /** 通用函数 */
 
-const genHTML = (tree, nodeId, eventSet, level = 0) => {
+const genHTML = (tree, nodeId, { eventSet, varSet, level = 0 }) => {
   const vNode = tree[nodeId];
 
   const { tagName, attributes, events, children, text } = vNode;
@@ -14,6 +14,7 @@ const genHTML = (tree, nodeId, eventSet, level = 0) => {
     return `${intend}${text || ''}`;
   }
 
+  // 记录事件名
   let eventStr = '';
   for (let i in events) {
     if (events.hasOwnProperty(i)) {
@@ -22,15 +23,15 @@ const genHTML = (tree, nodeId, eventSet, level = 0) => {
     }
   }
 
-  return `${intend}<${tagName}${_.getAttributesStr(attributes)}${eventStr}>` +
-    `${children.length ? `\n${children.map(el => genHTML(tree, el, eventSet, level + 1)).join('\n')}\n${intend}` : ''}</${tagName}>`;
+  return `${intend}<${tagName}${_.getAttributesStr(attributes, false, varSet)}${eventStr}>` +
+    `${children.length ? `\n${children.map(el => genHTML(tree, el, { eventSet, varSet, level: level + 1 })).join('\n')}\n${intend}` : ''}</${tagName}>`;
 };
 
 const genNEJJS = (options) => {
   const {
     basePath = 'pro/widget/BaseComponent',
     eventSet,
-    defaultData
+    varSet
   } = options;
 
   // 基类名称
@@ -41,6 +42,9 @@ const genNEJJS = (options) => {
   let eventStr = '';
   eventSet.forEach(el => eventStr += `${el}: function() {}`);
 
+  let dataStr = '';
+  varSet.forEach(el => dataStr += `${el}: null,\n`);
+
   // 先硬编码，之后再改
   return `NEJ.define([
     '${basePath}',
@@ -50,7 +54,8 @@ const genNEJJS = (options) => {
         template: tpl,
         config: function(data) {
             this.supr(data);
-            this.default(${JSON.stringify(defaultData || {})});
+            this.default({
+            ${dataStr}});
         },
 
         // UI事件
@@ -77,14 +82,28 @@ export const buildNEJList = (listConfig, options) => {
   } = options;
 
   const eventSet = new Set();
+  const varSet = new Set();
 
-  const tree = transform.nejList(pageTitle, listConfig).tree;
-  // console.log(tree);
+  const vTree = transform.nejList(pageTitle, listConfig);
 
-  const html = genHTML(tree, root, eventSet);
+  const html = genHTML(vTree.tree, root, { eventSet, varSet });
+
+  // 移除基类事件
+  eventSet.forEach((el) => {
+    vTree.excludeEvent.has(el) && eventSet.delete(el);
+  });
+  // 移除基类变量以及条件变量
+  const conditionReg = /^condition\..+/;
+  varSet.forEach((el) => {
+    if (vTree.excludeVar.has(el) || conditionReg.test(el)) {
+      varSet.delete(el);
+    }
+  });
+
   let js = genNEJJS({
     basePath: jsConfig.ListPath,
-    eventSet
+    eventSet,
+    varSet
   });
   return { html, js };
 };

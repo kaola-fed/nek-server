@@ -186,10 +186,11 @@ export const pageDetail = async (ctx) => {
   }
 };
 
-export const genList = (projectConfig, config) => {
+export const genList = (projectConfig, pageTitle, config) => {
   switch (projectConfig.type) {
     case ProjectTypes.NEJ:
       return codegen.buildNEJList(config, {
+        pageTitle,
         jsConfig: {
           ListPath: projectConfig.listPath
         }
@@ -202,14 +203,14 @@ export const genList = (projectConfig, config) => {
 };
 
 export const gen = async (id) => {
-  const { type, dom, project } = await PageModel.selectById(id);
+  const { type, dom, project, name } = await PageModel.selectById(id);
   const projectConfig = await ProjectModel.selectByIdWithLib(project);
   const config = JSON.parse(dom || '');
 
   let result;
   switch (type) {
     case PageTypes.List:
-      result = genList(projectConfig, config);
+      result = genList(projectConfig, name, config);
       break;
     case PageTypes.Empty:
       break;
@@ -239,4 +240,4 @@ export const getTpl = async (id) => {
       break;
   }
   return result;
-}
+};

@@ -132,6 +132,11 @@ export const nejList = (title, config) => {
 
   nsVNodes.addFromObject(listObject, nsVNodes.rootId);
 
+  // 将基类中的变量和事件放进去
+  // TODO: 配置这几个变量？
+  nsVNodes.excludeVar = new Set(['list', 'pageSize', 'sumTotal', 'current']);
+  nsVNodes.excludeEvent = new Set(['refresh', 'reset']);
+
   nsVNodes.$apply();
   return nsVNodes;
 };

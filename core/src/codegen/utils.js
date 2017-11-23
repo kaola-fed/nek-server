@@ -16,7 +16,7 @@ const getAttrStr = (key, type, value, debug) => {
   }
 };
 
-export const getAttributesStr = (attributes, debug) => {
+export const getAttributesStr = (attributes, debug, varSet) => {
   let attr = '';
   for (let i in attributes) {
     if (attributes.hasOwnProperty(i)) {
@@ -27,6 +27,10 @@ export const getAttributesStr = (attributes, debug) => {
       const type = attributes[i].type || typeof attributes[i];
       const value = attributes[i].value || attributes[i];
       attr += getAttrStr(i, type, value, debug);
+      // 记录变量名
+      if (!debug && type === 'var' && varSet) {
+        varSet.add(value);
+      }
     }
   }
 

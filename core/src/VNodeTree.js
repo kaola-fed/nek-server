@@ -19,6 +19,9 @@ export default class VNodeTree {
     // 组件库配置
     this.__libConfig = {};
 
+    // 基类中的变量和事件名放进去
+    this.__exclude = {};
+
     this.NekComponent = null;
   }
 
@@ -130,6 +133,32 @@ export default class VNodeTree {
 
   get tree() {
     return this.__nodeTree;
+  }
+
+  get exclude() {
+    return this.__exclude;
+  }
+
+  get excludeVar() {
+    if (!this.__exclude.variable) {
+      this.__exclude.variable = new Set();
+    }
+    return this.__exclude.variable;
+  }
+
+  get excludeEvent() {
+    if (!this.__exclude.event) {
+      this.__exclude.event = new Set();
+    }
+    return this.__exclude.event;
+  }
+
+  set excludeVar(value) {
+    this.__exclude.variable = new Set(value);
+  }
+
+  set excludeEvent(value) {
+    this.__exclude.event = new Set(value);
   }
 
   /* 节点操作 */
