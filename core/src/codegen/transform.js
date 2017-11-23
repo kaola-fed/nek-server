@@ -72,7 +72,7 @@ function getSearchNode(filters) {
         children: [{
           tagName: 'kl-button',
           attributes: { title: '查询', type: 'secondary' },
-          events: { click: 'search' }
+          events: { click: 'refresh' }
         }, {
           tagName: 'kl-button',
           attributes: { title: '重置' },
