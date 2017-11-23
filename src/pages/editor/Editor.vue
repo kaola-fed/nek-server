@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { VNodeTree } from '@/../core/src';
+import VNodeTree from '@/../core/src/VNodeTree';
 
 import ToolsBar from './components/ToolsBar.vue';
 import SideBar from './components/SideBar.vue';

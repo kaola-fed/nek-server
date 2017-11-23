@@ -1,0 +1,67 @@
+{
+  "code": 200,
+  "data": {
+    "breadcrumbs": [
+      {
+        "id": "1511182631972_6094",
+        "title": "test",
+        "link": "aaa",
+        "nodeId": null
+      }
+    ],
+    "tabsEnable": false,
+    "tabs": [
+      {
+        "id": "1511182631972_5980",
+        "title": "",
+        "key": ""
+      }
+    ],
+    "lists": [
+      {
+        "filters": [
+          {
+            "title": "姓名",
+            "key": "name",
+            "type": "kl-input"
+          },
+          {
+            "title": "年龄",
+            "key": "age",
+            "type": "kl-input"
+          },
+          {
+            "title": "性别",
+            "key": "gender",
+            "type": "kl-input"
+          }
+        ],
+        "buttons": [],
+        "cols": [
+          {
+            "title": "列表1",
+            "key": "col1",
+            "typeName": "String"
+          },
+          {
+            "title": "列表2",
+            "key": "col2",
+            "typeName": "String"
+          },
+          {
+            "title": "列表3",
+            "key": "col3",
+            "typeName": "String"
+          }
+        ],
+        "operatorCol": true,
+        "operatorButtons": [
+          {
+            "title": "tests",
+            "link": "aaaaa"
+          }
+        ]
+      }
+    ]
+  }
+}

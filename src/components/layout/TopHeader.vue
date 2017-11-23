@@ -13,7 +13,7 @@ import { mapState, mapActions } from 'vuex';
 export default {
   computed: {
     ...mapState({
-      userInfo: state => state.userInfo
+      userInfo: state => (state.userInfo || {})
     })
   },
   methods: {

@@ -1,6 +1,6 @@
 <template>
   <div class="g-tools-bar">
-    <router-link :to="{name: 'dashboard'}" class="u-back">
+    <router-link :to="{name: backLink}" class="u-back">
       <i class="el-icon-arrow-left"></i>&nbsp;&nbsp;{{ projectName }}
     </router-link>
     <div class="m-tools">
@@ -31,7 +31,11 @@ export default {
       type: Array,
       default: () => []
     },
-    message: String
+    message: String,
+    backLink: {
+      type: String,
+      default: 'dashboard'
+    }
   },
   data() {
     return {};

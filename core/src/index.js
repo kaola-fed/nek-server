@@ -1,5 +1,3 @@
-// import 'babel-polyfill';
-
 import NSNode from './NSNode';
 import VNodeTree from './VNodeTree';
 import * as codegen from './codegen';
