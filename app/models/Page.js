@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const schema = mongoose.Schema({
-  url: String,
+  url: { type: String, unique: true },
   name: String,
   type: Number,
   // JSON
@@ -21,8 +21,9 @@ const schema = mongoose.Schema({
   }],
 }, {
   timestamps: true,
+  autoIndex: false
 });
-
+schema.index({ url: 1 });
 schema.statics = {
   async selectById(_id) {
     return await this.findOne({ _id });
@@ -31,7 +32,7 @@ schema.statics = {
     return await this.find({ project });
   },
   async selectByIdWithPro(_id) {
-    return await this.findOne({ _id }).populate('project').select('url name project');
+    return await this.findOne({ _id }).populate('project').select('url name type project');
   },
   async deleteById(_id) {
     return await this.remove({ _id });
@@ -41,6 +42,16 @@ schema.statics = {
   },
   async modifyDom(_id, dom) {
     return await this.update({ _id }, { dom });
+  },
+  async modifySetting(_id, page) {
+    return await this.update({ _id }, {
+      url: page.url,
+      name: page.name,
+      type: page.type
+    });
+  },
+  async selectByUrl(url) {
+    return await this.find({ url });
   }
 };
 

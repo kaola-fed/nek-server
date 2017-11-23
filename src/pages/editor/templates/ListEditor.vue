@@ -686,3 +686,11 @@ export default {
   }
 }
 </style>
+<style>
+.el-notification {
+    width: 350px;
+}
+.el-notification__content {
+  word-break: break-all;
+}
+</style>

@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="新建页面" :visible="visible">
+  <el-dialog title="新建页面" :visible="visible" @open="handleOpen">
     <el-form :model="form" :rules="rules" ref="form">
       <el-form-item label="页面URL" prop="url">
         <el-input v-model="form.url"></el-input>
@@ -8,7 +8,7 @@
         <el-input v-model="form.name"></el-input>
       </el-form-item>
       <el-form-item label="页面模板">
-        <el-radio-group v-model="form.type">
+        <el-radio-group v-model="form.type" :disabled="!!pageId">
           <el-radio-button :label="pageTypes.List">列表页</el-radio-button>
           <el-radio-button :label="pageTypes.Empty">空白页</el-radio-button>
         </el-radio-group>
@@ -22,13 +22,14 @@
 </template>
 
 <script>
-import { createPage } from '@/api/page';
+import { createPage, updatePageSetting, getPageDetail } from '@/api/page';
 import { PageTypes } from '@/../utils/enums';
 export default {
   name: 'CreatePageModal',
   props: {
     visible: Boolean,
-    projectId: String
+    projectId: String,
+    pageId: String
   },
   data() {
     return {
@@ -46,6 +47,20 @@ export default {
     };
   },
   methods: {
+    handleOpen() {
+      this.initForm();
+    },
+    async initForm() {
+      if (!this.pageId) {
+        return;
+      }
+      try {
+        const { data } = await getPageDetail({ id: this.pageId });
+        this.form = data;
+      } catch (err) {
+        return;
+      }
+    },
     onListClick() {
       if (!this.checkURL(this.url)) {
         return;
@@ -79,8 +94,9 @@ export default {
     ok() {
       this.$refs.form.validate(async (valid) => {
         if(valid) {
+          const Api = this.pageId ? updatePageSetting : createPage;
           try {
-            await createPage({ ...this.form, projectId: this.projectId });
+            await Api({ ...this.form, projectId: this.projectId, id: this.pageId });
             this.close();
             this.$emit('refresh');
           } catch (err) {

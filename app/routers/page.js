@@ -14,5 +14,6 @@ route.get('/delete', PageController.deletePage);
 route.get('/listTemplate', PageController.listTemplate);
 route.post('/updateDom', PageController.updatePageDom);
 route.get('/detail', PageController.pageDetail);
+route.post('/updateSetting', PageController.updateSetting);
 
 export default route;

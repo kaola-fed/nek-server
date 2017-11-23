@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>{{ project.name }}</h1>
-    <el-button class="f-fr f-mb10" type="primary" @click="onCreateClick">新建页面</el-button>
+    <el-button class="f-fr f-mb10" type="primary" @click="handleCreate">新建页面</el-button>
     <div v-loading="loading">
       <el-table striple :data="list" border tooltip-effect="dark">
         <el-table-column align="left" prop="url" label="url" show-overflow-tooltip>
@@ -18,7 +18,7 @@
         <el-table-column align="center" prop="updatedAt" label="更新时间" show-overflow-tooltip></el-table-column>
         <el-table-column align="center" label="操作" fixed="right">
           <template scope="scope">
-            <el-button size="small" type="text" @click="handleEdit(scope.row)">预览</el-button>
+            <el-button size="small" type="text" @click="handleSetting(scope.row)">设置</el-button>
             <el-button size="small" type="text" @click="handleEdit(scope.row)">编辑</el-button>
             <el-button size="small" type="text" @click="handleDelete(scope.row)">删除</el-button>
           </template>
@@ -39,7 +39,7 @@
         </el-row>
       </el-tab-pane>
     </el-tabs>
-    <create-page-modal :visible="createPageVisible" :projectId="projectId" @refresh="getList" @close="onCreatePageClose"></create-page-modal>
+    <create-page-modal :visible="createPageVisible" :pageId="currentPageId" :projectId="projectId" @refresh="getList" @close="handleCreateClose"></create-page-modal>
   </div>
 </template>
 
@@ -55,6 +55,7 @@ export default {
   data() {
     return {
       createPageVisible: false,
+      currentPageId: '',
       loading: false,
       list: [],
       project: {},
@@ -93,11 +94,17 @@ export default {
         return;
       }
     },
-    onCreateClick() {
+    handleCreate() {
       this.createPageVisible = true;
+      this.currentPageId = '';
     },
-    onCreatePageClose() {
+    handleSetting(row) {
+      this.createPageVisible = true;
+      this.currentPageId = row._id;
+    },
+    handleCreateClose() {
       this.createPageVisible = false;
+      this.currentPageId = '';
     },
     handleEdit(row) {
       const routerName = row.type === 1 ? 'listTemplate' : 'editor';

@@ -1,8 +1,8 @@
 <template>
   <div class="g-tools-bar">
-    <router-link :to="{name: backLink}" class="u-back">
+    <a @click="handleBack" class="u-back" href="javascript:;">
       <i class="el-icon-arrow-left"></i>&nbsp;&nbsp;{{ projectName }}
-    </router-link>
+    </a>
     <div class="m-tools">
       <el-tooltip content="保存" effect="light" placement="bottom">
         <a class="m-button"><i class="iconfont-save" @click="onSave"></i></a>
@@ -46,6 +46,9 @@ export default {
     },
     onSave() {
       this.$emit('save');
+    },
+    handleBack() {
+      this.$router.back();
     }
   }
 };

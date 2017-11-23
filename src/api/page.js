@@ -25,3 +25,13 @@ export const deletePage = ({ id, pageId }) => {
 export const updatePageDom = ({ id, dom }) => {
   return JSONAPI.post('/api/page/updateDom', { id, dom });
 };
+
+export const getPageDetail = ({ id }) => {
+  return JSONAPI.get('/api/page/detail', { params: { id }});
+};
+
+export const updatePageSetting = ({ id, url, name, type }) => {
+  return JSONAPI.post('/api/page/updateSetting', {
+    id, url, name, type
+  });
+};

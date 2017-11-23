@@ -103,7 +103,7 @@ export const createPage = async (ctx) => {
     await PageModel.create(page);
     return ctx.body = _.success();
   } catch (err) {
-    return ctx.body = _.error('创建失败，请检查参数');
+    return ctx.body = _.error('创建失败，请检查url是否已存在');
   }
 };
 
@@ -117,6 +117,19 @@ export const updatePageDom = async (ctx) => {
     return ctx.body = _.success();
   } catch (err) {
     return ctx.body = _.error();
+  }
+};
+
+export const updateSetting = async (ctx) => {
+  const postData = ctx.request.body;
+  if (!postData) {
+    return ctx.body = _.paramsError();
+  }
+  try {
+    await PageModel.modifySetting(postData.id, postData);
+    return ctx.body = _.success();
+  } catch (err) {
+    return ctx.body = _.error('更新失败，请检查url是否已存在');
   }
 };
 
