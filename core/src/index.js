@@ -2,10 +2,10 @@
 
 import NSNode from './NSNode';
 import VNodeTree from './VNodeTree';
-import * as gen from './codegen';
+import * as codegen from './codegen';
 
-module.exports = {
+export {
   NSNode,
   VNodeTree,
-  codegen: gen
+  codegen
 };
