@@ -1,10 +1,6 @@
 import VNodeTree from '../VNodeTree';
 
-export const nejList = (title, config) => {
-  const { breadcrumbs, tabsEnable, lists } = config;
-  const nsVNodes = new VNodeTree();
-
-  // 添加面包屑
+function getBreadNode(breads) {
   const breadObject = {
     tagName: 'kl-crumb',
     children: [{
@@ -15,49 +11,87 @@ export const nejList = (title, config) => {
       }]
     }]
   };
-  breadObject.children = breadObject.children.concat(breadcrumbs.map(el => ({
+  breadObject.children = breadObject.children.concat(breads.map(el => ({
     tagName: 'kl-crumb-item',
     attributes: { content: el.title, href: el.link }
   })));
-  nsVNodes.addFromObject(breadObject, nsVNodes.rootId);
 
-  if (tabsEnable) {
-    // 暂不考虑多tab的情况
-  }
+  return breadObject;
+}
 
-  const list = lists[0];
-  const { filters, buttons, cols, operatorCol, operatorButtons } = list;
-
-  // 输入部分
-  // 先不管kl-search
-  const headObject = {
-    tagName: 'kl-card',
-    attributes: { title },
+function getSearchItem(item) {
+  return {
+    tagName: 'kl-col',
+    attributes: { span: 4 },
     children: [{
-      tagName: 'kl-row',
-      children: filters.map((el) => {
-        const attributes = el.key ? {
-          value: { type: 'var', value: `condition.${el.key}` }
-        } : {};
-
-        return {
-          tagName: 'kl-col',
-          attributes: { span: 4 },
-          children: [{
-            tagName: 'kl-form-item',
-            attributes: { title: el.title },
-            children: [{
-              tagName: el.type,
-              attributes
-            }]
-          }]
-        };
-      })
+      tagName: 'kl-form-item',
+      attributes: { title: item.title },
+      children: [{
+        tagName: item.type,
+        attributes: item.key ? { value: { type: 'var', value: `condition.${item.key}` } } : {}
+      }]
     }]
   };
-  nsVNodes.addFromObject(headObject, nsVNodes.rootId);
+}
 
-  // 按钮及列表
+function getSearchNode(filters) {
+  const searchObject = {
+    tagName: 'kl-search',
+    attributes: {},
+    children: [{ tagName: 'kl-row', children: [] }]
+  };
+  filters.forEach((el, index) => {
+    // 第四个的时候建立kl-search-more
+    if (index === 3) {
+      searchObject.children.push({
+        tagName: 'kl-search-more',
+        children: [{ tagName: 'kl-row', children: [] }]
+      });
+    }
+    if (index < 3) {
+      // 前三个放在第一行
+      // 我也不想这么写的，都是生活所迫，加个标记就当什么都没发生吧
+      // (kl-s   > kl-row    )
+      searchObject.children[0].children.push(getSearchItem(el));
+    } else {
+      // 第四个开始放进kl-search-more中
+      // (kl-s   > kl-s-m    > kl-row    )
+      searchObject.children[1].children[0].children.push(getSearchItem(el));
+    }
+  });
+
+  // 搜索重置按钮设置
+  if (filters.length < 3) {
+    searchObject.attributes.isShowFooter = false;
+    // 两个及以内的时候push搜索和重置按钮进去
+    // (kl-s   > kl-row    )
+    searchObject.children[0].children.push({
+      tagName: 'kl-col',
+      children: [{
+        tagName: 'kl-form-item',
+        children: [{
+          tagName: 'kl-button',
+          attributes: { title: '查询', type: 'secondary' },
+          events: { click: 'search' }
+        }, {
+          tagName: 'kl-button',
+          attributes: { title: '重置' },
+          events: { click: 'reset' }
+        }]
+      }]
+    });
+  } else {
+    // 三个及以上的时候控制一下toggle显示就好
+    searchObject.event = { search: 'refresh', reset: 'reset' };
+    if (filters.length === 3) {
+      searchObject.attributes.isShowToggle = false;
+    }
+  }
+  return searchObject;
+}
+
+function getTableNode(list) {
+  const { buttons, cols, operatorCol, operatorButtons } = list;
   const listObject = {
     tagName: 'kl-card',
     attributes: { isShowLine: false },
@@ -109,7 +143,7 @@ export const nejList = (title, config) => {
   if (operatorCol) {
     tableObject.children.push({
       tagName: 'kl-table-col',
-      attributes: { fixed: 'right' },
+      attributes: { name: '操作', fixed: 'right' },
       children: [{
         tagName: 'kl-table-template',
         children: [{
@@ -130,12 +164,36 @@ export const nejList = (title, config) => {
     }
   });
 
-  nsVNodes.addFromObject(listObject, nsVNodes.rootId);
+  return listObject;
+}
+
+export const nejList = (title, config) => {
+  const { breadcrumbs, tabsEnable, lists } = config;
+  const nsVNodes = new VNodeTree();
+
+  // 添加面包屑
+  nsVNodes.addFromObject(getBreadNode(breadcrumbs), nsVNodes.rootId);
+
+  if (tabsEnable) {
+    // 暂不考虑多tab的情况
+  }
+
+  const list = lists[0];
+
+  // 输入部分
+  nsVNodes.addFromObject({
+    tagName: 'kl-card',
+    attributes: { title },
+    children: [getSearchNode(list.filters)]
+  }, nsVNodes.rootId);
+
+  // 按钮及列表
+  nsVNodes.addFromObject(getTableNode(list), nsVNodes.rootId);
 
   // 将基类中的变量和事件放进去
   // TODO: 配置这几个变量？
   nsVNodes.excludeVar = new Set(['list', 'pageSize', 'sumTotal', 'current']);
-  nsVNodes.excludeEvent = new Set(['refresh', 'reset']);
+  nsVNodes.excludeEvent = new Set(['refresh']);
 
   nsVNodes.$apply();
   return nsVNodes;
