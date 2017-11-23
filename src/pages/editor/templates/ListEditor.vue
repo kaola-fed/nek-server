@@ -3,7 +3,7 @@
     <tools-bar projectName="Project" @save="onSave"></tools-bar>
     <div class="m-list-editor">
       <div class="m-left">
-        <div class="g-preview" id="ns-preview">
+        <div class="g-preview" id="ns-preview" @insertNsid="onInsertNsid">
           <div ref="preview">
           </div>
         </div>
@@ -70,7 +70,7 @@
 
 <script>
 import lodash from 'lodash';
-import { VNodeTree } from 'nek-server-core';
+import { VNodeTree } from '@/../core/src';
 
 import ToolsBar from '../components/ToolsBar.vue';
 import SideBar from '../components/SideBar.vue';
@@ -373,7 +373,19 @@ export default {
         return;
       }
     },
-
+    onInsertNsid(event) {
+      const { elem, nsid } = event.detail;
+      for(let i=0, len=elem.childNodes.length; i<len; i++) {
+        if(elem.childNodes[i].nodeType == Node.ELEMENT_NODE) {
+          elem.childNodes[i].setAttribute('ns-id', nsid);
+          //删除外层空div
+          setTimeout(() => {
+            const emptyDiv = document.getElementById(nsid);
+            emptyDiv && emptyDiv.parentNode.replaceChild(emptyDiv.childNodes[i], emptyDiv);
+          }, 0);
+        }
+      }
+    },
     onSave() {
       this.saveDomJson();
       this.$notify({

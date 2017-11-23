@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { VNodeTree } from 'nek-server-core';
+import { VNodeTree } from '@/../core/src';
 
 import ToolsBar from './components/ToolsBar.vue';
 import SideBar from './components/SideBar.vue';
@@ -148,7 +148,7 @@ export default {
           //删除外层空div
           setTimeout(() => {
             const emptyDiv = document.getElementById(nsid);
-            emptyDiv.parentNode.replaceChild(emptyDiv.childNodes[i], emptyDiv);
+            emptyDiv && emptyDiv.parentNode.replaceChild(emptyDiv.childNodes[i], emptyDiv);
           }, 0);
         }
       }
