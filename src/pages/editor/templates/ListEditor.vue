@@ -360,6 +360,9 @@ export default {
     /* 导入nei配置 */
     async onImportClick() {
       try {
+        if (!this.isListEmpty(this.currentTab)) {
+          await this.$confirm('此Tab下列表配置不为空，确认要覆盖吗？', '提示');
+        }
         const { value } = await this.$prompt('请输入获取列表的url', '提示', {
           inputPattern: /\S+/,
           inputErrorMessage: 'url不能为空'
