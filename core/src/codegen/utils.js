@@ -1,5 +1,5 @@
 const getAttrStr = (key, type, value, debug) => {
-  switch (typeof type) {
+  switch (type) {
     case 'string':
       return ` ${key}="${value}"`;
     case 'boolean':
@@ -12,7 +12,7 @@ const getAttrStr = (key, type, value, debug) => {
       }
       return ` ${key}={${value}}`;
     default:
-      break;
+      throw new Error('Unknown attribute type!');
   }
 };
 
