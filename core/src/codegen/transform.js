@@ -28,7 +28,7 @@ function getSearchItem(item) {
       attributes: { title: item.title },
       children: [{
         tagName: item.type,
-        attributes: item.key ? { value: { type: 'var', value: `condition.${item.key}` } } : {}
+        attributes: item.key ? { value: { type: 'var', value: `{condition.${item.key}}` } } : {}
       }]
     }]
   };
@@ -72,7 +72,7 @@ function getSearchNode(filters) {
         children: [{
           tagName: 'kl-button',
           attributes: { title: '查询', type: 'secondary' },
-          events: { click: 'search' }
+          events: { click: 'refresh' }
         }, {
           tagName: 'kl-button',
           attributes: { title: '重置' },
@@ -103,7 +103,7 @@ function getTableNode(list) {
       tagName: 'kl-row',
       children: [{
         tagName: 'kl-col',
-        attributes: { span: 4 },
+        // attributes: { span: 4 },
         children: buttons.map((el) => {
           const { event, ...attributes } = el;
           const options = { attributes };
@@ -125,7 +125,7 @@ function getTableNode(list) {
   // 列表
   const tableObject = {
     tagName: 'kl-table',
-    attributes: { data: { type: 'var', value: 'list' } },
+    attributes: { source: { type: 'var', value: '{list}' } },
     children: cols.map((el) => {
       return {
         tagName: 'kl-table-col',
@@ -151,9 +151,9 @@ function getTableNode(list) {
   listObject.children.push({
     tagName: 'kl-pager',
     attributes: {
-      pageSize: { type: 'var', value: 'pageSize' },
-      sumTotal: { type: 'var', value: 'sumTotal' },
-      current: { type: 'var', value: 'current' },
+      pageSize: { type: 'var', value: '{pageSize}' },
+      sumTotal: { type: 'var', value: '{sumTotal}' },
+      current: { type: 'var', value: '{current}' },
     }
   });
 
@@ -185,7 +185,7 @@ export const nejList = (title, config) => {
 
   // 将基类中的变量和事件放进去
   // TODO: 配置这几个变量？
-  nsVNodes.excludeVar = new Set(['list', 'pageSize', 'sumTotal', 'current']);
+  nsVNodes.excludeVar = new Set(['{list}', '{pageSize}', '{sumTotal}', '{current}']);
   nsVNodes.excludeEvent = new Set(['refresh']);
 
   nsVNodes.$apply();

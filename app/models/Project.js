@@ -28,7 +28,9 @@ schema.statics = {
   async insert(project) {
     return await this.create(project);
   },
-
+  async selectAll() {
+    return await this.find();
+  },
   async selectById(id) {
     return await this.findOne({ _id: id });
   },

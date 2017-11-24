@@ -42,7 +42,7 @@ const genNEJJS = (options) => {
   let eventStr = '';
   eventSet.forEach(el => eventStr += `${el}: function(event) {
     console.log(event);
-  }`);
+  },`);
 
   let dataStr = '';
   varSet.forEach(el => dataStr += `${el}: null,\n`);
@@ -95,7 +95,7 @@ export const buildNEJList = (listConfig, options) => {
     vTree.excludeEvent.has(el) && eventSet.delete(el);
   });
   // 移除基类变量以及条件变量
-  const conditionReg = /^condition\..+/;
+  const conditionReg = /^{condition\..+/;
   varSet.forEach((el) => {
     if (vTree.excludeVar.has(el) || conditionReg.test(el)) {
       varSet.delete(el);

@@ -1,8 +1,8 @@
 import { JSONAPI } from './request';
 
-export const create = ({ name, desc, git, neiKey, type, library }) => {
+export const create = ({ name, desc, git, neiKey, type, library, basePath, listPath, modalPath }) => {
   return JSONAPI.post('/api/project/create', {
-    name, desc, git, neiKey, type, library
+    name, desc, git, neiKey, type, library, basePath, listPath, modalPath
   });
 };
 
