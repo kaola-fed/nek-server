@@ -18,7 +18,7 @@ const translateData = (params, dataTypes) => {
 
   rlt.filters = params.inputs.map((item) => {
     return {
-      title: item.description,
+      title: item.description || item.name || '条件',
       key: item.name,
       type: 'kl-input'
     };
@@ -31,9 +31,10 @@ const translateData = (params, dataTypes) => {
     const listParams = dataTypes.find(item => item.id == listId);
     rlt.cols = listParams.params.map((item) => {
       return {
-        title: item.description,
+        title: item.description || item.name || '列名',
         key: item.name,
-        typeName: item.typeName || 'String'
+        typeName: item.typeName || 'String',
+        width: '120'
       };
     });
   } catch (err) {
