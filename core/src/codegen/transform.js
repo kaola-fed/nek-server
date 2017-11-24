@@ -105,12 +105,13 @@ function getTableNode(list) {
         tagName: 'kl-col',
         // attributes: { span: 4 },
         children: buttons.map((el) => {
-          const options = { attributes: { title: el.title } };
-          if (el.type && el.type !== 'default') {
-            options.attributes.type = el.type;
+          const { event, ...attributes } = el;
+          const options = { attributes };
+          if (el.type && el.type === 'default') {
+            delete options.attributes.type;
           }
           if (el.event) {
-            options.events = { click: el.event };
+            options.events = { click: event };
           }
 
           return {
@@ -126,17 +127,9 @@ function getTableNode(list) {
     tagName: 'kl-table',
     attributes: { source: { type: 'var', value: '{list}' } },
     children: cols.map((el) => {
-      const attributes = {
-        name: el.title,
-        key: el.key
-      };
-      if (el.fixed) {
-        attributes.fixed = el.fixed;
-      }
-
       return {
         tagName: 'kl-table-col',
-        attributes
+        attributes: el
       };
     })
   };
