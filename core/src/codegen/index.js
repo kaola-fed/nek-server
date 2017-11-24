@@ -84,7 +84,8 @@ export const buildNEJList = (listConfig, options) => {
   } = options;
 
   const eventSet = new Set();
-  const varSet = new Set();
+  // 默认加入的变量
+  const varSet = new Set([listConfig.url]);
 
   const vTree = transform.nejList(pageTitle, listConfig);
 
