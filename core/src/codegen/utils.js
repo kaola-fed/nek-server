@@ -16,31 +16,33 @@ const getAttrStr = (key, type, value, debug) => {
   }
 };
 
-export const getAttributesStr = (attributes, debug, varSet) => {
-  let attr = '';
-  for (let i in attributes) {
-    if (attributes.hasOwnProperty(i)) {
-      if (attributes[i] == null) {
+export const getAttributesStr = (attributes, debug, varMap) => {
+  let result = '';
+  for (let key in attributes) {
+    if (attributes.hasOwnProperty(key)) {
+      const attr = attributes[key];
+      if (attr == null) {
         continue;
       }
 
-      const type = attributes[i].type || typeof attributes[i];
-      const value = attributes[i].value || attributes[i];
-      attr += getAttrStr(i, type, value, debug);
+      const type = attr.type || typeof attr;
+      const value = attr.value || attr;
+      result += getAttrStr(key, type, value, debug);
       // 记录变量名
-      if (!debug && type === 'var' && varSet) {
-        varSet.add(value);
+      if (!debug && type === 'var' && varMap) {
+        varMap.set(key, value);
       }
     }
   }
 
-  return attr;
+  return result;
 };
 
-export const getEventsStr = (events) => {
+export const getEventsStr = (events, eventSet) => {
   let attr = '';
   for (let i in events) {
     if (events.hasOwnProperty(i)) {
+      eventSet && eventSet.add(events[i]);
       attr += ` on-${i}={this.${events[i]}($event)`;
     }
   }
