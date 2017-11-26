@@ -14,12 +14,13 @@ NekComponent.directive('r-nsid', (elem, value) => {
   document.getElementById('ns-preview').dispatchEvent(event);
 });
 // 添加静态函数，用于直接插入DOM中
-NekComponent.inject = (tpl, parent) => {
+NekComponent.inject = (tpl, parent, options) => {
   if (!parent) {
     throw new Error('Must provide a parent node');
   }
 
   const RootComponent = new NekComponent({
+    ...options,
     template: tpl
   });
   RootComponent.$inject(parent);

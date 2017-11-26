@@ -226,9 +226,6 @@ export default {
         tip: '生成代码',
         icon: 'el-icon-check',
         onClick: () => {
-          const { html, js } = this.$nsVNodes.build();
-          console.log(html);
-          console.log(js);
           this.saveDomJson();
         }
       }],
@@ -300,7 +297,14 @@ export default {
 
     initList() {
       this.listCardVNode = this.addVNode('kl-card', null, null, { attributes: { isShowLine: false } });
-      this.listVNode = this.addVNode('kl-table', this.listCardVNode.id);
+      this.listVNode = this.addVNode('kl-table', this.listCardVNode.id, {
+        attributes: {
+          source: {
+            type: 'var',
+            value: 'list || []'
+          }
+        }
+      });
       this.pagerVNode = this.addVNode('kl-pager', this.listCardVNode.id, null, {
         attributes: { sumTotal: 233, pageSize: 10, current: 1 }
       });
@@ -374,6 +378,8 @@ export default {
         if(data.cols && data.cols.length > 0) {
           this.listConfigs[this.currentTab || 0].cols = data.cols;
         }
+        // TODO: 将mock数据加进来
+        // this.$nsVNodes.data = { list: xxx };
         this.url = value;
         this.$forceUpdate();
       } catch (err) {

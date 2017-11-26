@@ -19,10 +19,13 @@ export default class VNodeTree {
     // 组件库配置
     this.__libConfig = {};
 
-    // 基类中的变量和事件名放进去
-    this.__exclude = {};
+    // 基类中的变量和事件名
+    this.__excludeVar = null;
+    this.__excludeEvent = null;
 
     this.NekComponent = null;
+    // 给Component提供数据
+    this.data = {};
   }
 
   /* 静态函数 */
@@ -135,30 +138,26 @@ export default class VNodeTree {
     return this.__nodeTree;
   }
 
-  get exclude() {
-    return this.__exclude;
-  }
-
   get excludeVar() {
-    if (!this.__exclude.variable) {
-      this.__exclude.variable = new Set();
+    if (!this.__excludeVar) {
+      this.__excludeVar = new Set();
     }
-    return this.__exclude.variable;
+    return this.__excludeVar;
   }
 
   get excludeEvent() {
-    if (!this.__exclude.event) {
-      this.__exclude.event = new Set();
+    if (!this.__excludeEvent) {
+      this.__excludeEvent = new Set();
     }
-    return this.__exclude.event;
+    return this.__excludeEvent;
   }
 
   set excludeVar(value) {
-    this.__exclude.variable = new Set(value);
+    this.__excludeVar = new Set(value);
   }
 
   set excludeEvent(value) {
-    this.__exclude.event = new Set(value);
+    this.__excludeEvent = new Set(value);
   }
 
   /* 节点操作 */
@@ -256,24 +255,32 @@ export default class VNodeTree {
   }
 
   // virtual DOM diff 并更新 DOM
-  $update(setAttrs) {
-    // 广度优先遍历，从最高层开始逐层检查
-    let queue = [this.__rootId];
+  $update(rerender = false) {
     let updateNodeIds = [];
-    while (queue.length > 0) {
-      const nodeId = queue.shift();
+    let injectOption = null;
 
-      // TODO: 解决HTML上的标记问题后取消注释，删掉下面没注释的那行
-      // const oldTreeNode = this.__nodeTree[nodeId];
-      // const newTreeNode = this.__updateTree[nodeId];
-      // 当前节点不同，重新渲染
-      // if (!NSNode.eq(oldTreeNode, newTreeNode)) {
-      //   updateNodeIds.push(nodeId);
-      // } else {
-      //   queue = queue.concat(oldTreeNode.children);
-      // }
+    if (rerender) {
+      // 从根节点重新渲染
+      updateNodeIds = [this.__rootId];
+      injectOption = { data: this.data };
+    } else {
+      // 广度优先遍历，从最高层开始逐层检查
+      let queue = [this.__rootId];
+      while (queue.length > 0) {
+        const nodeId = queue.shift();
 
-      updateNodeIds.push(nodeId);
+        // TODO: 解决HTML上的标记问题后取消注释，删掉下面没注释的那行
+        // const oldTreeNode = this.__nodeTree[nodeId];
+        // const newTreeNode = this.__updateTree[nodeId];
+        // 当前节点不同，重新渲染
+        // if (!NSNode.eq(oldTreeNode, newTreeNode)) {
+        //   updateNodeIds.push(nodeId);
+        // } else {
+        //   queue = queue.concat(oldTreeNode.children);
+        // }
+
+        updateNodeIds.push(nodeId);
+      }
     }
 
     // 更新数据到真正用于渲染的树
@@ -284,7 +291,7 @@ export default class VNodeTree {
       // 生成fragment
       const tpl = this.getTemplate(id);
       const node = document.createDocumentFragment();
-      this.NekComponent.inject(tpl, node);
+      this.NekComponent.inject(tpl, node, injectOption);
 
       // 判断是插入还是替换
       const oldNode = getElementByNSId(id);
@@ -306,7 +313,7 @@ export default class VNodeTree {
     }
   }
 
-  // 更新__nodeTree并且触发渲染
+  // 更新__nodeTree，在后端生成代码的时候用
   $apply() {
     this.__nodeTree = this.__updateTree;
   }
@@ -323,125 +330,7 @@ export default class VNodeTree {
     if (!tagName) {
       return text || '';
     }
-    return `<div r-nsid="${nodeId}" id="${nodeId}"><${tagName}${VNodeTree.getAttributesStr(attributes, true)} ns-id="${nodeId}">${children.map(el => this.getTemplate(el)).join('')}</${tagName}></div>`;
-  }
-
-  build() {
-    return {
-      js: this.__genJS(),
-      html: this.__genHTML()
-    };
-  }
-
-  __genJS() {
-    let eventStr = '';
-    for (let i in this.__nodeTree) {
-      if (this.__nodeTree.hasOwnProperty(i)) {
-        const events = this.__nodeTree[i].events;
-        const keys = Object.keys(events);
-
-        if (!keys.length) {
-          continue;
-        }
-
-        for (let e of keys) {
-          eventStr += `
-
-        ${events[e]}: function(event) {
-            console.log(event);
-        }`;
-        }
-      }
-    }
-
-    // TODO: 从配置文件读取模板
-    return `NEJ.define([
-    'pro/base/util',
-    'pro/widget/BaseComponent',
-    'text!./page.html',
-], function(_, BaseComponent, tpl){
-    return BaseComponent.extend({
-        template: tpl,
-        config: function(data) {
-            this.supr(data);
-            _.extend(data, {});
-        },
-
-        // 监听事件${eventStr}
-
-        // 网络请求
-    });
-});
-    `;
-  }
-
-  // 生成格式化的HTML
-  __genHTML(nodeId, level = 0) {
-    nodeId = nodeId || this.__rootId;
-    const vNode = this.__nodeTree[nodeId];
-
-    const { tagName, attributes, events, children, text } = vNode;
-
-    const intend = new Array(level).fill('    ').join('');
-
-    if (!tagName) {
-      return `${intend}${text || ''}`;
-    }
-
-    return `${intend}<${tagName}${VNodeTree.getAttributesStr(attributes)}${VNodeTree.getEventsStr(events)}>` +
-      `${children.length ? `\n${children.map(el => this.__genHTML(el, level + 1)).join('\n')}\n${intend}` : ''}</${tagName}>`;
-  }
-
-  // 弃用
-  render(nodeId, parentNode) {
-    nodeId = nodeId || this.__rootId;
-    const vNode = this.__nodeTree[nodeId];
-
-    const { tagName, libName, attributes, children, text } = vNode;
-
-    parentNode = parentNode || document.createDocumentFragment();
-    // 文本节点，直接插入
-    if (!tagName) {
-      const textNode = document.createTextNode(text);
-      parentNode.appendChild(textNode);
-      return textNode;
-    }
-
-    // 编译后加上ns-id插入
-    const containerTemplate = `<${tagName}${VNodeTree.getAttributesStr(attributes)}></${tagName}>`;
-    this.NekComponent.inject(containerTemplate, parentNode, {
-      beforeInsert: (fragment) => {
-        if (Array.isArray(fragment)) {
-          for (let i of fragment) {
-            if (i.setAttribute) {
-              i.setAttribute('ns-id', nodeId);
-              i.setAttribute('draggable', true);
-            }
-          }
-        } else {
-          fragment.setAttribute('ns-id', nodeId);
-          fragment.setAttribute('draggable', true);
-        }
-        return fragment;
-      }
-    });
-
-    // 插入子节点
-    if (children.length === 0) {
-      return parentNode;
-    }
-
-    // 找出body
-    const config = this.__libConfig[libName][tagName];
-    const body = VNodeTree.findNodeBody(parentNode, config);
-    if (!body) {
-      throw new Error(`The body configuration of tag ${tagName} is incorrect.`);
-    }
-
-    for (let i of children) {
-      this.render(i, body);
-    }
-
-    return parentNode;
+    return `<div r-nsid="${nodeId}" id="${nodeId}">` +
+      `<${tagName}${VNodeTree.getAttributesStr(attributes, true)}>${children.map(el => this.getTemplate(el)).join('')}</${tagName}></div>`;
   }
 }

@@ -1,44 +1,56 @@
 <template>
   <div>
-    <h1>{{ project.name }}</h1>
-    <el-button class="f-fr f-mb10" type="primary" @click="handleCreate">新建页面</el-button>
-    <div v-loading="loading">
-      <el-table striple :data="list" border tooltip-effect="dark">
-        <el-table-column align="left" prop="url" label="url" show-overflow-tooltip>
-          <template scope="scope">
-            <a href="javascript:;" @click="handleEdit(scope.row)"> {{ scope.row.url }} </a>
-          </template>
-        </el-table-column>
-        <el-table-column align="left" prop="name" label="描述" show-overflow-tooltip></el-table-column>
-        <el-table-column align="center" prop="type" label="类型" show-overflow-tooltip>
-          <template scope="scope">
-            {{scope.row.type === 1 ? '列表页' : '编辑页' }}
-          </template>
-        </el-table-column>
-        <el-table-column align="center" prop="updatedAt" label="更新时间" show-overflow-tooltip></el-table-column>
-        <el-table-column align="center" label="操作" fixed="right">
-          <template scope="scope">
-            <el-button size="small" type="text" @click="handleSetting(scope.row)">设置</el-button>
-            <el-button size="small" type="text" @click="handleEdit(scope.row)">编辑</el-button>
-            <el-button size="small" type="text" @click="handleDelete(scope.row)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
-    <el-tabs type="border-card" class="f-mt10" v-model="currentTab" v-if="isShowTpl">
-      <el-tab-pane label="entry" name="entry">
-        <el-input type="textarea" class="m-textarea f-mb10" v-model="project.entry" placeholder="请输入entry模板"></el-input>
-        <el-row type="flex" justify="center">
-          <el-button type="primary" @click="handleSave('entry')">保存</el-button>
-        </el-row>
-      </el-tab-pane>
-      <el-tab-pane label="ftl" name="ftl">
-        <el-input type="textarea" class="m-textarea f-mb10" v-model="project.ftl" placeholder="请输入ftl模板"></el-input>
-        <el-row type="flex" justify="center">
-          <el-button type="primary" @click="handleSave('ftl')">保存</el-button>
-        </el-row>
-      </el-tab-pane>
-    </el-tabs>
+    <el-card>
+      <div slot="header">
+        <span class="u-card-title">{{ project.name }}</span>
+        <el-button class="f-fr f-mb10" type="primary" @click="handleCreate">新建页面</el-button>
+      </div>
+      <h2>
+      </h2>
+      <div v-loading="loading">
+        <el-table striple :data="list" border tooltip-effect="dark">
+          <el-table-column align="left" prop="url" label="url" show-overflow-tooltip>
+            <template scope="scope">
+              <a href="javascript:;" @click="handleEdit(scope.row)"> {{ scope.row.url }} </a>
+            </template>
+          </el-table-column>
+          <el-table-column align="left" prop="name" label="描述" show-overflow-tooltip></el-table-column>
+          <el-table-column align="center" prop="type" label="类型" show-overflow-tooltip>
+            <template scope="scope">
+              {{scope.row.type === 1 ? '列表页' : '编辑页' }}
+            </template>
+          </el-table-column>
+          <el-table-column align="center" prop="updatedAt" label="更新时间" show-overflow-tooltip></el-table-column>
+          <el-table-column align="center" label="操作" fixed="right">
+            <template scope="scope">
+              <el-button size="small" type="text" @click="handleSetting(scope.row)">设置</el-button>
+              <el-button size="small" type="text" @click="handleEdit(scope.row)">编辑</el-button>
+              <el-button size="small" type="text" @click="handleDelete(scope.row)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </el-card>
+
+    <el-card class="f-mt20">
+      <div slot="header">
+        <span class="u-card-title">项目模板</span>
+      </div>
+      <el-tabs class="f-mt10" v-model="currentTab" v-if="isShowTpl">
+        <el-tab-pane label="entry" name="entry">
+          <el-input type="textarea" class="m-textarea f-mb10" v-model="project.entry" placeholder="请输入entry模板"></el-input>
+          <el-row type="flex" justify="center">
+            <el-button type="primary" @click="handleSave('entry')">保存</el-button>
+          </el-row>
+        </el-tab-pane>
+        <el-tab-pane label="ftl" name="ftl">
+          <el-input type="textarea" class="m-textarea f-mb10" v-model="project.ftl" placeholder="请输入ftl模板"></el-input>
+          <el-row type="flex" justify="center">
+            <el-button type="primary" @click="handleSave('ftl')">保存</el-button>
+          </el-row>
+        </el-tab-pane>
+      </el-tabs>
+    </el-card>
     <create-page-modal :visible="createPageVisible" :pageId="currentPageId" :projectId="projectId" @refresh="getList" @close="handleCreateClose"></create-page-modal>
   </div>
 </template>
@@ -141,6 +153,22 @@ export default {
 </script>
 
 <style>
+.u-card-title {
+  font-size: 20px;
+  font-weight: bold;
+
+  &:before {
+    content: " ";
+    position: relative;
+    top: 3px;
+    display: inline-block;
+    background-color: black;
+    height: 20px;
+    width: 5px;
+    margin-right: 8px;
+  }
+}
+
 .m-textarea {
   .el-textarea__inner {
     min-height: 500px;
