@@ -379,7 +379,7 @@ export default {
           this.listConfigs[this.currentTab || 0].filters = data.filters;
         }
         if(data.cols && data.cols.length > 0) {
-          this.listConfigs[this.currentTab || 0].cols = data.cols;
+          this.listConfigs[this.currentTab || 0].cols = data.cols.map(el => ({ fixed: '', ...el }));
         }
 
         this.url = value;
