@@ -33,7 +33,7 @@ const translateData = (params, dataTypes) => {
       return {
         title: item.description || item.name || '列名',
         key: item.name,
-        // typeName: item.typeName || 'String',
+        typeName: item.typeName || 'String',
         width: '120'
       };
     });

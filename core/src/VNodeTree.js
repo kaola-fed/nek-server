@@ -26,22 +26,22 @@ export default class VNodeTree {
     this.NekComponent = null;
     // 给Component提供数据
     this.data = {};
+
+    // 用于渲染的根节点
+    this.rootView = null;
   }
 
   /* 静态函数 */
 
-  static getAttrStr(key, type, value, debug) {
-    switch (typeof type) {
+  static getAttrStr(key, type, value) {
+    switch (type) {
       case 'string':
         return ` ${key}="${value}"`;
       case 'boolean':
       case 'number':
       case 'object':
-        return ` ${key}={${value}}`;
       case 'var':
-        if (debug) {
-          return '';
-        }
+        // TODO: 记录var，考虑和utils中的合并
         return ` ${key}={${value}}`;
       default:
         break;
@@ -255,7 +255,12 @@ export default class VNodeTree {
   }
 
   // virtual DOM diff 并更新 DOM
-  $update(rerender = false) {
+  $update(options) {
+    const {
+      rerender = false,
+      outter = true
+    } = options;
+
     let updateNodeIds = [];
     let injectOption = null;
 
@@ -289,7 +294,7 @@ export default class VNodeTree {
     // 更新DOM
     for (let id of updateNodeIds) {
       // 生成fragment
-      const tpl = this.getTemplate(id);
+      const tpl = this.getTemplate(id, outter);
       const node = document.createDocumentFragment();
       this.NekComponent.inject(tpl, node, injectOption);
 
@@ -299,16 +304,21 @@ export default class VNodeTree {
         oldNode.parentNode.replaceChild(node, oldNode);
       } else {
         const vNode = this.__nodeTree[id];
-        const parentNode = getElementByNSId(vNode.parent);
-        const parentVNode = this.__nodeTree[vNode.parent];
-        const nextBrotherIndex = parentVNode.children.findIndex(el => el === id) + 1;
+        if (vNode.parent) {
+          const parentNode = getElementByNSId(vNode.parent);
+          const parentVNode = this.__nodeTree[vNode.parent];
+          const nextBrotherIndex = parentVNode.children.findIndex(el => el === id) + 1;
 
-        let nextBrotherNode = null;
-        if (nextBrotherIndex < parentVNode.children.length) {
-          nextBrotherNode = getElementByNSId(parentVNode.children[nextBrotherIndex]);
+          let nextBrotherNode = null;
+          if (nextBrotherIndex < parentVNode.children.length) {
+            nextBrotherNode = getElementByNSId(parentVNode.children[nextBrotherIndex]);
+          }
+
+          parentNode.insertBefore(node, nextBrotherNode);
+        } else {
+          // 根节点单独修改
+          this.rootView.appendChild(node);
         }
-
-        parentNode.insertBefore(node, nextBrotherNode);
       }
     }
   }
@@ -321,7 +331,7 @@ export default class VNodeTree {
   /* 生成 */
 
   // 生成附带ns-id的模板
-  getTemplate(nodeId) {
+  getTemplate(nodeId, outter = true) {
     nodeId = nodeId || this.__rootId;
     const vNode = this.__nodeTree[nodeId];
 
@@ -330,7 +340,9 @@ export default class VNodeTree {
     if (!tagName) {
       return text || '';
     }
-    return `<div r-nsid="${nodeId}" id="${nodeId}">` +
-      `<${tagName}${VNodeTree.getAttributesStr(attributes, true)}>${children.map(el => this.getTemplate(el)).join('')}</${tagName}></div>`;
+
+    const raw = `<${tagName}${VNodeTree.getAttributesStr(attributes, true)} ns-id="${nodeId}">` +
+      `${children.map(el => this.getTemplate(el, outter)).join('')}</${tagName}>`;
+    return outter ? `<div r-nsid="${nodeId}" id="${nodeId}">${raw}</div>` : raw;
   }
 }

@@ -103,11 +103,12 @@ export default {
   async mounted() {
     this.$nsVNodes = new VNodeTree();
     this.$nsVNodes.NekComponent = NekComponent;
-    this.$refs.preview.setAttribute('ns-id', this.$nsVNodes.rootId);
+    this.$nsVNodes.data = { list: [], condition: {} };
+    this.$nsVNodes.rootView = this.$refs.preview;
 
-    this.$watch('updateTree', this.nsVNodeWatcher, {
-      deep: true
-    });
+//    this.$watch('updateTree', this.nsVNodeWatcher, {
+//      deep: true
+//    });
 
     // 设置项目页面无关的数据
     this.pageInfo = {
@@ -238,7 +239,7 @@ export default {
       multiTabs: [this.newTabItem()],
       copyTab: -1,
 
-      currentTab: '',
+      currentTab: '0',
       listConfigs: [this.newColItem()],
       needUpdate: false,
 
@@ -297,15 +298,15 @@ export default {
 
     initList() {
       this.listCardVNode = this.addVNode('kl-card', null, null, { attributes: { isShowLine: false } });
-      this.listVNode = this.addVNode('kl-table', this.listCardVNode.id, {
+      this.listVNode = this.addVNode('kl-table', this.listCardVNode.id, null, {
         attributes: {
           source: {
             type: 'var',
-            value: 'list || []'
+            value: 'list'
           }
         }
       });
-      this.pagerVNode = this.addVNode('kl-pager', this.listCardVNode.id, null, {
+      this.addVNode('kl-pager', this.listCardVNode.id, null, {
         attributes: { sumTotal: 233, pageSize: 10, current: 1 }
       });
     },
@@ -361,29 +362,30 @@ export default {
       }
     },
 
-    /* 导入nei配置 */
+    // 导入nei配置
     async onImportClick() {
       try {
-        if (!this.isListEmpty(this.currentTab)) {
+        if (!this.isListEmpty(this.currentTab || 0)) {
           await this.$confirm('此Tab下列表配置不为空，确认要覆盖吗？', '提示');
         }
         const { value } = await this.$prompt('请输入获取列表的url', '提示', {
           inputPattern: /\S+/,
           inputErrorMessage: 'url不能为空'
         });
+
         const { data } = await getPageNei({ id: this.$route.query.id, url: value });
+
         if(data.filters && data.filters.length > 0) {
           this.listConfigs[this.currentTab || 0].filters = data.filters;
         }
         if(data.cols && data.cols.length > 0) {
           this.listConfigs[this.currentTab || 0].cols = data.cols;
         }
-        // TODO: 将mock数据加进来
-        // this.$nsVNodes.data = { list: xxx };
+
         this.url = value;
         this.$forceUpdate();
       } catch (err) {
-        return;
+        return err;
       }
     },
     onInsertNsid(event) {
@@ -408,7 +410,7 @@ export default {
         duration: 0
       });
     },
-    /* 列表 */
+    // 列表
     onCopyClick() {
       this.copyTab = parseInt(this.currentTab);
       this.$message.success('页面配置已复制');
@@ -429,21 +431,6 @@ export default {
       this.$message.success('已粘贴');
     },
 
-    /* 保存dom json */
-    async saveDomJson() {
-      const domObj = {
-        breadcrumbs: this.breadcrumbs,
-        tabsEnable: this.multiTabEnable,
-        tabs: this.multiTabs,
-        lists: this.listConfigs,
-        url: this.url
-      };
-      try {
-        await updatePageDom({ id: this.$route.query.id, dom: JSON.stringify(domObj) });
-      } catch (err) {
-        return;
-      }
-    },
     /* 通用函数 */
 
     getRandomId() {
@@ -474,6 +461,50 @@ export default {
       };
     },
 
+    // 保存dom json
+    async saveDomJson() {
+      const domObj = {
+        breadcrumbs: this.breadcrumbs,
+        tabsEnable: this.multiTabEnable,
+        tabs: this.multiTabs,
+        lists: this.listConfigs,
+        url: this.url
+      };
+      try {
+        await updatePageDom({ id: this.$route.query.id, dom: JSON.stringify(domObj) });
+      } catch (err) {
+        return err;
+      }
+    },
+
+    // 根据NEI生成mock数据
+    genMockData(cols) {
+      const item = {};
+      const timeTypeReg = /time$/i;
+      cols.forEach((el) => {
+        let value;
+        // 只处理这三种
+        switch (el.typeName.toLowerCase()) {
+          case 'boolean':
+            value = true;
+            break;
+          case 'number':
+            value = timeTypeReg.test(el.key) ? value = +new Date() : Math.ceil(Math.random() * 100);
+            break;
+          case 'string':
+          default:
+            value = el.title;
+        }
+        item[el.key] = value;
+      });
+
+      const result = [];
+      for (let i = 0; i < 10; ++i) {
+        result.push({ id: i, ...item });
+      }
+      return result;
+    },
+
     /* vNodeTree函数二次封装 */
 
     addVNode(tagName, parentId = null, nextBrotherId = null, options = null) {
@@ -484,9 +515,7 @@ export default {
     },
 
     updatePreview() {
-      this.$nsVNodes.$update((item, nodeId) => {
-        item.setAttribute('ns-id', nodeId);
-      });
+      this.$nsVNodes.$update({ rerender: true, outter: false });
     },
 
     /* debounce watchers */
@@ -601,6 +630,8 @@ export default {
         }
         this.addVNode('kl-table-col', this.listVNode.id, this.opColVNode, { attributes });
       });
+
+      this.$nsVNodes.data.list = this.genMockData(newValue);
 
       this.needUpdate = true;
     }, 500),
