@@ -627,7 +627,7 @@ export default {
 
       newValue.forEach((el) => {
         const attributes = {
-          name: el.title,
+          name: el.name,
           key: el.key
         };
         if (el.fixed) {

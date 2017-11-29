@@ -122,7 +122,7 @@
         </el-table-column>
         <el-table-column label="标题">
           <template scope="scope">
-            <el-input v-model="scope.row.title" placeholder="请输入列标题"></el-input>
+            <el-input v-model="scope.row.name" placeholder="请输入列标题"></el-input>
           </template>
         </el-table-column>
         <el-table-column label="属性名">
@@ -203,7 +203,7 @@ export default {
     },
     onAddColClick() {
       this.value.cols.push({
-        title: '',
+        name: '',
         key: '',
         type: '',
         fixed: '',
