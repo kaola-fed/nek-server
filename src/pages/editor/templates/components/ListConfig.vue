@@ -1,11 +1,27 @@
 <template>
   <div class="m-list-config">
     <div class="m-card">
+
       <h5 class="u-title">筛选区</h5>
       <div class="f-mb10">
         <el-button size="small" @click="onAddFieldClick">新增筛选项</el-button>
       </div>
+
       <el-table :data="value.filters">
+        <el-table-column type="expand" v-if="value.filters.length">
+          <template scope="scope">
+            <el-form label-position="left" inline>
+              <el-form-item label="placeholder">
+                <el-input v-model="scope.row.placeholder" placeholder="请输入placeholder"></el-input>
+              </el-form-item>
+              <template v-if="scope.row.type === 'kl-select'">
+                <el-form-item label="Source Key">
+                  <el-input v-model="scope.row.sourceKey" placeholder="请输入Source Key"></el-input>
+                </el-form-item>
+              </template>
+            </el-form>
+          </template>
+        </el-table-column>
         <el-table-column label="标题">
           <template scope="scope">
             <el-input v-model="scope.row.title" placeholder="请输入筛选项标题"></el-input>
@@ -35,12 +51,26 @@
         </el-table-column>
       </el-table>
     </div>
+
     <div class="m-card">
       <h5 class="u-title">其他按钮</h5>
       <div class="f-mb10">
         <el-button size="small" @click="onAddButtonClick">新增按钮</el-button>
       </div>
+
       <el-table :data="value.buttons">
+        <el-table-column type="expand" v-if="value.buttons.length">
+          <template scope="scope">
+            <el-form label-position="left" inline>
+              <el-form-item label="类型">
+                <el-select v-model="scope.row.type" placeholder="请选择按钮类型" clearable>
+                  <el-option value="primary"></el-option>
+                  <el-option value="secondary"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-form>
+          </template>
+        </el-table-column>
         <el-table-column label="文字">
           <template scope="scope">
             <el-input v-model="scope.row.title" placeholder="请输入按钮文本"></el-input>
@@ -49,11 +79,6 @@
         <el-table-column label="绑定事件名">
           <template scope="scope">
             <el-input v-model="scope.row.event" placeholder="请输入 click 对应的事件名"></el-input>
-          </template>
-        </el-table-column>
-        <el-table-column label="类型">
-          <template scope="scope">
-            <el-select v-model="scope.row.type" placeholder="请选择按钮类型"></el-select>
           </template>
         </el-table-column>
         <el-table-column label="操作" fixed="right" width="135" align="center">
@@ -66,12 +91,35 @@
         </el-table-column>
       </el-table>
     </div>
+
     <div class="m-card">
       <h5 class="u-title">列表项</h5>
       <div class="f-mb10">
         <el-button size="small" @click="onAddColClick">新增列表项</el-button>
       </div>
+
       <el-table :data="value.cols">
+        <el-table-column type="expand" v-if="value.cols.length">
+          <template scope="scope">
+            <el-form label-position="left" inline>
+              <el-form-item label="过滤器">
+                <el-select v-model="scope.row.filter" placeholder="请选择过滤器">
+                  <el-option value="format"></el-option>
+                  <el-option value="formatTime"></el-option>
+                  <el-option value="integer"></el-option>
+                  <el-option value="fixed"></el-option>
+                  <el-option value="percent"></el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="固定列位置">
+                <el-select v-model="scope.row.fixed" placeholder="请选择固定列位置" clearable>
+                  <el-option value="left" label="左"></el-option>
+                  <el-option value="right" label="右"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-form>
+          </template>
+        </el-table-column>
         <el-table-column label="标题">
           <template scope="scope">
             <el-input v-model="scope.row.title" placeholder="请输入列标题"></el-input>
@@ -80,20 +128,6 @@
         <el-table-column label="属性名">
           <template scope="scope">
             <el-input v-model="scope.row.key" placeholder="请输入对应属性名"></el-input>
-          </template>
-        </el-table-column>
-        <!--<el-table-column label="过滤器">-->
-          <!--<template scope="scope">-->
-            <!--<el-select v-model="scope.row.type" placeholder="请选择过滤器"></el-select>-->
-          <!--</template>-->
-        <!--</el-table-column>-->
-        <el-table-column label="固定列位置" width="200">
-          <template scope="scope">
-            <el-radio-group v-model="scope.row.fixed">
-              <el-radio label="">不固定</el-radio>
-              <el-radio label="left">左</el-radio>
-              <el-radio label="right">右</el-radio>
-            </el-radio-group>
           </template>
         </el-table-column>
         <el-table-column label="操作" fixed="right" width="135" align="center">
@@ -135,7 +169,6 @@
 </template>
 
 <script>
-
 export default {
   name: 'listConfig',
   props: {
@@ -157,6 +190,8 @@ export default {
         title: '',
         key: '',
         type: 'kl-input',
+        placeholder: '',
+        sourceKey: ''
       });
     },
     onAddButtonClick() {
@@ -171,7 +206,8 @@ export default {
         title: '',
         key: '',
         type: '',
-        fixed: ''
+        fixed: '',
+        filter: ''
       });
     },
     onAddOperatorClick() {

@@ -12,10 +12,10 @@
         <el-collapse v-model="configActiveNames">
           <el-collapse-item title="面包屑" name="breadcrumb">
             <el-row v-for="(item, index) in breadcrumbs" :key="item.id + index" :gutter="20">
-              <el-col :span="2"><label class="el-form-item__label">第{{ index + 1 }}级</label></el-col>
+              <el-col :span="3"><label class="el-form-item__label">第{{ index + 1 }}级</label></el-col>
               <el-col :span="8"><el-input placeholder="标题" v-model="item.title"></el-input></el-col>
               <el-col :span="8"><el-input placeholder="转跳链接（可选）" v-model="item.link"></el-input></el-col>
-              <el-col :span="6">
+              <el-col :span="5">
                 <el-button class="u-icon-btn" icon="plus" v-if="breadcrumbs.length < 3 && index === breadcrumbs.length - 1" @click="onAddBreadcrumbClick"></el-button>
                 <el-button class="u-icon-btn" icon="minus" v-if="breadcrumbs.length > 1" @click="onDeleteBreadcrumbClick(index)"></el-button>
               </el-col>
@@ -362,10 +362,34 @@ export default {
       }
     },
 
+    /* 列表 */
+    onCopyClick() {
+      this.copyTab = parseInt(this.currentTab);
+      this.$message.success('页面配置已复制');
+    },
+    async onPasteClick() {
+      try {
+        if (!this.isListEmpty(this.currentTab)) {
+          await this.$confirm('此Tab下列表配置不为空，确认要覆盖吗？', '提示');
+        }
+      } catch (err) {
+        return;
+      }
+      const copy = this.listConfigs[this.copyTab];
+      const currentIndex = this.listConfigs.findIndex(el => el.id === this.currentTab);
+      const newTab = lodash.cloneDeep(copy);
+      this.listConfigs.splice(currentIndex, 1, newTab);
+
+      this.$message.success('已粘贴');
+    },
+
+    /* UI事件 */
+
     // 导入nei配置
     async onImportClick() {
+      const currentTab = this.currentTab || 0;
       try {
-        if (!this.isListEmpty(this.currentTab || 0)) {
+        if (!this.isListEmpty(currentTab)) {
           await this.$confirm('此Tab下列表配置不为空，确认要覆盖吗？', '提示');
         }
         const { value } = await this.$prompt('请输入获取列表的url', '提示', {
@@ -376,10 +400,10 @@ export default {
         const { data } = await getPageNei({ id: this.$route.query.id, url: value });
 
         if(data.filters && data.filters.length > 0) {
-          this.listConfigs[this.currentTab || 0].filters = data.filters;
+          this.listConfigs[currentTab].filters = data.filters.map(el => ({ placeholder: '', sourceKey: '', ...el }));
         }
         if(data.cols && data.cols.length > 0) {
-          this.listConfigs[this.currentTab || 0].cols = data.cols.map(el => ({ fixed: '', ...el }));
+          this.listConfigs[currentTab].cols = data.cols.map(el => ({ fixed: '', ...el }));
         }
 
         this.url = value;
@@ -410,26 +434,6 @@ export default {
         duration: 0
       });
     },
-    // 列表
-    onCopyClick() {
-      this.copyTab = parseInt(this.currentTab);
-      this.$message.success('页面配置已复制');
-    },
-    async onPasteClick() {
-      try {
-        if (!this.isListEmpty(this.currentTab)) {
-          await this.$confirm('此Tab下列表配置不为空，确认要覆盖吗？', '提示');
-        }
-      } catch (err) {
-        return;
-      }
-      const copy = this.listConfigs[this.copyTab];
-      const currentIndex = this.listConfigs.findIndex(el => el.id === this.currentTab);
-      const newTab = lodash.cloneDeep(copy);
-      this.listConfigs.splice(currentIndex, 1, newTab);
-
-      this.$message.success('已粘贴');
-    },
 
     /* 通用函数 */
 
@@ -441,6 +445,7 @@ export default {
       const { filters, buttons, cols, operatorCol, operatorButtons } = config;
       return filters.length + buttons.length + cols.length + operatorButtons.length === 0 && !operatorCol;
     },
+
     newBreadcrumbItem() {
       return { id: this.getRandomId(), title: '', link: '', nodeId: null };
     },
@@ -484,7 +489,7 @@ export default {
       cols.forEach((el) => {
         let value;
         // 只处理这三种
-        switch (el.typeName.toLowerCase()) {
+        switch ((el.typeName || '').toLowerCase()) {
           case 'boolean':
             value = true;
             break;
@@ -709,6 +714,7 @@ export default {
       display: flex;
       flex-direction: column;
       flex: 1;
+      max-width: 50%;
 
       .g-preview {
         flex: 1;
