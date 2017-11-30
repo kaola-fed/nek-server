@@ -20,8 +20,8 @@ const genHTML = (tree, nodeId, { eventSet, varMap, level = 0 }) => {
   const eventStr = _.getEventsStr(events, eventSet);
 
   return `${intend}<${tagName}${attrStr}${eventStr}>` +
-    `${children.length 
-      ? `\n${children.map(el => genHTML(tree, el, { eventSet, varMap, level: level + 1 })).join('\n')}\n${intend}` 
+    `${children.length
+      ? `\n${children.map(el => genHTML(tree, el, { eventSet, varMap, level: level + 1 })).join('\n')}\n${intend}`
       : ''}` +
     `</${tagName}>`;
 };
@@ -55,7 +55,7 @@ const genNEJJS = (options) => {
         template: tpl,
         config: function(data) {
             this.supr(data);
-            this.default({
+            this.defaults({
             ${dataStr}});
         },
 

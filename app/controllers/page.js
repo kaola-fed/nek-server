@@ -31,7 +31,7 @@ const translateData = (params, dataTypes) => {
     const listParams = dataTypes.find(item => item.id == listId);
     rlt.cols = listParams.params.map((item) => {
       return {
-        title: item.description || item.name || '列名',
+        name: item.description || item.name || '列名',
         key: item.name,
         typeName: item.typeName || 'String',
         width: '120'

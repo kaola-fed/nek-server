@@ -18,3 +18,4 @@ yarn-error.log*
 /server.sh
 server.sh
 pm2.json
+package-lock.json

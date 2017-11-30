@@ -498,7 +498,7 @@ export default {
             break;
           case 'string':
           default:
-            value = el.title;
+            value = el.name;
         }
         item[el.key] = value;
       });
