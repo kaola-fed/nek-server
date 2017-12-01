@@ -206,7 +206,7 @@ export const genList = (projectConfig, pageTitle, config) => {
 export const gen = async (id) => {
   const { type, dom, project, name } = await PageModel.selectById(id);
   const projectConfig = await ProjectModel.selectByIdWithLib(project);
-  const config = JSON.parse(dom || '');
+  const config = JSON.parse(dom || '{}');
 
   let result;
   switch (type) {

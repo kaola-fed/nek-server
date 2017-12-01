@@ -127,6 +127,8 @@ function getTableNode(list) {
     tagName: 'kl-table',
     attributes: { source: { type: 'var', value: 'list' } },
     children: cols.map((el) => {
+      //生成代码时删除typeName属性
+      delete el.typeName;
       return {
         tagName: 'kl-table-col',
         attributes: el
@@ -140,7 +142,7 @@ function getTableNode(list) {
       children: [{
         tagName: 'kl-table-template',
         children: [{
-          text: `${operatorButtons.map(el => `{'<a href="${el.link}">${el.title}</a>'}`).join('\n')}`
+          text: `${operatorButtons.map((el, index) => `{'<a href="${el.link}" target="_blank" ${ index > 0 ? 'class="f-ml10"' : ''}>${el.title}</a>'}`).join('\n')}`
         }]
       }]
     });
@@ -152,8 +154,8 @@ function getTableNode(list) {
     tagName: 'kl-pager',
     attributes: {
       pageSize: { type: 'var', value: 'pageSize' },
-      sumTotal: { type: 'var', value: 'sumTotal' },
-      current: { type: 'var', value: 'current' },
+      sumTotal: { type: 'var', value: 'total' },
+      current: { type: 'var', value: 'pageNo' },
     }
   });
 
@@ -185,7 +187,7 @@ export const nejList = (title, config) => {
 
   // 将基类中的变量和事件放进去
   // TODO: 配置这几个变量？
-  nsVNodes.excludeVar = new Set(['list', 'pageSize', 'sumTotal', 'current']);
+  nsVNodes.excludeVar = new Set(['source', 'pageSize', 'sumTotal', 'current']);
   nsVNodes.excludeEvent = new Set(['refresh']);
 
   nsVNodes.$apply();

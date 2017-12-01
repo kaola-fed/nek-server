@@ -140,6 +140,9 @@ export default {
     if(data.lists) {
       this.listConfigs = data.lists;
     }
+    if(data.url) {
+      this.url = data.url;
+    }
 
     this.$forceUpdate();
   },
