@@ -1,9 +1,9 @@
 <template>
   <div class="g-tools-bar">
-    <a @click="handleBack" class="u-back" href="javascript:;">
-      <i class="el-icon-arrow-left"></i>&nbsp;&nbsp;{{ projectName }}
-    </a>
     <div class="m-tools">
+      <a @click="handleBack" class="u-back" href="javascript:;">
+        <i class="el-icon-arrow-left"></i>&nbsp;&nbsp;{{ projectName }}
+      </a>
       <el-tooltip content="保存" effect="light" placement="bottom">
         <a class="m-button"><i class="iconfont-save" @click="onSave"></i></a>
       </el-tooltip>
@@ -16,6 +16,7 @@
         <a class="m-button" @click="item.onClick"><i :class="item.icon"></i></a>
       </el-tooltip>
     </div>
+    <div class="u-tools-title">{{ pageName }}</div>
     <span class="u-tools-message">{{ message }}</span>
   </div>
 </template>
@@ -31,6 +32,7 @@ export default {
       type: Array,
       default: () => []
     },
+    pageName: String,
     message: String,
     backLink: {
       type: String,
@@ -79,8 +81,6 @@ export default {
 
   .m-tools {
     flex: 1;
-    margin: 0 30px;
-
     .m-button {
       color: white;
       width: 30px;
@@ -91,8 +91,17 @@ export default {
       text-decoration: none;
     }
   }
-
+  .u-tools-title {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    color: white;
+    font-size: 16px;
+  }
   .u-tools-message {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
     color: white;
     font-size: 14px;
   }

@@ -1,14 +1,14 @@
 import { JSONAPI } from './request';
 
-export const create = ({ name, desc, git, neiKey, type, library, basePath, listPath, modalPath }) => {
+export const create = ({ name, desc, git, type, library, basePath, listPath, modalPath }) => {
   return JSONAPI.post('/api/project/create', {
-    name, desc, git, neiKey, type, library, basePath, listPath, modalPath
+    name, desc, git, type, library, basePath, listPath, modalPath
   });
 };
 
-export const update = ({ id, name, desc, git, neiKey, type, library, basePath, listPath, modalPath }) => {
+export const update = ({ id, name, desc, git, type, library, basePath, listPath, modalPath }) => {
   return JSONAPI.post('/api/project/update', {
-    id, name, desc, git, neiKey, type, library, basePath, listPath, modalPath
+    id, name, desc, git, type, library, basePath, listPath, modalPath
   });
 };
 

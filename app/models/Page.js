@@ -6,6 +6,10 @@ const schema = mongoose.Schema({
   type: Number,
   // JSON
   dom: String,
+  key: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Key'
+  },
   // 所属项目id
   project: {
     type: mongoose.Schema.Types.ObjectId,
@@ -33,6 +37,9 @@ schema.statics = {
   },
   async selectByIdWithPro(_id) {
     return await this.findOne({ _id }).populate('project').select('url name type project');
+  },
+  async selectByIdWithKey(_id) {
+    return await this.findOne({ _id }).populate('key').select('url name type key');
   },
   async deleteById(_id) {
     return await this.remove({ _id });

@@ -4,7 +4,6 @@ const schema = mongoose.Schema({
   name: String,
   desc: String,
   git: String,
-  neiKey:String,
   type: Number,
   basePath: String,
   listPath: String,

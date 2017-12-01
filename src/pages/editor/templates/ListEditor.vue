@@ -1,6 +1,6 @@
 <template>
   <div class="g-editor">
-    <tools-bar projectName="Project" @save="onSave"></tools-bar>
+    <tools-bar projectName="Project" :pageName="pageName" @save="onSave"></tools-bar>
     <div class="m-list-editor">
       <div class="m-left">
         <div class="g-preview" id="ns-preview" @insertNsid="onInsertNsid">
@@ -80,7 +80,7 @@ import PreviewButton from '../components/PreviewButton.vue';
 import NekComponent from '@/widget/NekComponent';
 
 import { getComponentList } from '@/api/library';
-import { getListTemplate, getPageNei, updatePageDom } from '@/api/page';
+import { getListTemplate, getPageNei, updatePageDom, getPageDetail } from '@/api/page';
 
 const LIB_NAME = 'NEK-UI';
 
@@ -125,6 +125,14 @@ export default {
     this.initList();
 
     this.updatePreview();
+
+    //获取页面信息
+    try {
+      const { data } = await getPageDetail({ id: this.$route.query.id });
+      this.pageName = `${data.name}（${data.url}）`;
+    } catch (err) {
+      return;
+    }
 
     // 更改项目页面配置，更新数据
     const { data } = await getListTemplate({ id: this.$route.query.id });
@@ -245,7 +253,8 @@ export default {
       currentTab: '0',
       listConfigs: [this.newColItem()],
       needUpdate: false,
-
+      //列表页名称
+      pageName: '',
       // 列表请求URL
       url: ''
     };

@@ -1,78 +1,36 @@
 <template>
-  <div>
-    <el-card>
-      <div slot="header">
-        <span class="u-card-title">{{ project.name }}</span>
-        <el-button class="f-fr f-mb10" type="primary" @click="handleCreate">新建页面</el-button>
-      </div>
-      <h2>
-      </h2>
-      <div v-loading="loading">
-        <el-table striple :data="list" border tooltip-effect="dark">
-          <el-table-column align="left" prop="url" label="url" show-overflow-tooltip>
-            <template scope="scope">
-              <a href="javascript:;" @click="handleEdit(scope.row)"> {{ scope.row.url }} </a>
-            </template>
-          </el-table-column>
-          <el-table-column align="left" prop="name" label="描述" show-overflow-tooltip></el-table-column>
-          <el-table-column align="center" prop="type" label="类型" show-overflow-tooltip>
-            <template scope="scope">
-              {{scope.row.type === 1 ? '列表页' : '编辑页' }}
-            </template>
-          </el-table-column>
-          <el-table-column align="center" prop="updatedAt" label="更新时间" show-overflow-tooltip></el-table-column>
-          <el-table-column align="center" label="操作" fixed="right">
-            <template scope="scope">
-              <el-button size="small" type="text" @click="handleSetting(scope.row)">设置</el-button>
-              <el-button size="small" type="text" @click="handleEdit(scope.row)">编辑</el-button>
-              <el-button size="small" type="text" @click="handleDelete(scope.row)">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
-    </el-card>
-
-    <el-card class="f-mt20">
-      <div slot="header">
-        <span class="u-card-title">项目模板</span>
-      </div>
-      <el-tabs class="f-mt10" v-model="currentTab" v-if="isShowTpl">
-        <el-tab-pane label="entry" name="entry">
-          <el-input type="textarea" class="m-textarea f-mb10" v-model="project.entry" placeholder="请输入entry模板"></el-input>
-          <el-row type="flex" justify="center">
-            <el-button type="primary" @click="handleSave('entry')">保存</el-button>
-          </el-row>
-        </el-tab-pane>
-        <el-tab-pane label="ftl" name="ftl">
-          <el-input type="textarea" class="m-textarea f-mb10" v-model="project.ftl" placeholder="请输入ftl模板"></el-input>
-          <el-row type="flex" justify="center">
-            <el-button type="primary" @click="handleSave('ftl')">保存</el-button>
-          </el-row>
-        </el-tab-pane>
-      </el-tabs>
-    </el-card>
-    <create-page-modal :visible="createPageVisible" :pageId="currentPageId" :projectId="projectId" @refresh="getList" @close="handleCreateClose"></create-page-modal>
+  <div class="container">
+    <div class="left-menu">
+      <el-menu :default-active="activeMenu" @select="handleSelect">
+        <el-menu-item index="page">页面管理</el-menu-item>
+        <el-menu-item index="tpl">模板管理</el-menu-item>
+        <el-menu-item index="key">key管理</el-menu-item>
+        <el-menu-item index="member">成员管理</el-menu-item>
+      </el-menu>
+    </div>
+    <div class="main">
+      <page-card :projectId="projectId" v-if="activeMenu == 'page'"></page-card>
+      <tpl-card :projectId="projectId" v-if="activeMenu == 'tpl'"></tpl-card>
+      <key-card :projectId="projectId" v-if="activeMenu == 'key'"></key-card>
+    </div>
   </div>
 </template>
 
 <script>
-import CreatePageModal from './components/CreatePageModal.vue';
-import { getDetail, updateTpl } from '@/api/project';
-import { getPageList, deletePage } from '@/api/page';
+import PageCard from './components/pages.vue';
+import TplCard from './components/tpls.vue';
+import KeyCard from './components/keys.vue';
 
 export default {
-  components: {
-    CreatePageModal
-  },
   data() {
     return {
-      createPageVisible: false,
-      currentPageId: '',
-      loading: false,
-      list: [],
-      project: {},
-      currentTab: 'entry'
+      activeMenu: 'page'
     };
+  },
+  components: {
+    PageCard,
+    TplCard,
+    KeyCard
   },
   computed: {
     projectId() {
@@ -82,71 +40,9 @@ export default {
       return this.project.type == 1;
     }
   },
-  mounted() {
-    this.getList();
-    this.getProjectSetting();
-  },
   methods: {
-    async getList() {
-      this.loading = true;
-      try {
-        const { data } = await getPageList({id: this.projectId});
-        this.list = data;
-        this.loading = false;
-      } catch (err) {
-        this.loading = false;
-        return;
-      }
-    },
-    async getProjectSetting() {
-      try {
-        const { data } = await getDetail({id: this.projectId});
-        this.project = data;
-      } catch (err) {
-        return;
-      }
-    },
-    handleCreate() {
-      this.createPageVisible = true;
-      this.currentPageId = '';
-    },
-    handleSetting(row) {
-      this.createPageVisible = true;
-      this.currentPageId = row._id;
-    },
-    handleCreateClose() {
-      this.createPageVisible = false;
-      this.currentPageId = '';
-    },
-    handleEdit(row) {
-      const routerName = row.type === 1 ? 'listTemplate' : 'editor';
-      this.$router.push({
-        name: routerName,
-        query: {
-          id: row._id,
-          library: this.project.library
-        }
-      });
-    },
-    async handleDelete(row) {
-      if(!row._id) {
-        return;
-      }
-      try {
-        await this.$confirm('确认删除页面？', '提示', { type: 'warning' });
-        await deletePage({ id: this.projectId, pageId: row._id });
-        this.getList();
-      } catch (err) {
-        return;
-      }
-    },
-    async handleSave(type) {
-      try {
-        await updateTpl({ id: this.projectId, type, tpl: this.project[type] });
-        this.$message.success('保存成功！');
-      } catch (err) {
-        return;
-      }
+    handleSelect(index) {
+      this.activeMenu = index;
     }
   }
 };
@@ -175,3 +71,31 @@ export default {
   }
 }
 </style>
+<style scoped>
+.container {
+  display: flex;
+}
+.left-menu {
+  width: 180px;
+  margin-right: 20px;
+}
+.el-menu {
+  border: 1px solid rgb(229, 209, 209);
+  border-radius: 4px;
+  background-color: #fff;
+  overflow: hidden;
+  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, .12), 0px 0px 6px 0px rgba(0, 0, 0, .04);
+}
+.el-menu-item {
+  border-bottom: 1px solid #e1e4e8;
+  height: 38px;
+  line-height: 38px;
+}
+.el-menu-item:last-child {
+  border-bottom: 0;
+}
+.main {
+  flex: 1;
+}
+</style>
+

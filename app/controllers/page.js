@@ -53,8 +53,8 @@ export const nei = async (ctx) => {
   }
   let key;
   try {
-    const pageModel = await PageModel.selectByIdWithPro(id);
-    key = pageModel.project.neiKey;
+    const pageModel = await PageModel.selectByIdWithKey(id);
+    key = pageModel.key.key;
   } catch (err) {
     return ctx.body = _.error('获取配置失败，请检查项目配置key、页面url是否正确');
   }
@@ -180,7 +180,7 @@ export const pageDetail = async (ctx) => {
     return ctx.body = _.paramsError();
   }
   try {
-    const pageModel = await PageModel.selectByIdWithPro(pageId);
+    const pageModel = await PageModel.selectByIdWithKey(pageId);
     return ctx.body = _.success(pageModel);
   } catch (err) {
     return ctx.body = _.error('获取页面信息失败');

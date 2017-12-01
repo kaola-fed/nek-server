@@ -1,0 +1,79 @@
+<template>
+  <el-dialog title="新建nei key" :visible="visible" @open="handleOpen">
+    <el-form :model="form" :rules="rules" ref="form">
+      <el-form-item prop="name" label="名称">
+        <el-input v-model="form.name"></el-input>
+      </el-form-item>
+      <el-form-item prop="key" label="key">
+        <el-input v-model="form.key"></el-input>
+      </el-form-item>
+    </el-form>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="close">取消</el-button>
+      <el-button type="primary" @click="ok">确定</el-button>
+    </span>
+  </el-dialog>
+</template>
+
+<script>
+import { createKey, updateKey, getKeyDetail } from '@/api/key';
+export default {
+  name: 'CreateKeyModal',
+  props: {
+    visible: Boolean,
+    keyId: String,
+    projectId: String
+  },
+  data() {
+    const required = message => [{ required: true, trigger: 'blur', message: `请输入${message}` }];
+    return {
+      form: {
+        name: '',
+        key: ''
+      },
+      rules: {
+        name: required('名称'),
+        key: required('key')
+      }
+    };
+  },
+  methods: {
+    handleOpen() {
+      this.initForm();
+    },
+    async initForm() {
+      if (!this.keyId) {
+        return;
+      }
+      try {
+        const { data } = await getKeyDetail({ id: this.keyId });
+        this.form = data;
+      } catch (err) {
+        return;
+      }
+    },
+    ok() {
+      this.$refs.form.validate(async (valid) => {
+        if (valid) {
+          const Api = this.keyId ? updateKey : createKey;
+          try {
+            await Api({ ...this.form, projectId: this.projectId, id: this.keyId });
+            this.close();
+            this.$emit('refresh');
+          } catch (err) {
+            return;
+          }
+        }
+      });
+    },
+    close() {
+      this.$emit('close');
+      this.$refs.form.resetFields();
+    }
+  }
+};
+</script>
+
+<style>
+
+</style>

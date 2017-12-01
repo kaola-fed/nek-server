@@ -18,11 +18,6 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="nei key" prop="neiKey">
-            <el-input v-model="form.neiKey"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
           <el-form-item label="项目类型" prop="type">
             <el-select v-model="form.type">
               <el-option v-for="item in types" :key="item.id" :label="item.name" :value="item.id">
@@ -79,7 +74,6 @@ export default {
         name: '',
         desc: '',
         git: '',
-        neiKey: '',
         type: 1,
         library: '',
         basePath: 'pro/widget/BaseComponent',
@@ -89,7 +83,6 @@ export default {
       rules: {
         name: required('项目名称'),
         git: required('Git 地址'),
-        neiKey: required('nei key'),
         library: required('组件库', 'change'),
         basePath: required('BaseComponent'),
         listPath: required('ListComponent'),

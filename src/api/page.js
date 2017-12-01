@@ -8,9 +8,9 @@ export const getListTemplate = ({ id }) => {
   return JSONAPI.get('/api/page/listTemplate', { params: { id } });
 };
 
-export const createPage = ({ projectId, url, name, type }) => {
+export const createPage = ({ projectId, url, name, type, key }) => {
   return JSONAPI.post('/api/page/create', {
-    projectId, url, name, type
+    projectId, url, name, type, key
   });
 };
 
@@ -30,8 +30,8 @@ export const getPageDetail = ({ id }) => {
   return JSONAPI.get('/api/page/detail', { params: { id }});
 };
 
-export const updatePageSetting = ({ id, url, name, type }) => {
+export const updatePageSetting = ({ id, url, name, type, key }) => {
   return JSONAPI.post('/api/page/updateSetting', {
-    id, url, name, type
+    id, url, name, type, key
   });
 };
