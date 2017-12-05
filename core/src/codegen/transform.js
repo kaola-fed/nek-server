@@ -127,7 +127,8 @@ function getTableNode(list) {
     tagName: 'kl-table',
     attributes: { source: { type: 'var', value: 'list' } },
     children: cols.map((el) => {
-      //生成代码时删除typeName属性
+      // 生成代码时删除typeName属性
+      // TODO: 修改typeName位置，最好增加一个地方来存放这些配置
       delete el.typeName;
       return {
         tagName: 'kl-table-col',
@@ -142,7 +143,9 @@ function getTableNode(list) {
       children: [{
         tagName: 'kl-table-template',
         children: [{
-          text: `${operatorButtons.map((el, index) => `{'<a href="${el.link}" target="_blank" ${ index > 0 ? 'class="f-ml10"' : ''}>${el.title}</a>'}`).join('\n')}`
+          text: `${operatorButtons.map((el, index) => {
+            return `{'<a href="${el.link}" target="_blank" ${ index > 0 ? 'class="f-ml10"' : ''}>${el.title}</a>'}`;
+          }).join('\n')}`
         }]
       }]
     });
