@@ -1,25 +1,35 @@
 <template>
   <div>
     <el-dialog title="新建页面" :visible="visible" @open="handleOpen">
-      <el-form :model="form" :rules="rules" ref="form">
-        <el-form-item label="页面URL" prop="url">
-          <el-input v-model="form.url"></el-input>
-        </el-form-item>
-        <el-form-item label="页面名称" prop="name">
-          <el-input v-model="form.name"></el-input>
-        </el-form-item>
-        <el-form-item label="页面NEI" prop="key">
-          <el-select v-model="form.key" placeholder="请选择">
-            <el-option v-for="item in keyOptions" :key="item._id" :label="item.name" :value="item._id"></el-option>
-          </el-select>
-          <el-button type="text" @click="createKeyVisible = true">去创建NEI key</el-button>
-        </el-form-item>
-        <el-form-item label="页面模板">
-          <el-radio-group v-model="form.type" :disabled="!!pageId">
-            <el-radio-button :label="pageTypes.List">列表页</el-radio-button>
-            <el-radio-button :label="pageTypes.Empty">空白页</el-radio-button>
-          </el-radio-group>
-        </el-form-item>
+      <el-form :model="form" :rules="rules" ref="form" label-position="right" label-width="100px">
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="页面URL" prop="url">
+              <el-input v-model="form.url"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="页面名称" prop="name">
+              <el-input v-model="form.name"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="页面NEI" prop="key">
+              <el-select v-model="form.key" placeholder="请选择">
+                <el-option v-for="item in keyOptions" :key="item._id" :label="item.name" :value="item._id"></el-option>
+              </el-select>
+              <el-button type="text" @click="createKeyVisible = true" class="f-ml10">新增NEI key</el-button>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="页面模板">
+              <el-radio-group v-model="form.type" :disabled="!!pageId">
+                <el-radio-button :label="pageTypes.List">列表页</el-radio-button>
+                <el-radio-button :label="pageTypes.Empty">空白页</el-radio-button>
+              </el-radio-group>
+          </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="close">取消</el-button>

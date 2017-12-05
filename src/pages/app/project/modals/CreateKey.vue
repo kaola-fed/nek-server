@@ -1,12 +1,18 @@
 <template>
-  <el-dialog title="新建NEI key" :visible="visible" @open="handleOpen">
-    <el-form :model="form" :rules="rules" ref="form">
-      <el-form-item prop="name" label="名称">
-        <el-input v-model="form.name"></el-input>
-      </el-form-item>
-      <el-form-item prop="key" label="key">
-        <el-input v-model="form.key"></el-input>
-      </el-form-item>
+  <el-dialog title="新建NEI key" :visible="visible" @open="handleOpen" size="tiny">
+    <el-form :model="form" :rules="rules" ref="form" label-width="80px" label-position="right">
+      <el-row>
+        <el-col :span="24">
+          <el-form-item prop="name" label="名称">
+            <el-input v-model="form.name"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="24">
+          <el-form-item prop="key" label="key">
+            <el-input v-model="form.key"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="close">取消</el-button>
