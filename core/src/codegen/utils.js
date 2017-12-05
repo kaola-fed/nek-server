@@ -1,9 +1,13 @@
 const getAttrStr = (key, type, value, debug) => {
+  if (value === '') {
+    return '';
+  }
+
   switch (type) {
     case 'string':
+    case 'number':
       return ` ${key}="${value}"`;
     case 'boolean':
-    case 'number':
     case 'object':
       return ` ${key}={${value}}`;
     case 'var':
@@ -43,7 +47,7 @@ export const getEventsStr = (events, eventSet) => {
   for (let i in events) {
     if (events.hasOwnProperty(i)) {
       eventSet && eventSet.add(events[i]);
-      attr += ` on-${i}={this.${events[i]}($event)`;
+      attr += ` on-${i}={this.${events[i]}($event)}`;
     }
   }
 

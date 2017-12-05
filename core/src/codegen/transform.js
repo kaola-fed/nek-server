@@ -188,7 +188,7 @@ export const nejList = (title, config) => {
   // 将基类中的变量和事件放进去
   // TODO: 配置这几个变量？
   nsVNodes.excludeVar = new Set(['source', 'pageSize', 'sumTotal', 'current']);
-  nsVNodes.excludeEvent = new Set(['refresh']);
+  nsVNodes.excludeEvent = new Set(['refresh', 'reset']);
 
   nsVNodes.$apply();
   return nsVNodes;

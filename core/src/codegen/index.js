@@ -54,9 +54,9 @@ const genNEJJS = (options) => {
     return ${name}.extend({
         template: tpl,
         config: function(data) {
-            this.supr(data);
             this.defaults({
             ${dataStr}});
+            this.supr(data);
         },
 
         // UI事件

@@ -58,6 +58,7 @@ app.listen(PORT, (err) => {
     return;
   }
   if (process.env.NODE_ENV === 'development') {
+    console.log(`listening on http://localhost:${PORT}`);
     // opn(`http://localhost:${PORT}`);
   }
 });
