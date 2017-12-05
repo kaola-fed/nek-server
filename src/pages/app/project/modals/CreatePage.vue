@@ -9,9 +9,9 @@
       </el-form-item>
       <el-form-item label="页面NEI" prop="key">
         <el-select v-model="form.key" placeholder="请选择">
-          <el-option v-for="item in keyOptions" :key="item._id" :label="item.name" :value="item._id">
-          </el-option>
+          <el-option v-for="item in keyOptions" :key="item._id" :label="item.name" :value="item._id"></el-option>
         </el-select>
+        <el-button type="text" @click="createKeyVisible = true">去创建NEI key</el-button>
       </el-form-item>
       <el-form-item label="页面模板">
         <el-radio-group v-model="form.type" :disabled="!!pageId">
@@ -24,6 +24,9 @@
       <el-button @click="close">取消</el-button>
       <el-button type="primary" @click="ok">确定</el-button>
     </span>
+    <create-key-modal :projectId="projectId" :visible="createKeyVisible" :modal="false"
+                      @refresh="getNEIKeys" @close="createKeyVisible = false">
+    </create-key-modal>
   </el-dialog>
 </template>
 
@@ -31,8 +34,14 @@
 import { createPage, updatePageSetting, getPageDetail } from '@/api/page';
 import { getKeyList } from '@/api/key';
 import { PageTypes } from '@/../utils/enums';
+
+import CreateKeyModal from './CreateKey.vue';
+
 export default {
   name: 'CreatePageModal',
+  components: {
+    CreateKeyModal
+  },
   props: {
     visible: Boolean,
     projectId: String,
@@ -40,6 +49,7 @@ export default {
   },
   data() {
     return {
+      createKeyVisible: false,
       pageTypes: PageTypes,
       form: {
         url: '',
@@ -60,10 +70,10 @@ export default {
   },
   methods: {
     handleOpen() {
-      this.initOptions();
+      this.getNEIKeys();
       this.initForm();
     },
-    async initOptions() {
+    async getNEIKeys() {
       try {
         const { data } = await getKeyList({ projectId: this.projectId });
         this.keyOptions = data;

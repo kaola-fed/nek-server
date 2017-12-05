@@ -19,8 +19,8 @@
       </div>
     </el-card>
     <create-key-modal :projectId="projectId" :keyId="currentKeyId" :visible="createVisible"
-      @refresh="getList" @close="handleCreateClose">
-      </create-key-modal>
+                      @refresh="getList" @close="handleCreateClose">
+    </create-key-modal>
   </div>
 </template>
 
@@ -51,11 +51,9 @@ export default {
       try {
         this.loading = true;
         const { data } = await getKeyList({ projectId: this.projectId });
-        this.loading = false;
         this.list = data;
-      } catch (err) {
+      } finally {
         this.loading = false;
-        return;
       }
     },
     handleCreate() {

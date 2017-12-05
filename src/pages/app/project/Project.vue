@@ -1,14 +1,19 @@
 <template>
-  <div class="container">
-    <div class="left-menu">
-      <el-menu :default-active="activeMenu" @select="handleSelect">
-        <el-menu-item v-for="item in menuItems" :key="item.name" :index="item.name">{{ item.label }}</el-menu-item>
-      </el-menu>
+  <div>
+    <div class="f-mt10 f-mb20">
+      <span class="u-card-title">{{ project.name || '' }}</span>
     </div>
-    <div class="main">
-      <keep-alive>
-        <component :is="activeMenu" :project="project" :projectId="project._id"></component>
-      </keep-alive>
+    <div class="container">
+      <div class="left-menu">
+        <el-menu :default-active="activeMenu" @select="handleSelect">
+          <el-menu-item v-for="item in menuItems" :key="item.name" :index="item.name">{{ item.label }}</el-menu-item>
+        </el-menu>
+      </div>
+      <div class="main">
+        <keep-alive>
+          <component :is="activeMenu" :project="project" :projectId="project._id"></component>
+        </keep-alive>
+      </div>
     </div>
   </div>
 </template>

@@ -2,7 +2,7 @@
   <div>
     <el-card>
     <div slot="header">
-      <span class="u-card-title">{{ project.name }}</span>
+      <span class="u-card-title">页面管理</span>
       <el-button class="f-fr f-mb10" type="primary" @click="handleCreate">新建页面</el-button>
     </div>
     <h2>
