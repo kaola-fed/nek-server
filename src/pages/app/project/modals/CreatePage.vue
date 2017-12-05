@@ -7,7 +7,7 @@
       <el-form-item label="页面名称" prop="name">
         <el-input v-model="form.name"></el-input>
       </el-form-item>
-      <el-form-item label="页面nei" prop="key">
+      <el-form-item label="页面NEI" prop="key">
         <el-select v-model="form.key" placeholder="请选择">
           <el-option v-for="item in keyOptions" :key="item._id" :label="item.name" :value="item._id">
           </el-option>
@@ -52,7 +52,7 @@ export default {
           required: true, trigger: 'blur', message: '请输入页面url'
         }],
         key: [{
-          required: true, trigger: 'change', message: '请选择nei key'
+          required: true, trigger: 'change', message: '请选择NEI key'
         }]
       },
       keyOptions: []

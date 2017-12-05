@@ -2,7 +2,7 @@
   <div>
     <el-card>
       <div slot="header">
-        <span class="u-card-title">nei key 管理</span>
+        <span class="u-card-title">NEI key 管理</span>
         <el-button class="f-fr f-mb10" type="primary" @click="handleCreate">新建key</el-button>
       </div>
       <div v-loading="loading">
@@ -26,7 +26,8 @@
 
 <script>
 import { getKeyList, deleteKey } from '@/api/key';
-import CreateKeyModal from './../modals/CreateKey.vue';
+import CreateKeyModal from '../modals/CreateKey.vue';
+
 export default {
   props: {
     projectId: String

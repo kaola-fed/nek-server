@@ -31,51 +31,40 @@
       </el-table>
     </div>
   </el-card>
-  <create-page-modal :visible="createPageVisible" :pageId="currentPageId" :projectId="projectId" @refresh="getList" @close="handleCreateClose"></create-page-modal>
+  <create-page-modal :visible="createPageVisible" :pageId="currentPageId" :projectId="project._id" @refresh="getList" @close="handleCreateClose"></create-page-modal>
   </div>
 </template>
 <script>
 import CreatePageModal from '../modals/CreatePage.vue';
-import { getDetail } from '@/api/project';
 import { getPageList, deletePage } from '@/api/page';
 export default {
   components: {
     CreatePageModal
   },
   props: {
-    projectId: String
+    project: Object
   },
   data() {
     return {
       createPageVisible: false,
       currentPageId: '',
       loading: false,
-      project: {},
       list: []
     };
   },
-  mounted() {
-    this.getList();
-    this.getProjectSetting();
+  watch: {
+    project: function(newValue) {
+      newValue._id && this.getList(newValue._id);
+    }
   },
   methods: {
-    async getList() {
+    async getList(id) {
       this.loading = true;
       try {
-        const { data } = await getPageList({ id: this.projectId });
+        const { data } = await getPageList({ id });
         this.list = data;
+      } finally {
         this.loading = false;
-      } catch (err) {
-        this.loading = false;
-        return;
-      }
-    },
-    async getProjectSetting() {
-      try {
-        const { data } = await getDetail({ id: this.projectId });
-        this.project = data;
-      } catch (err) {
-        return;
       }
     },
     handleCreate() {
@@ -106,7 +95,7 @@ export default {
       }
       try {
         await this.$confirm('确认删除页面？', '提示', { type: 'warning' });
-        await deletePage({ id: this.projectId, pageId: row._id });
+        await deletePage({ id: this.project._id, pageId: row._id });
         this.getList();
       } catch (err) {
         return;

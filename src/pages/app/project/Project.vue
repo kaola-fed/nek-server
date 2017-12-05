@@ -2,35 +2,46 @@
   <div class="container">
     <div class="left-menu">
       <el-menu :default-active="activeMenu" @select="handleSelect">
-        <el-menu-item index="page">页面管理</el-menu-item>
-        <el-menu-item index="tpl">模板管理</el-menu-item>
-        <el-menu-item index="key">key管理</el-menu-item>
-        <el-menu-item index="member">成员管理</el-menu-item>
+        <el-menu-item v-for="item in menuItems" :key="item.name" :index="item.name">{{ item.label }}</el-menu-item>
       </el-menu>
     </div>
     <div class="main">
-      <page-card :projectId="projectId" v-if="activeMenu == 'page'"></page-card>
-      <tpl-card :projectId="projectId" v-if="activeMenu == 'tpl'"></tpl-card>
-      <key-card :projectId="projectId" v-if="activeMenu == 'key'"></key-card>
+      <keep-alive>
+        <component :is="activeMenu" :project="project" :projectId="project._id"></component>
+      </keep-alive>
     </div>
   </div>
 </template>
 
 <script>
+import { getDetail } from '@/api/project';
+
 import PageCard from './components/pages.vue';
 import TplCard from './components/tpls.vue';
 import KeyCard from './components/keys.vue';
+import MembersCard from './components/members.vue';
 
 export default {
-  data() {
-    return {
-      activeMenu: 'page'
-    };
-  },
   components: {
     PageCard,
     TplCard,
-    KeyCard
+    KeyCard,
+    MembersCard
+  },
+  mounted() {
+    this.getProjectSetting();
+  },
+  data() {
+    return {
+      activeMenu: 'PageCard',
+      project: {},
+      menuItems: [
+        { label: '页面管理', name: 'PageCard' },
+        { label: '模板管理', name: 'TplCard' },
+        { label: 'Key 管理', name: 'KeyCard' },
+        { label: '成员管理', name: 'MembersCard' },
+      ]
+    };
   },
   computed: {
     projectId() {
@@ -43,6 +54,14 @@ export default {
   methods: {
     handleSelect(index) {
       this.activeMenu = index;
+    },
+    async getProjectSetting() {
+      try {
+        const { data } = await getDetail({ id: this.$route.query.id });
+        this.project = data;
+      } catch (err) {
+        return err;
+      }
     }
   }
 };

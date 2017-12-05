@@ -20,32 +20,21 @@
   </el-card>
 </template>
 <script>
-import { getDetail, updateTpl } from '@/api/project';
+import { updateTpl } from '@/api/project';
+
 export default {
   props: {
-    projectId: String
+    project: Object
   },
   data() {
     return {
-      project: {},
       currentTab: 'entry'
     };
   },
-  mounted() {
-    this.getProjectSetting();
-  },
   methods: {
-    async getProjectSetting() {
-      try {
-        const { data } = await getDetail({ id: this.projectId });
-        this.project = data;
-      } catch (err) {
-        return;
-      }
-    },
     async handleSave(type) {
       try {
-        await updateTpl({ id: this.projectId, type, tpl: this.project[type] });
+        await updateTpl({ id: this.project._id, type, tpl: this.project[type] });
         this.$message.success('保存成功！');
       } catch (err) {
         return;

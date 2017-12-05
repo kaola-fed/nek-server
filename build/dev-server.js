@@ -1,57 +1,57 @@
-require('./check-versions')()
+require('./check-versions')();
 
-var config = require('../config/client')
+const config = require('../config/client');
 if (!process.env.NODE_ENV) {
   process.env.NODE_ENV = JSON.parse(config.dev.env.NODE_ENV)
 }
 
-var opn = require('opn')
-var path = require('path')
-var express = require('express')
-var webpack = require('webpack')
-var proxyMiddleware = require('http-proxy-middleware')
-var mockMiddleware = require('./mock')
-var webpackConfig = require('./webpack.dev.conf')
+const opn = require('opn');
+const path = require('path');
+const express = require('express');
+const webpack = require('webpack');
+const proxyMiddleware = require('http-proxy-middleware');
+const mockMiddleware = require('./mock');
+const webpackConfig = require('./webpack.dev.conf');
 
 // default port where dev server listens for incoming traffic
-var port = process.env.PORT || config.dev.port
+const port = process.env.PORT || config.dev.port;
 // automatically open browser, if not set will be false
-var autoOpenBrowser = !!config.dev.autoOpenBrowser
+const autoOpenBrowser = !!config.dev.autoOpenBrowser;
 // Define HTTP proxies to your custom API backend
 // https://github.com/chimurai/http-proxy-middleware
-var proxyTable = config.dev.proxyTable
+const proxyTable = config.dev.proxyTable;
 
-var app = express()
-var compiler = webpack(webpackConfig)
+const app = express();
+const compiler = webpack(webpackConfig);
 
-var devMiddleware = require('webpack-dev-middleware')(compiler, {
+const devMiddleware = require('webpack-dev-middleware')(compiler, {
   publicPath: webpackConfig.output.publicPath,
   quiet: true
-})
+});
 
-var hotMiddleware = require('webpack-hot-middleware')(compiler, {
+const hotMiddleware = require('webpack-hot-middleware')(compiler, {
   log: false,
   heartbeat: 2000
-})
+});
 // force page reload when html-webpack-plugin template changes
 compiler.plugin('compilation', function (compilation) {
   compilation.plugin('html-webpack-plugin-after-emit', function (data, cb) {
-    hotMiddleware.publish({ action: 'reload' })
+    hotMiddleware.publish({ action: 'reload' });
     cb()
   })
-})
+});
 
 
-const proxyEnv = process.argv[2]
-const proxyPrefixes = ['/api']
+const proxyEnv = process.argv[2];
+const proxyPrefixes = ['/api'];
 
 if (proxyEnv == 'mock') {
-  console.log('> Using mock data.')
+  console.log('> Using mock data.');
   // handle local data mock
   app.use(mockMiddleware(proxyPrefixes, {asyncMockPath: path.join(__dirname, '../mock/')}))
 } else if (proxyTable[proxyEnv]) {
   // proxy api requests
-  console.log(`> Current proxy: ${proxyTable[proxyEnv]}`)
+  console.log(`> Current proxy: ${proxyTable[proxyEnv]}`);
   app.use(proxyMiddleware(proxyPrefixes, {
     target: proxyTable[proxyEnv]
   }))
@@ -67,41 +67,43 @@ if (proxyEnv == 'mock') {
 // })
 
 // handle fallback for HTML5 history API
-app.use(require('connect-history-api-fallback')())
+app.use(require('connect-history-api-fallback')());
 
 // serve webpack bundle output
-app.use(devMiddleware)
+app.use(devMiddleware);
 
 // enable hot-reload and state-preserving
 // compilation error display
-app.use(hotMiddleware)
+app.use(hotMiddleware);
 
 // serve pure static assets
-var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
-app.use(staticPath, express.static('./static'))
+const staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory);
+app.use(staticPath, express.static('./static'));
 
-var uri = 'http://localhost:' + port
+console.log('Please set host `127.0.0.1 nek-server.kaolafed.com`');
+// const uri = 'http://localhost:' + port;
+const uri = 'http://nek-server.kaolafed.com:' + port;
 
-var _resolve
-var readyPromise = new Promise(resolve => {
+let _resolve;
+const readyPromise = new Promise(resolve => {
   _resolve = resolve
-})
+});
 
-console.log('> Starting dev server...')
+console.log('> Starting dev server...');
 devMiddleware.waitUntilValid(() => {
-  console.log('> Listening at ' + uri + '\n')
+  console.log('> Listening at ' + uri + '\n');
   // when env is testing, don't need open it
   if (autoOpenBrowser && process.env.NODE_ENV !== 'testing') {
     opn(uri)
   }
   _resolve()
-})
+});
 
-var server = app.listen(port)
+const server = app.listen(port);
 
 module.exports = {
   ready: readyPromise,
   close: () => {
     server.close()
   }
-}
+};

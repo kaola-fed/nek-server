@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="新建nei key" :visible="visible" @open="handleOpen">
+  <el-dialog title="新建NEI key" :visible="visible" @open="handleOpen">
     <el-form :model="form" :rules="rules" ref="form">
       <el-form-item prop="name" label="名称">
         <el-input v-model="form.name"></el-input>
