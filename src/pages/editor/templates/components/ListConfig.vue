@@ -117,6 +117,9 @@
                   <el-option value="right" label="右"></el-option>
                 </el-select>
               </el-form-item>
+              <el-form-item label="列宽度">
+                <el-input placeholder="请输入列宽度" v-model="scope.row.width"></el-input>
+              </el-form-item>
             </el-form>
           </template>
         </el-table-column>
@@ -207,7 +210,8 @@ export default {
         key: '',
         type: '',
         fixed: '',
-        filter: ''
+        filter: '',
+        width: '100'
       });
     },
     onAddOperatorClick() {

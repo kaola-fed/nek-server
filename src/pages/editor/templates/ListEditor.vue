@@ -1,6 +1,6 @@
 <template>
   <div class="g-editor">
-    <tools-bar projectName="Project" :pageName="pageName" @save="onSave"></tools-bar>
+    <tools-bar projectName="返回" :buttons="toolsBarButtons" :pageName="pageName" @save="onSave"></tools-bar>
     <div class="m-list-editor">
       <div class="m-left">
         <div class="g-preview" id="ns-preview" @insertNsid="onInsertNsid">
@@ -106,14 +106,18 @@ export default {
     this.$nsVNodes.data = { list: [], condition: {} };
     this.$nsVNodes.rootView = this.$refs.preview;
 
-//    this.$watch('updateTree', this.nsVNodeWatcher, {
-//      deep: true
-//    });
-
-    // 设置项目页面无关的数据
     this.pageInfo = {
-      title: 'Test Page'
+      title: ''
     };
+
+    // 获取页面信息
+    try {
+      const { data } = await getPageDetail({ id: this.$route.query.id });
+      this.pageName = `${data.name}（${data.url}）`;
+      this.pageInfo.title = data.name || '页面标题';
+    } catch (err) {
+      return;
+    }
 
     // 获取组件配置
     const lib = await getComponentList({ id: this.$route.query.library });
@@ -125,14 +129,6 @@ export default {
     this.initList();
 
     this.updatePreview();
-
-    //获取页面信息
-    try {
-      const { data } = await getPageDetail({ id: this.$route.query.id });
-      this.pageName = `${data.name}（${data.url}）`;
-    } catch (err) {
-      return;
-    }
 
     // 更改项目页面配置，更新数据
     const { data } = await getListTemplate({ id: this.$route.query.id });
@@ -225,22 +221,28 @@ export default {
   },
   data() {
     return {
-      $nsVNodes: null,
-
-      toolsBarButtons: [{
-        tip: '进入编辑器',
-        icon: 'iconfont-edit',
-        onClick: () => {
-          this.$confirm('进入拖拽编辑模式后将不能再使用模板编辑模式，确认要继续？', '提示')
-            .then(() => this.$router.push({ name: 'editor', id: this.$route.query.id }));
+      toolsBarButtons: [
+//        {
+//          tip: '进入编辑器',
+//          icon: 'iconfont-edit',
+//          onClick: () => {
+//            this.$confirm('进入拖拽编辑模式后将不能再使用模板编辑模式，确认要继续？', '提示')
+//              .then(() => this.$router.push({ name: 'editor', id: this.$route.query.id }));
+//          }
+//        },
+//        {
+//          tip: '生成代码',
+//          icon: 'el-icon-check',
+//          onClick: () => {
+//            this.saveDomJson();
+//          }
+//        },
+        {
+          tip: '刷新预览区',
+          icon: 'el-icon-loading',
+          onClick: () => this.updatePreview()
         }
-      }, {
-        tip: '生成代码',
-        icon: 'el-icon-check',
-        onClick: () => {
-          this.saveDomJson();
-        }
-      }],
+      ],
 
       configActiveNames: ['breadcrumb', 'tabs', 'list'],
 
@@ -510,7 +512,7 @@ export default {
             break;
           case 'string':
           default:
-            value = el.name;
+            value = el.name || '-';
         }
         item[el.key] = value;
       });
@@ -544,10 +546,12 @@ export default {
       this.breadcrumbVNode.children.splice(1);
 
       newValue.forEach((el) => {
+        const { title, link, ...otherAttr } = el;
         this.addVNode('kl-crumb-item', this.breadcrumbVNode.id, null, {
           attributes: {
-            content: el.title,
-            href: el.link
+            content: title,
+            href: link,
+            ...otherAttr
           }
         });
       });
@@ -556,6 +560,7 @@ export default {
     }, 500),
 
     multiTabsWatcher: lodash.debounce(function(newValue) {
+      // TODO: 切换状态的时候 初始化/删除 VNode
       if (!this.multiTabsVNode) {
         return;
       }
@@ -571,11 +576,12 @@ export default {
       this.filtersVNode.children = [];
 
       newValue.forEach((el) => {
-        const fieldAttrs = {};
-        if (el.key) {
+        const { key, ...attrs } = el;
+        const fieldAttrs = { ...attrs };
+        if (key) {
           fieldAttrs.value = {
             type: 'var',
-            value: `condition.${el.key}`
+            value: `condition.${key}`
           };
         }
 
@@ -608,14 +614,8 @@ export default {
         this.otherButtonsVNode.children = [];
 
         newValue.forEach((el) => {
-          const attributes = { title: el.title };
-          let events;
-          if (el.type && el.type !== 'default') {
-            attributes.type = el.type;
-          }
-          if (el.event) {
-            events = { click: el.event };
-          }
+          const { event, ...attributes } = el;
+          let events = event ? { click: el.event } : undefined;
           this.addVNode('kl-button', this.otherButtonsVNode.id, null, { attributes, events });
         });
       } else if (this.otherButtonsVNode) {
@@ -637,15 +637,9 @@ export default {
         this.listVNode.children.splice(0, this.listVNode.children.length - 1);
       }
 
+      // TODO: 增加的时候操作列还有bug
       newValue.forEach((el) => {
-        const attributes = {
-          name: el.name,
-          key: el.key
-        };
-        if (el.fixed) {
-          attributes.fixed = el.fixed;
-        }
-        this.addVNode('kl-table-col', this.listVNode.id, this.opColVNode, { attributes });
+        this.addVNode('kl-table-col', this.listVNode.id, this.opColVNode, { attributes: el });
       });
 
       this.$nsVNodes.data.list = this.genMockData(newValue);
@@ -657,7 +651,7 @@ export default {
       if (newValue) {
         if (!this.opColVNode) {
           this.opColVNode = this.addVNode('kl-table-col', this.listVNode.id, null, {
-            attributes: {name: '操作', fixed: 'right'}
+            attributes: {name: '操作', fixed: 'right', width: '150'}
           });
           this.opColTplVNode = this.addVNode('kl-table-template', this.opColVNode.id, null, {
             attributes: {type: 'item'}

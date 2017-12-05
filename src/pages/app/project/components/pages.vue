@@ -54,14 +54,17 @@ export default {
   },
   watch: {
     project: function(newValue) {
-      newValue._id && this.getList(newValue._id);
+      newValue._id && this.getList();
     }
   },
   methods: {
-    async getList(id) {
+    async getList() {
+      if (!this.project._id) {
+        return;
+      }
       this.loading = true;
       try {
-        const { data } = await getPageList({ id });
+        const { data } = await getPageList({ id: this.project._id });
         this.list = data;
       } finally {
         this.loading = false;
