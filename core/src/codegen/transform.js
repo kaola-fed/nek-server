@@ -41,20 +41,20 @@ function getSearchNode(filters) {
     children: [{ tagName: 'kl-row', children: [] }]
   };
   filters.forEach((el, index) => {
-    // 第四个的时候建立kl-search-more
-    if (index === 3) {
+    // 第七个的时候建立kl-search-more
+    if (index === 6) {
       searchObject.children.push({
         tagName: 'kl-search-more',
         children: [{ tagName: 'kl-row', children: [] }]
       });
     }
-    if (index < 3) {
-      // 前三个放在第一行
+    if (index < 6) {
+      // 前六个放在第一行
       // 我也不想这么写的，都是生活所迫，加个标记就当什么都没发生吧
       // (kl-s   > kl-row    )
       searchObject.children[0].children.push(getSearchItem(el));
     } else {
-      // 第四个开始放进kl-search-more中
+      // 第七个开始放进kl-search-more中
       // (kl-s   > kl-s-m    > kl-row    )
       searchObject.children[1].children[0].children.push(getSearchItem(el));
     }
