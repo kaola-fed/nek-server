@@ -101,6 +101,7 @@ function getTableNode(list) {
   if (buttons.length > 0) {
     listObject.children.push({
       tagName: 'kl-row',
+      attributes: { class: 'f-mb10' },
       children: [{
         tagName: 'kl-col',
         // attributes: { span: 4 },
