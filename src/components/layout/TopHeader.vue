@@ -1,6 +1,11 @@
 <template>
   <header class="header">
-    <div class="header-title">NEK Server<router-link :to="{name: 'dashboard'}" class="header-title__link"></router-link></div>
+    <div class="header-title">
+      <el-badge value="Alpha">
+        <div class="header-title__logo"></div>
+      </el-badge>
+      <router-link :to="{name: 'dashboard'}" class="header-title__link"></router-link>
+    </div>
     <div class="header-right">
       hi&nbsp;<a class="header-right__link">{{ userInfo.fullname }}</a>&nbsp;<a class="header-right__link" @click="logout">退出</a>
     </div>
@@ -38,14 +43,16 @@ export default {
   font-size: 18px;
   color: #fff;
 
-&:before {
-   content: '';
-   display: inline-block;
-   width: 34px;
-   height: 34px;
-   margin-right: 9px;
-   background-image: url(//haitao.nos.netease.com/2fecfadc7d48464b90c2fe9b5d92412a.svg);
- }
+  @e logo {
+    content: '';
+    display: inline-block;
+    width: 210px;
+    height: 26px;
+    mask-image: url(//haitao.nos.netease.com/57a406f8c4c74e7cac07d0f8e925713d.svg);
+    mask-repeat: no-repeat;
+    background: white no-repeat;
+    vertical-align: middle;
+  }
 
   @e link {
     position: absolute;
