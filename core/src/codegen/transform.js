@@ -81,9 +81,9 @@ function getSearchNode(filters) {
       }]
     });
   } else {
-    // 三个及以上的时候控制一下toggle显示就好
+    // 七个及以上的时候控制一下toggle显示就好
     searchObject.events = { search: 'refresh', reset: 'reset' };
-    if (filters.length === 3) {
+    if (filters.length === 6) {
       searchObject.attributes.isShowToggle = false;
     }
   }
