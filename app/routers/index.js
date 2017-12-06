@@ -20,7 +20,12 @@ routes.use('/api/key', KeyRoute.routes(), KeyRoute.allowedMethods());
 
 // 最后匹配，GET 请求并且不是接口的就渲染页面，404交给页面来做
 routes.get('(.*)', (ctx) => {
-  if (!ctx.body && !/^\/api(\/.+|\/?)$/.test(ctx.request.url)) {
+  if (ctx.body) {
+    return;
+  }
+  if (/^\/api(\/.+|\/?)$/.test(ctx.request.url)) {
+    ctx.body = '{ "code": 404, "message": "Unknown API." }';
+  } else {
     return ctx.render('index');
   }
 });
