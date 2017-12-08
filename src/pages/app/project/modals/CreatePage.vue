@@ -25,8 +25,12 @@
           <div class="session-title">页面模板</div>
           <el-col :span="24">
             <div class="templates">
-              <div class="tpl-item tpl-list" :class="{active: form.type === pageTypes.List}" @click="onTemplateClick(pageTypes.List)"></div>
-              <div class="tpl-item tpl-blank" :class="{active: form.type === pageTypes.Empty}" @click="onTemplateClick(pageTypes.Empty)"></div>
+              <div class="tpl-item tpl-list" :class="{active: form.type === pageTypes.List}" @click="onTemplateClick(pageTypes.List)">
+                列表页
+              </div>
+              <div class="tpl-item tpl-blank" :class="{active: form.type === pageTypes.Empty}" @click="onTemplateClick(pageTypes.Empty)">
+                空白页
+              </div>
             </div>
           </el-col>
         </el-row>
@@ -173,13 +177,19 @@ export default {
       display: inline-block;
       width: 150px;
       height: 150px;
+      color: #EAE9EE;
       background-color: #EAE9EE;
       padding: 5px;
       margin: 5px 10px;
       cursor: pointer;
       transition: 0.3s;
+      text-align: center;
 
+      &:hover {
+        color: #878D99;
+      }
       &.active {
+        color: #878D99;
         background-color: #878D99;
       }
 
@@ -188,6 +198,7 @@ export default {
         display: block;
         width: 140px;
         height: 140px;
+        margin-bottom: 5px;
       }
     }
 
