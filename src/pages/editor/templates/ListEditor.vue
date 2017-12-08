@@ -239,7 +239,7 @@ export default {
 //        },
         {
           tip: '刷新预览区',
-          icon: 'el-icon-loading',
+          icon: 'iconfont-refresh',
           onClick: () => this.updatePreview()
         }
       ],

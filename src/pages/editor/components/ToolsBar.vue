@@ -73,6 +73,7 @@ export default {
   .u-back {
     color: white;
     font-size: 16px;
+    margin-right: 10px;
   }
 
   .u-back:hover {
