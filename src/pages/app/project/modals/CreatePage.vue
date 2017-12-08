@@ -3,6 +3,7 @@
     <el-dialog title="新建页面" :visible="visible" @open="handleOpen">
       <el-form :model="form" :rules="rules" ref="form" label-position="right" label-width="100px">
         <el-row>
+          <div class="session-title">基础配置</div>
           <el-col :span="8">
             <el-form-item label="页面URL" prop="url">
               <el-input v-model="form.url"></el-input>
@@ -21,13 +22,12 @@
               <el-button type="text" @click="createKeyVisible = true" class="f-ml10">新增NEI key</el-button>
             </el-form-item>
           </el-col>
+          <div class="session-title">页面模板</div>
           <el-col :span="24">
-            <el-form-item label="页面模板">
-              <el-radio-group v-model="form.type" :disabled="!!pageId">
-                <el-radio-button :label="pageTypes.List">列表页</el-radio-button>
-                <el-radio-button :label="pageTypes.Empty">空白页</el-radio-button>
-              </el-radio-group>
-          </el-form-item>
+            <div class="templates">
+              <div class="tpl-item tpl-list" :class="{active: form.type === pageTypes.List}" @click="onTemplateClick(pageTypes.List)"></div>
+              <div class="tpl-item tpl-blank" :class="{active: form.type === pageTypes.Empty}" @click="onTemplateClick(pageTypes.Empty)"></div>
+            </div>
           </el-col>
         </el-row>
       </el-form>
@@ -129,6 +129,9 @@ export default {
         }
       });
     },
+    onTemplateClick(type) {
+      this.form.type = type;
+    },
 
     // 检查格式
     checkURL(url) {
@@ -158,4 +161,54 @@ export default {
 </script>
 
 <style scoped>
+  .session-title {
+    font-weight: bold;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+  }
+
+  .templates {
+    .tpl-item {
+      display: inline-block;
+      width: 150px;
+      height: 150px;
+      background-color: #EAE9EE;
+      padding: 5px;
+      margin: 5px 10px;
+      cursor: pointer;
+      transition: 0.3s;
+
+      &.active {
+        background-color: #878D99;
+      }
+
+      &:before {
+        content: " ";
+        display: block;
+        width: 140px;
+        height: 140px;
+      }
+    }
+
+    .tpl-list {
+      &:before {
+        background-image: url(//haitao.nos.netease.com/a07fe5b1799d49d3a0fc51634ef1398c.svg);
+      }
+
+      &:hover:before, &.active:before {
+        background-image: url(//haitao.nos.netease.com/3ea1215e95404be29a0647f627d17bea.svg);
+      }
+    }
+
+    .tpl-blank {
+      &:before {
+        background-image: url(//haitao.nos.netease.com/3451d50f49f44490a7faf1ea42e07302.svg);
+      }
+
+      &:hover:before, &.active:before {
+        background-image: url(//haitao.nos.netease.com/1d6700ac6aee462bacabf80f4818812c.svg);
+      }
+    }
+  }
 </style>
