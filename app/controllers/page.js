@@ -190,7 +190,7 @@ export const pageDetail = async (ctx) => {
 export const genList = (projectConfig, pageTitle, config) => {
   switch (projectConfig.type) {
     case ProjectTypes.NEJ:
-      return codegen.buildNEJList(config, {
+      return codegen.NEJ.buildList(config, {
         pageTitle,
         jsConfig: {
           ListPath: projectConfig.listPath
