@@ -71,6 +71,7 @@
 <script>
 import lodash from 'lodash';
 import VNodeTree from '@/../core/src/VNodeTree';
+import { genMockData } from '@/../core/src/codegen/utils';
 
 import ToolsBar from '../components/ToolsBar.vue';
 import SideBar from '../components/SideBar.vue';
@@ -228,13 +229,6 @@ export default {
 //          onClick: () => {
 //            this.$confirm('进入拖拽编辑模式后将不能再使用模板编辑模式，确认要继续？', '提示')
 //              .then(() => this.$router.push({ name: 'editor', id: this.$route.query.id }));
-//          }
-//        },
-//        {
-//          tip: '生成代码',
-//          icon: 'el-icon-check',
-//          onClick: () => {
-//            this.saveDomJson();
 //          }
 //        },
         {
@@ -496,34 +490,6 @@ export default {
       }
     },
 
-    // 根据NEI生成mock数据
-    genMockData(cols) {
-      const item = {};
-      const timeTypeReg = /time$/i;
-      cols.forEach((el) => {
-        let value;
-        // 只处理这三种
-        switch ((el.typeName || '').toLowerCase()) {
-          case 'boolean':
-            value = true;
-            break;
-          case 'number':
-            value = timeTypeReg.test(el.key) ? value = +new Date() : Math.ceil(Math.random() * 100);
-            break;
-          case 'string':
-          default:
-            value = el.name || '-';
-        }
-        item[el.key] = value;
-      });
-
-      const result = [];
-      for (let i = 0; i < 10; ++i) {
-        result.push({ id: i, ...item });
-      }
-      return result;
-    },
-
     /* vNodeTree函数二次封装 */
 
     addVNode(tagName, parentId = null, nextBrotherId = null, options = null) {
@@ -642,7 +608,7 @@ export default {
         this.addVNode('kl-table-col', this.listVNode.id, this.opColVNode, { attributes: el });
       });
 
-      this.$nsVNodes.data.list = this.genMockData(newValue);
+      this.$nsVNodes.data.list = genMockData(newValue);
 
       this.needUpdate = true;
     }, 500),

@@ -53,3 +53,30 @@ export const getEventsStr = (events, eventSet) => {
 
   return attr;
 };
+
+export const genMockData = (cols) => {
+  const item = {};
+  const timeTypeReg = /time$/i;
+  cols.forEach((el) => {
+    let value;
+    // 只处理这三种
+    switch ((el.typeName || '').toLowerCase()) {
+      case 'boolean':
+        value = true;
+        break;
+      case 'number':
+        value = timeTypeReg.test(el.key) ? value = +new Date() : Math.ceil(Math.random() * 100);
+        break;
+      case 'string':
+      default:
+        value = el.name || '-';
+    }
+    item[el.key] = value;
+  });
+
+  const result = [];
+  for (let i = 0; i < 10; ++i) {
+    result.push({ id: i, ...item });
+  }
+  return result;
+};
