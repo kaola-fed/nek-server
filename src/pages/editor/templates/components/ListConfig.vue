@@ -1,6 +1,16 @@
 <template>
   <div class="m-list-config">
     <div class="m-card">
+      <h5 class="u-title">模块设置</h5>
+      <span class="f-mr10">建立独立模块</span>
+      <el-switch v-model="value.module" on-text="是" off-text="否"></el-switch>
+      <template v-if="value.module">
+        <span class="s-fc-9 f-ml5">该列表的代码将会生成到一个单独的文件中</span>
+        <el-input class="f-mt5" placeholder="请输入模块文件名" v-model="value.moduleName"></el-input>
+      </template>
+    </div>
+
+    <div class="m-card">
 
       <h5 class="u-title">筛选区</h5>
       <div class="f-mb10">
@@ -172,6 +182,8 @@
 </template>
 
 <script>
+import * as listItems from '../utils/listItems';
+
 export default {
   name: 'listConfig',
   props: {
@@ -189,36 +201,16 @@ export default {
   },
   methods: {
     onAddFieldClick() {
-      this.value.filters.push({
-        title: '',
-        key: '',
-        type: 'kl-input',
-        placeholder: '',
-        sourceKey: ''
-      });
+      this.value.filters.push(listItems.newFilter());
     },
     onAddButtonClick() {
-      this.value.buttons.push({
-        title: '',
-        event: '',
-        type: '',
-      });
+      this.value.buttons.push(listItems.newButton());
     },
     onAddColClick() {
-      this.value.cols.push({
-        name: '',
-        key: '',
-        type: '',
-        fixed: '',
-        filter: '',
-        width: '100'
-      });
+      this.value.cols.push(listItems.newCol());
     },
     onAddOperatorClick() {
-      this.value.operatorButtons.push({
-        title: '',
-        link: ''
-      });
+      this.value.operatorButtons.push(listItems.newOperatorButton());
     },
     onUpMoveClick(list, currentIndex) {
       if (currentIndex === 0) {

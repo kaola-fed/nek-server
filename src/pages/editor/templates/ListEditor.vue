@@ -78,6 +78,8 @@ import SideBar from '../components/SideBar.vue';
 import ListConfig from './components/ListConfig.vue';
 import PreviewButton from '../components/PreviewButton.vue';
 
+import * as listItems from './utils/listItems';
+
 import NekComponent from '@/widget/NekComponent';
 
 import { getComponentList } from '@/api/library';
@@ -133,25 +135,14 @@ export default {
 
     // 更改项目页面配置，更新数据
     const { data } = await getListTemplate({ id: this.$route.query.id });
-    if(data.breadcrumbs) {
-      this.breadcrumbs = data.breadcrumbs;
-    }
-    if(data.tabsEnable) {
-      this.multiTabEnable = data.tabsEnable;
-    }
-    if(data.tabs) {
-      this.multiTabs = data.tabs;
-    }
-    if(data.lists) {
-      this.listConfigs = data.lists;
-    }
-    if(data.url) {
-      this.url = data.url;
-    }
+    this.setBreadcrumbs(data.breadcrumbs);
+    this.multiTabEnable = !!data.tabsEnable;
+    this.setTabs(data.tabs);
+    this.setCols(data.lists);
+    this.url = data.url || '';
 
     this.$forceUpdate();
   },
-  // TODO: 完善watch中的子节点的差异对比和修改方式
   watch: {
     needUpdate: {
       handler: function(newValue) {
@@ -170,7 +161,7 @@ export default {
     // 多Tab启用/停用
     multiTabEnable: function(newValue) {
       if (newValue) {
-        this.multiTabsVNode = this.addVNode('kl-tabs', this.tabsVNode.id);
+        this.multiTabsVNode = this.$nsVNodes.addNode('kl-tabs', this.tabsVNode.id);
         this.updateTabVNodes(this.multiTabs);
       } else if (this.multiTabsVNode) {
         this.$nsVNodes.removeNode(this.multiTabsVNode.id);
@@ -240,14 +231,14 @@ export default {
 
       configActiveNames: ['breadcrumb', 'tabs', 'list'],
 
-      breadcrumbs: [this.newBreadcrumbItem()],
+      breadcrumbs: [listItems.newBreadcrumbItem()],
 
       multiTabEnable: null,
-      multiTabs: [this.newTabItem()],
+      multiTabs: [listItems.newTabItem()],
       copyTab: -1,
 
       currentTab: '0',
-      listConfigs: [this.newColItem()],
+      listConfigs: [listItems.newListConfigItem()],
       needUpdate: false,
       //列表页名称
       pageName: '',
@@ -294,19 +285,19 @@ export default {
 
     // 搜索多Tab
     initTab() {
-      this.tabsVNode = this.addVNode('kl-card', null, null, { attributes: { title: this.pageInfo.title } });
+      this.tabsVNode = this.$nsVNodes.addNode('kl-card', null, null, { attributes: { title: this.pageInfo.title } });
     },
 
     // 搜索区域表单
     initForm() {
-      this.formCardVNode = this.addVNode('kl-card', null, null, { attributes: { isShowLine: false, class: 'f-undertab' } });
-      this.searchVNode = this.addVNode('kl-search', this.formCardVNode.id, null, { attributes: { isShowMore: false } });
-      this.filtersVNode = this.addVNode('kl-row', this.searchVNode.id);
+      this.formCardVNode = this.$nsVNodes.addNode('kl-card', null, null, { attributes: { isShowLine: false, class: 'f-undertab' } });
+      this.searchVNode = this.$nsVNodes.addNode('kl-search', this.formCardVNode.id, null, { attributes: { isShowMore: false } });
+      this.filtersVNode = this.$nsVNodes.addNode('kl-row', this.searchVNode.id);
     },
 
     initList() {
-      this.listCardVNode = this.addVNode('kl-card', null, null, { attributes: { isShowLine: false } });
-      this.listVNode = this.addVNode('kl-table', this.listCardVNode.id, null, {
+      this.listCardVNode = this.$nsVNodes.addNode('kl-card', null, null, { attributes: { isShowLine: false } });
+      this.listVNode = this.$nsVNodes.addNode('kl-table', this.listCardVNode.id, null, {
         attributes: {
           source: {
             type: 'var',
@@ -314,7 +305,7 @@ export default {
           }
         }
       });
-      this.addVNode('kl-pager', this.listCardVNode.id, null, {
+      this.$nsVNodes.addNode('kl-pager', this.listCardVNode.id, null, {
         attributes: { sumTotal: 233, pageSize: 10, current: 1 }
       });
     },
@@ -322,7 +313,7 @@ export default {
     /* 面包屑 */
     onAddBreadcrumbClick() {
       if (this.breadcrumbs.length < 3) {
-        this.breadcrumbs.push(this.newBreadcrumbItem());
+        this.breadcrumbs.push(listItems.newBreadcrumbItem());
       }
     },
     onDeleteBreadcrumbClick(index) {
@@ -336,8 +327,8 @@ export default {
       this.currentTab = '0';
     },
     onAddTabClick() {
-      this.multiTabs.push(this.newTabItem(this.multiTabs.length));
-      this.listConfigs.push(this.newColItem());
+      this.multiTabs.push(listItems.newTabItem(this.multiTabs.length));
+      this.listConfigs.push(listItems.newListConfigItem());
     },
     async onDeleteTabClick(index) {
       if (this.multiTabs.length < 2) {
@@ -365,7 +356,7 @@ export default {
     updateTabVNodes(tabs) {
       for (let i of tabs) {
         if (i.title) {
-          this.addVNode('kl-tab', this.multiTabsVNode.id, null, { attributes: { title: i.title, key: i.key } });
+          this.$nsVNodes.addNode('kl-tab', this.multiTabsVNode.id, null, { attributes: { title: i.title, key: i.key } });
         }
       }
     },
@@ -407,14 +398,10 @@ export default {
 
         const { data } = await getPageNei({ id: this.$route.query.id, url: value });
 
-        if(data.filters && data.filters.length > 0) {
-          this.listConfigs[currentTab].filters = data.filters.map(el => ({ placeholder: '', sourceKey: '', ...el }));
-        }
-        if(data.cols && data.cols.length > 0) {
-          this.listConfigs[currentTab].cols = data.cols.map(el => ({ fixed: '', ...el }));
-        }
-
+        this.listConfigs[currentTab].filters = listItems.setListWithTemplate(data.filters, listItems.newFilter());
+        this.listConfigs[currentTab].cols = listItems.setListWithTemplate(data.cols, listItems.newCol());
         this.url = value;
+
         this.$forceUpdate();
       } catch (err) {
         return err;
@@ -433,45 +420,61 @@ export default {
         }
       }
     },
-    onSave() {
-      this.saveDomJson();
-      this.$notify({
-        title: '保存成功',
-        message: `nek server -k ${this.$route.query.id}`,
-        type: 'success',
-        duration: 0
-      });
+    async onSave() {
+      // TODO: 校验
+      try {
+        if (this.saveNotify) {
+          this.saveNotify.close();
+        }
+        await this.saveDomJson();
+        this.saveNotify = this.$notify({
+          title: '保存成功',
+          message: `nek server -k ${this.$route.query.id}`,
+          type: 'success',
+          duration: 0
+        });
+      } catch (err) {
+        return err;
+      }
     },
 
     /* 通用函数 */
 
-    getRandomId() {
-      return `${+new Date()}_${Math.round(Math.random() * 10000)}`;
-    },
     isListEmpty(index) {
       const config = this.listConfigs[index];
       const { filters, buttons, cols, operatorCol, operatorButtons } = config;
       return filters.length + buttons.length + cols.length + operatorButtons.length === 0 && !operatorCol;
     },
 
-    newBreadcrumbItem() {
-      return { id: this.getRandomId(), title: '', link: '', nodeId: null };
+    setBreadcrumbs(value) {
+      if (value) {
+        this.breadcrumbs = listItems.setListWithTemplate(value, listItems.newBreadcrumbItem());
+      }
     },
-    newTabItem(key) {
-      return {
-        id: this.getRandomId(),
-        title: '',
-        key: key || ''
-      };
+
+    setTabs(value) {
+      if (value) {
+        this.multiTabs = listItems.setListWithTemplate(value, listItems.newTabItem());
+      }
     },
-    newColItem() {
-      return {
-        filters: [],
-        buttons: [],
-        cols: [],
-        operatorCol: false,
-        operatorButtons: []
-      };
+
+    setCols(value) {
+      if (!value) {
+        return;
+      }
+
+      const listTemplate = listItems.newListConfigItem();
+      this.listConfigs = value.map((el) => {
+        const item = { ...listTemplate, ...el };
+        const { filters, buttons, cols, operatorButtons, ...other } = item;
+        return {
+          ...other,
+          filters: listItems.setListWithTemplate(filters, listItems.newFilter()),
+          buttons: listItems.setListWithTemplate(buttons, listItems.newButton()),
+          cols: listItems.setListWithTemplate(cols, listItems.newCol()),
+          operatorButtons: listItems.setListWithTemplate(operatorButtons, listItems.newOperatorButton()),
+        };
+      });
     },
 
     // 保存dom json
@@ -490,15 +493,6 @@ export default {
       }
     },
 
-    /* vNodeTree函数二次封装 */
-
-    addVNode(tagName, parentId = null, nextBrotherId = null, options = null) {
-      return this.$nsVNodes.addNode(tagName, parentId, nextBrotherId, {
-        libName: LIB_NAME,
-        ...options
-      });
-    },
-
     updatePreview() {
       this.$nsVNodes.$update({ rerender: true, outter: false });
     },
@@ -513,7 +507,7 @@ export default {
 
       newValue.forEach((el) => {
         const { title, link, ...otherAttr } = el;
-        this.addVNode('kl-crumb-item', this.breadcrumbVNode.id, null, {
+        this.$nsVNodes.addNode('kl-crumb-item', this.breadcrumbVNode.id, null, {
           attributes: {
             content: title,
             href: link,
@@ -574,7 +568,7 @@ export default {
     buttonsDataWatcher: lodash.debounce(function(newValue) {
       if (newValue && newValue.length > 0) {
         if (!this.otherButtonsVNode) {
-          this.otherButtonsVNode = this.addVNode('kl-card', null, this.listCardVNode.id, { attributes: { isShowLine: false } });
+          this.otherButtonsVNode = this.$nsVNodes.addNode('kl-card', null, this.listCardVNode.id, { attributes: { isShowLine: false } });
         }
         this.otherButtonsVNode.children.forEach(el => this.$nsVNodes.removeNode(el));
         this.otherButtonsVNode.children = [];
@@ -582,7 +576,7 @@ export default {
         newValue.forEach((el) => {
           const { event, ...attributes } = el;
           let events = event ? { click: el.event } : undefined;
-          this.addVNode('kl-button', this.otherButtonsVNode.id, null, { attributes, events });
+          this.$nsVNodes.addNode('kl-button', this.otherButtonsVNode.id, null, { attributes, events });
         });
       } else if (this.otherButtonsVNode) {
         this.$nsVNodes.removeNode(this.otherButtonsVNode.id);
@@ -605,7 +599,7 @@ export default {
 
       // TODO: 增加的时候操作列还有bug
       newValue.forEach((el) => {
-        this.addVNode('kl-table-col', this.listVNode.id, this.opColVNode, { attributes: el });
+        this.$nsVNodes.addNode('kl-table-col', this.listVNode.id, this.opColVNode, { attributes: el });
       });
 
       this.$nsVNodes.data.list = genMockData(newValue);
@@ -616,10 +610,10 @@ export default {
     colOperatorsWatcher: lodash.debounce(function(newValue) {
       if (newValue) {
         if (!this.opColVNode) {
-          this.opColVNode = this.addVNode('kl-table-col', this.listVNode.id, null, {
+          this.opColVNode = this.$nsVNodes.addNode('kl-table-col', this.listVNode.id, null, {
             attributes: {name: '操作', fixed: 'right', width: '150'}
           });
-          this.opColTplVNode = this.addVNode('kl-table-template', this.opColVNode.id, null, {
+          this.opColTplVNode = this.$nsVNodes.addNode('kl-table-template', this.opColVNode.id, null, {
             attributes: {type: 'item'}
           });
         }
