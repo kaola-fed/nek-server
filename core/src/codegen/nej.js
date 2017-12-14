@@ -1,30 +1,7 @@
 import * as _ from './utils';
-import * as transform from './transform';
+import * as transform from './transform/list';
 
 /** 通用函数 */
-
-const genHTML = (tree, nodeId, { eventSet, varMap, level = 0 }) => {
-  const vNode = tree[nodeId];
-
-  const { tagName, attributes, events, children, text } = vNode;
-
-  const intend = new Array(level * 4).fill(' ').join('');
-
-  if (!tagName) {
-    return `${intend}${text || ''}`;
-  }
-
-  // 添加属性并记录对应值
-  const attrStr = _.getAttributesStr(attributes, false, varMap);
-  // 添加事件并记录事件名
-  const eventStr = _.getEventsStr(events, eventSet);
-
-  return `${intend}<${tagName}${attrStr}${eventStr}>` +
-    `${children.length
-      ? `\n${children.map(el => genHTML(tree, el, { eventSet, varMap, level: level + 1 })).join('\n')}\n${intend}`
-      : ''}` +
-    `</${tagName}>`;
-};
 
 const genNEJJS = (options) => {
   const {
@@ -67,9 +44,9 @@ const genNEJJS = (options) => {
 };
 
 /** NEJ 页面 */
+// 只生成JS和HTML，ftl以及entry等项目相关的放到具体业务中生成
 
 // 单文件生成
-// 只生成JS和HTML，ftl以及entry等项目相关的放到具体业务中生成
 export const buildPage = () => {
   //
 };
@@ -90,7 +67,7 @@ export const buildList = (listConfig, options) => {
   varMap.set('url', `'${listConfig.url}'`);
   const vTree = transform.nejList(pageTitle, listConfig);
 
-  const html = genHTML(vTree.tree, root, { eventSet, varMap });
+  const html = _.genHTML(vTree.tree, root, { eventSet, varMap });
 
   // 移除基类事件
   eventSet.forEach((el) => {
@@ -112,7 +89,7 @@ export const buildList = (listConfig, options) => {
   return { html, js };
 };
 
-// 多文件生成
-export const buildMulPage = () => {
+// 多文件列表
+export const buildMulList = () => {
   //
 };

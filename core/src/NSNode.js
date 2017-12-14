@@ -20,6 +20,7 @@ export default class NSNode {
     const {
       tagName = 'div',
       libName = 'native',
+      condition = null,   // { type: ConditionTypes, exp }
       parent = null,
       children = [],
       attributes = {},
@@ -31,6 +32,7 @@ export default class NSNode {
     this.id = id;
     this.tagName = tagName;
     this.libName = libName;
+    this.condition = condition;
 
     this.parent = parent;
     this.children = children;

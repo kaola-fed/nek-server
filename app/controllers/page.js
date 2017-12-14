@@ -190,11 +190,16 @@ export const pageDetail = async (ctx) => {
 export const genList = (projectConfig, pageTitle, config) => {
   switch (projectConfig.type) {
     case ProjectTypes.NEJ:
+      // 只要有一个分模块的就建立多文件
+      if (config.lists.find(el => el.module)) {
+        return codegen.NEJ.buildMulList(config, {
+          pageTitle,
+          jsConfig: {ListPath: projectConfig.listPath}
+        });
+      }
       return codegen.NEJ.buildList(config, {
         pageTitle,
-        jsConfig: {
-          ListPath: projectConfig.listPath
-        }
+        jsConfig: {ListPath: projectConfig.listPath}
       });
     case ProjectTypes.Webpack:
       break;

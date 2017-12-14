@@ -22,20 +22,20 @@
             </el-row>
           </el-collapse-item>
 
-          <!--<el-collapse-item title="多Tab" name="tabs" class="m-config-tabs">-->
-            <!--<el-switch v-model="multiTabEnable" class="f-mb10" on-text="启用" off-text="停用" @change="onMultiTabEnableChange"></el-switch>-->
-            <!--<template v-if="multiTabEnable">-->
-              <!--<el-row v-for="(item, index) in multiTabs" :key="item.id + index" :gutter="20">-->
-                <!--<el-col :span="2"><label class="el-form-item__label">Tab {{ index }}</label></el-col>-->
-                <!--<el-col :span="8"><el-input placeholder="标题" v-model="item.title"></el-input></el-col>-->
-                <!--<el-col :span="8"><el-input placeholder="Tab key（可选）" v-model="item.key"></el-input></el-col>-->
-                <!--<el-col :span="6">-->
-                  <!--<el-button class="u-icon-btn" icon="plus" v-if="index === multiTabs.length - 1" @click="onAddTabClick"></el-button>-->
-                  <!--<el-button class="u-icon-btn" icon="minus" v-if="multiTabs.length > 1" @click="onDeleteTabClick(index)"></el-button>-->
-                <!--</el-col>-->
-              <!--</el-row>-->
-            <!--</template>-->
-          <!--</el-collapse-item>-->
+          <el-collapse-item title="多Tab" name="tabs" class="m-config-tabs">
+            <el-switch v-model="multiTabEnable" class="f-mb10" on-text="启用" off-text="停用" @change="onMultiTabEnableChange"></el-switch>
+            <template v-if="multiTabEnable">
+              <el-row v-for="(item, index) in multiTabs" :key="item.id + index" :gutter="20">
+                <el-col :span="2"><label class="el-form-item__label">Tab {{ index }}</label></el-col>
+                <el-col :span="8"><el-input placeholder="标题" v-model="item.title"></el-input></el-col>
+                <el-col :span="8"><el-input placeholder="Tab key（可选）" v-model="item.key"></el-input></el-col>
+                <el-col :span="6">
+                  <el-button class="u-icon-btn" icon="plus" v-if="index === multiTabs.length - 1" @click="onAddTabClick"></el-button>
+                  <el-button class="u-icon-btn" icon="minus" v-if="multiTabs.length > 1" @click="onDeleteTabClick(index)"></el-button>
+                </el-col>
+              </el-row>
+            </template>
+          </el-collapse-item>
 
           <el-collapse-item title="列表配置" name="list">
             <div class="f-mb10">

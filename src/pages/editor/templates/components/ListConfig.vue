@@ -5,8 +5,8 @@
       <span class="f-mr10">建立独立模块</span>
       <el-switch v-model="value.module" on-text="是" off-text="否"></el-switch>
       <template v-if="value.module">
-        <span class="s-fc-9 f-ml5">该列表的代码将会生成到一个单独的文件中</span>
-        <el-input class="f-mt5" placeholder="请输入模块文件名" v-model="value.moduleName"></el-input>
+        <span class="s-fc-9 f-ml5">所有列表将会按照模块名生成对应的模块</span>
+        <el-input class="f-mt5" placeholder="请输入模块名" v-model="value.moduleName"></el-input>
       </template>
     </div>
 
