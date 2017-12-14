@@ -193,6 +193,16 @@ export default class VNodeTree {
   // 新增文本节点
   addTextNode(text, parentId, nextBrotherId) {
     const node = NSNode.createTextNode(text, parentId);
+    node.tagName = null;
+    this.__updateTree[node.id] = node;
+    this.__updateTree[parentId].insertChild(node.id, nextBrotherId);
+
+    return node;
+  }
+
+  addConditionNode(condition, parentId, nextBrotherId) {
+    const node = NSNode.createNode(parentId, { condition });
+    node.tagName = null;
     this.__updateTree[node.id] = node;
     this.__updateTree[parentId].insertChild(node.id, nextBrotherId);
 
@@ -205,10 +215,18 @@ export default class VNodeTree {
       tagName,
       text,
       children,
+      condition,
       ...others
     } = treeObj;
     parentId = parentId || this.__rootId;
-    const node = tagName ? this.addNode(tagName, parentId, null, others) : this.addTextNode(text, parentId);
+    let node;
+    if (tagName) {
+      node = this.addNode(tagName, parentId, null, others);
+    } else if (condition) {
+      node = this.addConditionNode(condition, parentId);
+    } else {
+      node = this.addTextNode(text, parentId);
+    }
     if (children && children.length > 0) {
       children.forEach(el => this.addFromObject(el, node.id));
     }

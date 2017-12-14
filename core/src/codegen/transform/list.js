@@ -61,7 +61,7 @@ function diffAndMergeArrays(keys, arrays, getItems) {
 
   if (finalFilterNodes.length > 1) {
     // 加入 if-elseif-else
-    const children = [];
+    let children = [];
     finalFilterNodes.forEach((el, index) => {
       let condition;
       switch (index) {
@@ -69,12 +69,13 @@ function diffAndMergeArrays(keys, arrays, getItems) {
           condition = { type: ConditionTypes.IF, exp: `currentTab === '${keys[diffIndexes[0]]}'` };
           break;
         case finalFilterNodes.length - 1:
-          condition = { type: ConditionTypes.ENDIF, exp: `currentTab === '${keys[diffIndexes[index]]}'` };
+          condition = { type: ConditionTypes.ELSEIF, exp: `currentTab === '${keys[diffIndexes[index]]}'` };
           break;
         default:
           condition = {type: ConditionTypes.ELSE};
       }
-      lodash.concat(children, condition, el);
+      children.push({ condition });
+      children = children.concat(el);
     });
     children.push({ condition: { type: ConditionTypes.ENDIF } });
     return children;
@@ -190,7 +191,7 @@ function getButtonsNode(keys, multiButtons) {
 }
 
 function getCols(cols) {
-  cols.map((el) => {
+  return cols.map((el) => {
     if (el.hasOwnProperty('typeName')) {
       // 生成代码时删除typeName属性
       delete el.typeName;
@@ -309,7 +310,7 @@ function getPagerNode() {
 function getListsNodes(tabs, configs) {
   const keys = [], searches = [], buttons = [], tables = [];
   configs.forEach((el, index) => {
-    keys.push(tabs[index]);
+    keys.push(tabs[index].key);
     searches.push(el.filters);
     buttons.push(el.buttons);
 

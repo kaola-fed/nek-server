@@ -1,4 +1,4 @@
-import lodash from 'lodash';
+// import lodash from 'lodash';
 
 import { ConditionTypes } from '../enums';
 
@@ -107,7 +107,7 @@ export const genHTML = (tree, nodeId, { eventSet, varMap, level = 0 }) => {
 
   if (condition) {
     let conditionStr = '';
-    const { type, exp } = conditionStr;
+    const { type, exp } = condition;
     switch (type) {
       case ConditionTypes.IF:
       case ConditionTypes.ELSEIF:
@@ -123,7 +123,7 @@ export const genHTML = (tree, nodeId, { eventSet, varMap, level = 0 }) => {
         break;
     }
     if (conditionStr) {
-      return `${intend}{${conditionStr}}\n`;
+      return `${intend}{${conditionStr}}`;
     }
   }
 
