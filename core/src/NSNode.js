@@ -64,6 +64,13 @@ export default class NSNode {
     });
   };
 
+  static createNode(parent, options) {
+    return new NSNode(NSNode.generateId(), {
+      parent,
+      ...options
+    });
+  }
+
   static eq(node1, node2) {
     // 对比属性和事件
     if (!isSameObject(node1.attributes, node2.attributes) || !isSameObject(node1.events, node2.events)) {
