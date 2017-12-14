@@ -202,7 +202,10 @@ export const genList = (projectConfig, pageTitle, config) => {
         jsConfig: {ListPath: projectConfig.listPath}
       });
     case ProjectTypes.Webpack:
-      break;
+      return codegen.Webpack.buildList(config, {
+        pageTitle,
+        jsConfig: {ListPath: projectConfig.listPath}
+      });
     default:
       break;
   }
