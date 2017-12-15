@@ -51,12 +51,12 @@ function compareArrays(arrays, comparator = lodash.isEqual) {
 
 // 合并多个数组，并加入if-elseif-else
 // TODO: 差异分组
-function diffAndMergeArrays(keys, arrays, getItems) {
+function diffAndMergeArrays(keys, arrays, getItems, comparator) {
   if (!getItems) {
     throw new Error('[Miss "getItems"] Need to provide a function to generate items.');
   }
 
-  const diffIndexes = compareArrays(arrays);
+  const diffIndexes = compareArrays(arrays, comparator);
   const finalFilterNodes = diffIndexes.map(el => getItems(arrays[el]));
 
   if (finalFilterNodes.length > 1) {
