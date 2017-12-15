@@ -40,7 +40,7 @@ function compareArrays(arrays, comparator = lodash.isEqual) {
   const result = [];
   const tpl = arrays[0];
   for (let i = 1; i < arrays.length; ++i) {
-    if (lodash.differenceWith(tpl, arrays[i], comparator)) {
+    if (lodash.differenceWith(tpl, arrays[i], comparator).length > 0) {
       result.push(i);
     }
   }
@@ -158,27 +158,28 @@ function getSearchItems(filters) {
 function getSearchNode(keys, multiFilters) {
   // TODO: 用computed控制isShowFooter和isShowToggle
   return {
-    tagName: 'kl-search',
-    events: { search: 'refresh', reset: 'reset' },
-    children: diffAndMergeArrays(keys, multiFilters, getSearchItems)
+    tagName: 'kl-card',
+    attributes: { isShowLine: false },
+    children: [{
+      tagName: 'kl-search',
+      events: { search: 'refresh', reset: 'reset' },
+      children: diffAndMergeArrays(keys, multiFilters, getSearchItems)
+    }]
   };
 }
 
 function getButtons(buttons) {
-  return {
-    tagName: 'kl-col',
-    children: buttons.map((el) => {
-      const { event, ...attributes } = el;
-      const options = { tagName: 'kl-button', attributes };
-      if (!el.type || el.type === 'default') {
-        delete options.attributes.type;
-      }
-      if (el.event) {
-        options.events = { click: event };
-      }
-      return options;
-    })
-  };
+  return buttons.map((el) => {
+    const { event, ...attributes } = el;
+    const options = { tagName: 'kl-button', attributes };
+    if (!el.type || el.type === 'default') {
+      delete options.attributes.type;
+    }
+    if (el.event) {
+      options.events = { click: event };
+    }
+    return options;
+  });
 }
 
 // 参数参考getSearchNode
@@ -187,7 +188,7 @@ function getButtonsNode(keys, multiButtons) {
   const children = diffAndMergeArrays(keys, multiButtons, getButtons);
   return children.length > 0 ? {
     tagName: 'kl-row',
-    attributes: { class: 'f-mb10' },
+    attributes: { gutter: 0 },
     children
   } : null;
 }
@@ -216,9 +217,13 @@ function getCols(cols) {
 
 function getTablesNode(keys, cols) {
   return {
-    tagName: 'kl-table',
-    attributes: { source: { type: 'var', value: 'list' } },
-    children: diffAndMergeArrays(keys, cols, getCols)
+    tagName: 'kl-row',
+    attributes: { gutter: 0 },
+    children: [{
+      tagName: 'kl-table',
+      attributes: {source: {type: 'var', value: 'list'}},
+      children: diffAndMergeArrays(keys, cols, getCols)
+    }]
   };
 }
 
@@ -233,84 +238,9 @@ function getPagerNode() {
   };
 }
 
-// function getTableNode(list) {
-//   const { buttons, cols, operatorCol, operatorButtons } = list;
-//   const listObject = {
-//     tagName: 'kl-card',
-//     attributes: { isShowLine: false },
-//     children: []
-//   };
-//   // 按钮
-//   if (buttons.length > 0) {
-//     listObject.children.push({
-//       tagName: 'kl-row',
-//       attributes: { class: 'f-mb10' },
-//       children: [{
-//         tagName: 'kl-col',
-//         // attributes: { span: 4 },
-//         children: buttons.map((el) => {
-//           const { event, ...attributes } = el;
-//           const options = { attributes };
-//           if (!el.type || el.type === 'default') {
-//             delete options.attributes.type;
-//           }
-//           if (el.event) {
-//             options.events = { click: event };
-//           }
-//
-//           return {
-//             tagName: 'kl-button',
-//             ...options
-//           };
-//         })
-//       }]
-//     });
-//   }
-//   // 列表
-//   const tableObject = {
-//     tagName: 'kl-table',
-//     attributes: { source: { type: 'var', value: 'list' } },
-//     children: cols.map((el) => {
-//       // 生成代码时删除typeName属性
-//       delete el.typeName;
-//       return {
-//         tagName: 'kl-table-col',
-//         attributes: el
-//       };
-//     })
-//   };
-//   if (operatorCol) {
-//     tableObject.children.push({
-//       tagName: 'kl-table-col',
-//       attributes: { name: '操作', fixed: 'right' },
-//       children: [{
-//         tagName: 'kl-table-template',
-//         children: [{
-//           text: `${operatorButtons.map((el, index) => {
-//             return `{'<a href="${el.link}" target="_blank" ${ index > 0 ? 'class="f-ml10"' : ''}>${el.title}</a>'}`;
-//           }).join('\n')}`
-//         }]
-//       }]
-//     });
-//   }
-//   listObject.children.push(tableObject);
-//
-//   // 分页
-//   listObject.children.push({
-//     tagName: 'kl-pager',
-//     attributes: {
-//       pageSize: { type: 'var', value: 'pageSize' },
-//       sumTotal: { type: 'var', value: 'total' },
-//       current: { type: 'var', value: 'pageNo' },
-//     }
-//   });
-//
-//   return listObject;
-// }
-
 // 获取多Tab的列表节点
 function getListsNodes(tabs, configs) {
-  const keys = [], searches = [], buttons = [], tables = [];
+  let keys = [], searches = [], buttons = [], tables = [];
   configs.forEach((el, index) => {
     keys.push(tabs[index].key);
     searches.push(el.filters);
@@ -344,16 +274,27 @@ export const nejList = (title, config) => {
   // 添加面包屑
   nsVNodes.addFromObject(getBreadNode(breadcrumbs), nsVNodes.rootId);
 
+  // 根据是否启用多Tab生成不同数据
+  let nodes;
   if (tabsEnable) {
     nsVNodes.addFromObject(getTabsNode(tabs), nsVNodes.rootId);
+    nodes = getListsNodes(tabs, lists);
+    nodes.searchNode.attributes = { class: 'f-undertab' };
+  } else {
+    nodes = getListsNodes([tabs[0]], [lists[0]]);
   }
 
-  const { searchNode, buttonsNode, tablesNode } = getListsNodes(tabs, lists);
+  const { searchNode, buttonsNode, tablesNode } = nodes;
   nsVNodes.addFromObject(searchNode, nsVNodes.rootId);
-  buttonsNode && nsVNodes.addFromObject(buttonsNode, nsVNodes.rootId);
-  nsVNodes.addFromObject(tablesNode, nsVNodes.rootId);
-
-  nsVNodes.addFromObject(getPagerNode(), nsVNodes.rootId);
+  const tableObj = {
+    tagName: 'kl-card',
+    attributes: { isShowLine: false },
+    children: [tablesNode, getPagerNode()]
+  };
+  if (buttonsNode) {
+    tableObj.children.unshift(buttonsNode);
+  }
+  nsVNodes.addFromObject(tableObj, nsVNodes.rootId);
 
   // 将基类中的变量和事件放进去
   // TODO: 配置这几个变量？
