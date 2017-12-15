@@ -108,16 +108,16 @@ function getSearchItems(filters) {
   let searchMoreRowNode = null;
 
   filters.forEach((el, index) => {
-    // 第七个的时候建立kl-search-more里的row
-    if (index === 6) {
+    // 第四个的时候建立kl-search-more里的row
+    if (index === 3) {
       searchMoreRowNode = { tagName: 'kl-row', children: [] };
     }
 
-    if (index < 6) {
-      // 前六个放在第一行
+    if (index < 3) {
+      // 前四个放在第一行
       rowNode.children.push(getSearchItem(el));
     } else {
-      // 第七个开始放进kl-search-more的row中
+      // 第四个开始放进kl-search-more的row中
       searchMoreRowNode.children.push(getSearchItem(el));
     }
   });
