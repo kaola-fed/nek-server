@@ -183,11 +183,13 @@ function getButtons(buttons) {
 
 // 参数参考getSearchNode
 function getButtonsNode(keys, multiButtons) {
-  return {
+  // 按钮可能不存在
+  const children = diffAndMergeArrays(keys, multiButtons, getButtons);
+  return children.length > 0 ? {
     tagName: 'kl-row',
     attributes: { class: 'f-mb10' },
-    children: diffAndMergeArrays(keys, multiButtons, getButtons)
-  };
+    children
+  } : null;
 }
 
 function getCols(cols) {
@@ -348,22 +350,10 @@ export const nejList = (title, config) => {
 
   const { searchNode, buttonsNode, tablesNode } = getListsNodes(tabs, lists);
   nsVNodes.addFromObject(searchNode, nsVNodes.rootId);
-  nsVNodes.addFromObject(buttonsNode, nsVNodes.rootId);
+  buttonsNode && nsVNodes.addFromObject(buttonsNode, nsVNodes.rootId);
   nsVNodes.addFromObject(tablesNode, nsVNodes.rootId);
 
   nsVNodes.addFromObject(getPagerNode(), nsVNodes.rootId);
-
-  // const list = lists[0];
-  //
-  // // 输入部分
-  // nsVNodes.addFromObject({
-  //   tagName: 'kl-card',
-  //   attributes: { title },
-  //   children: [getSearchNode(list.filters)]
-  // }, nsVNodes.rootId);
-  //
-  // // 按钮及列表
-  // nsVNodes.addFromObject(getTableNode(list), nsVNodes.rootId);
 
   // 将基类中的变量和事件放进去
   // TODO: 配置这几个变量？
