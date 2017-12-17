@@ -85,5 +85,5 @@ export const buildList = (listConfig, options) => {
     eventSet,
     varMap
   });
-  return { html, js };
+  return { [vTree.moduleName]: { html, js } };
 };

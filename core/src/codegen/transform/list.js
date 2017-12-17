@@ -28,10 +28,17 @@ function getTabsNode(tabs) {
   return {
     tagName: 'kl-tabs',
     events: { change: 'onTabChange' },
-    children: tabs.map(el => ({
-      tagName: 'el-tab',
-      attributes: { key: el.key }
-    }))
+    children: tabs.map((el) => {
+      const res = {
+        tagName: 'el-tab',
+        attributes: { key: el.key }
+      };
+      if (el.moduleName) {
+        res.children = [{ tagName: el.moduleName }];
+      }
+
+      return res;
+    })
   };
 }
 
@@ -266,26 +273,7 @@ function getListsNodes(tabs, configs) {
   return { searchNode, buttonsNode, tablesNode };
 }
 
-// 单文件
-export const nejList = (title, config) => {
-  const { breadcrumbs, tabsEnable, tabs, lists } = config;
-  const nsVNodes = new VNodeTree();
-
-  // 添加面包屑
-  nsVNodes.addFromObject(getBreadNode(breadcrumbs), nsVNodes.rootId);
-
-  // 根据是否启用多Tab生成不同数据
-  let nodes;
-  if (tabsEnable) {
-    nsVNodes.addFromObject(getTabsNode(tabs), nsVNodes.rootId);
-    nodes = getListsNodes(tabs, lists);
-    nodes.searchNode.attributes = { class: 'f-undertab' };
-  } else {
-    nodes = getListsNodes([tabs[0]], [lists[0]]);
-  }
-
-  const { searchNode, buttonsNode, tablesNode } = nodes;
-  nsVNodes.addFromObject(searchNode, nsVNodes.rootId);
+function assemblyLTable(buttonsNode, tablesNode) {
   const tableObj = {
     tagName: 'kl-card',
     attributes: { isShowLine: false },
@@ -294,7 +282,31 @@ export const nejList = (title, config) => {
   if (buttonsNode) {
     tableObj.children.unshift(buttonsNode);
   }
-  nsVNodes.addFromObject(tableObj, nsVNodes.rootId);
+
+  return tableObj;
+}
+
+// 单文件
+export const nejList = (title, config) => {
+  const { breadcrumbs, tabsEnable, tabs, lists } = config;
+  const nsVNodes = new VNodeTree();
+
+  // 添加面包屑
+  nsVNodes.addFromObject(getBreadNode(breadcrumbs));
+
+  // 根据是否启用多Tab生成不同数据
+  let nodes;
+  if (tabsEnable) {
+    nsVNodes.addFromObject(getTabsNode(tabs));
+    nodes = getListsNodes(tabs, lists);
+    nodes.searchNode.attributes = { class: 'f-undertab' };
+  } else {
+    nodes = getListsNodes([tabs[0]], [lists[0]]);
+  }
+
+  const { searchNode, buttonsNode, tablesNode } = nodes;
+  nsVNodes.addFromObject(searchNode);
+  nsVNodes.addFromObject(assemblyLTable(buttonsNode, tablesNode));
 
   // 将基类中的变量和事件放进去
   // TODO: 配置这几个变量？
@@ -303,4 +315,42 @@ export const nejList = (title, config) => {
 
   nsVNodes.$apply();
   return nsVNodes;
+};
+
+// TODO: Untested
+export const nejMulList = (title, config) => {
+  const { breadcrumbs, tabs, lists } = config;
+  // page.js
+  const pageVNodes = new VNodeTree();
+  pageVNodes.moduleName = 'page';
+
+  // 列表模块生成
+  const modules = {};
+  lists.forEach((el, index) => {
+    const { moduleName, ...config } = el;
+    if (!modules[moduleName]) {
+      const tmp = new VNodeTree();
+      tmp.moduleName = moduleName;
+      tabs[index].moduleName = moduleName;
+      pageVNodes.subModules.push(moduleName);
+
+      const nodes = getListsNodes([tabs[index]], [config]);
+      const { searchNode, buttonsNode, tablesNode } = nodes;
+      tmp.addFromObject(searchNode);
+      tmp.addFromObject(assemblyLTable(buttonsNode, tablesNode));
+      tmp.excludeVar = new Set(['source', 'pageSize', 'sumTotal', 'current']);
+      tmp.excludeEvent = new Set(['refresh', 'reset']);
+
+      modules[moduleName] = tmp;
+    }
+  });
+
+  // 配置公共部分
+  pageVNodes.addFromObject(getBreadNode(breadcrumbs));
+  pageVNodes.addFromObject(getTabsNode(tabs));
+
+  return {
+    ...modules,
+    pageVNodes
+  };
 };

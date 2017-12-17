@@ -51,21 +51,13 @@ export const buildPage = () => {
   //
 };
 
-// 生成列表页
-export const buildList = (listConfig, options) => {
-  const {
-    root = '0',
-    // 页面标题，显示在card上
-    pageTitle = '',
-    // js代码生成相关配置
-    jsConfig = {}
-  } = options;
+function genList(vTree, config) {
+  const { root, url, ListPath } = config;
 
   const eventSet = new Set();
   // 默认加入的变量
   const varMap = new Map();
-  varMap.set('url', `'${listConfig.url}'`);
-  const vTree = transform.nejList(pageTitle, listConfig);
+  varMap.set('url', `'${url}'`);
 
   const html = _.genHTML(vTree.tree, root, { eventSet, varMap });
 
@@ -82,14 +74,59 @@ export const buildList = (listConfig, options) => {
   });
 
   let js = genNEJJS({
-    basePath: jsConfig.ListPath,
+    basePath: ListPath,
     eventSet,
     varMap
   });
-  return { html, js };
+
+  return { js, html };
+}
+
+// 生成列表页
+export const buildList = (listConfig, options) => {
+  const {
+    root = '0',
+    // 页面标题，显示在card上
+    pageTitle = '',
+    // js代码生成相关配置
+    jsConfig = {}
+  } = options;
+
+  const vTree = transform.nejList(pageTitle, listConfig);
+
+  return {
+    [vTree.moduleName]: genList(vTree, {
+      root,
+      url: listConfig.url,
+      ListPath: jsConfig.ListPath
+    })
+  };
 };
 
 // 多文件列表
-export const buildMulList = () => {
-  //
+export const buildMulList = (listConfig, options) => {
+  const {
+    root = '0',
+    // 页面标题，显示在card上
+    pageTitle = '',
+    // js代码生成相关配置
+    jsConfig = {}
+  } = options;
+
+  const vTrees = transform.nejMulList(pageTitle, listConfig);
+
+  const result = {};
+
+  for (let i in vTrees) {
+    if (vTrees.hasOwnProperty(i)) {
+      const vTree = vTrees[i];
+      result[vTree.moduleName] = genList(vTree, {
+        root,
+        url: listConfig.url,
+        ListPath: jsConfig.ListPath
+      });
+    }
+  }
+
+  return result;
 };

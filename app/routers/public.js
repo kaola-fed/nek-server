@@ -13,7 +13,7 @@ route.get('/page', async (ctx) => {
   }
 
   // 生成JS/HTML
-  const result = await PageController.gen(id);
+  const modules = await PageController.gen(id);
 
   // 生成ftl/entry
   const { ftl, entry, url, type } = await PageController.getTpl(id);
@@ -23,7 +23,7 @@ route.get('/page', async (ctx) => {
     type,
     ftl,
     entry,
-    index: result
+    ...modules
   });
 });
 

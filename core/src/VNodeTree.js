@@ -29,6 +29,11 @@ export default class VNodeTree {
 
     // 用于渲染的根节点
     this.rootView = null;
+
+    // 本模块名称
+    this.moduleName = 'index';
+    // 子节点名称
+    this.subModules = [];
   }
 
   /* 静态函数 */
