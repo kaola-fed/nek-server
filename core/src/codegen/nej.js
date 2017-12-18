@@ -89,8 +89,31 @@ export const buildList = (listConfig, options) => {
     // 页面标题，显示在card上
     pageTitle = '',
     // js代码生成相关配置
-    jsConfig = {}
+    jsConfig = {},
+    multiFiles = false
   } = options;
+
+  if (multiFiles) {
+    const { pageVNodes, ...vTrees } = transform.nejMulList(pageTitle, listConfig);
+
+    const result = {
+      index: genList(pageVNodes)
+    };
+    for (let i in vTrees) {
+      if (vTrees.hasOwnProperty(i)) {
+        const vTree = vTrees[i];
+        const { html, js } = genList(vTree, {
+          root,
+          url: listConfig.url,
+          ListPath: jsConfig.ListPath
+        });
+        result[`${vTree.moduleName}.html`] = html;
+        result[`${vTree.moduleName}.js`] = js;
+      }
+    }
+
+    return result;
+  }
 
   const vTree = transform.nejList(pageTitle, listConfig);
 
@@ -101,32 +124,4 @@ export const buildList = (listConfig, options) => {
       ListPath: jsConfig.ListPath
     })
   };
-};
-
-// 多文件列表
-export const buildMulList = (listConfig, options) => {
-  const {
-    root = '0',
-    // 页面标题，显示在card上
-    pageTitle = '',
-    // js代码生成相关配置
-    jsConfig = {}
-  } = options;
-
-  const vTrees = transform.nejMulList(pageTitle, listConfig);
-
-  const result = {};
-
-  for (let i in vTrees) {
-    if (vTrees.hasOwnProperty(i)) {
-      const vTree = vTrees[i];
-      result[vTree.moduleName] = genList(vTree, {
-        root,
-        url: listConfig.url,
-        ListPath: jsConfig.ListPath
-      });
-    }
-  }
-
-  return result;
 };
