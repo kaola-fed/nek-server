@@ -30,7 +30,7 @@ function getTabsNode(tabs) {
     events: { change: 'onTabChange' },
     children: tabs.map((el) => {
       const res = {
-        tagName: 'el-tab',
+        tagName: 'kl-tab',
         attributes: { key: el.key }
       };
       if (el.moduleName) {
