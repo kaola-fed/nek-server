@@ -119,7 +119,7 @@ export const buildList = (listConfig, options) => {
     for (let i in vTrees) {
       if (vTrees.hasOwnProperty(i)) {
         const vTree = vTrees[i];
-        modules += `,\n'./${vTree.moduleName}/index.js'`;
+        modules += `\n'./${vTree.moduleName}/index.js',`;
         result.modules[vTree.moduleName] = genList(vTree, {
           root,
           url: vTree.url,
