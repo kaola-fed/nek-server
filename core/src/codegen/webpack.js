@@ -1,20 +1,14 @@
 import * as _ from './utils';
 import * as transform from './transform/list';
 
-export const buildPage = () => {
-  //
-};
-
-export const buildMulPage = () => {
-  //
-};
-
 /** 通用函数 */
+
 const genWebpackJs = (options) => {
   const {
     basePath = 'common/base/BaseComponent',
     eventSet,
-    varMap
+    varMap,
+    modules
   } = options;
   // 基类名称
   const tmp = basePath.split('/');
@@ -29,11 +23,15 @@ const genWebpackJs = (options) => {
   let dataStr = '';
   varMap.forEach((value, key) => dataStr += `${key}: ${value},\n`);
 
+  // 引入模块
+  let modulesStr = '';
+  modules.forEach(el => modulesStr += `import ${el.name} from '${el.path}';\n`);
   // 先硬编码，之后再改
   return `import ${name} from '${basePath}';
 
   import template from './index.html';
   import * as API from './api';
+  ${modulesStr}
 
   export default ${name}.extend({
     template,
@@ -51,21 +49,33 @@ const genWebpackJs = (options) => {
 };
 
 // 生成列表页
-export const buildList = (listConfig, options) => {
-  const {
-    root = '0',
-    // 页面标题，显示在card上
-    pageTitle = '',
-    // js代码生成相关配置
-    jsConfig = {}
-  } = options;
+
+function genList(vTree, config) {
+  const { root = '0', url = '', ListPath = '', modules = [] } = config;
 
   const eventSet = new Set();
   // 默认加入的变量
   const varMap = new Map();
-  varMap.set('url', `'${listConfig.url}'`);
-  const vTree = transform.nejList(pageTitle, listConfig);
-
+  let mock = {
+    code: 200,
+    message: null,
+    data: {
+      list: [],
+      paging: {
+        pageNo: 2,
+        pageSize: 20,
+        total: 5
+      }
+    }
+  };
+  // url存在，设置mock数据
+  if (url) {
+    varMap.set('url', `'${url}'`);
+    mock.list = _.genMockData(vTree.cols);
+    mock = JSON.stringify(mock);
+  } else {
+    mock = null;
+  }
   const html = _.genHTML(vTree.tree, root, { eventSet, varMap });
 
   // 移除基类事件
@@ -81,9 +91,57 @@ export const buildList = (listConfig, options) => {
   });
 
   let js = genWebpackJs({
-    basePath: jsConfig.ListPath,
+    basePath: ListPath || '',
     eventSet,
-    varMap
+    varMap,
+    modules
   });
-  return { [vTree.moduleName]: { html, js } };
+
+  return { js, html, url, mock };
+}
+
+// 生成列表页
+export const buildList = (listConfig, options) => {
+  const {
+    root = '0',
+    // 页面标题，显示在card上
+    pageTitle = '',
+    // js代码生成相关配置
+    jsConfig = {},
+    multiFiles = false
+  } = options;
+  if (multiFiles) {
+    const { pageVNodes, ...vTrees } = transform.nejMulList(pageTitle, listConfig);
+    const result = {
+      modules: {}
+    };
+    let modules = [];
+    for (let i in vTrees) {
+      if (vTrees.hasOwnProperty(i)) {
+        const vTree = vTrees[i];
+        modules.push({
+          name: vTree.moduleName,
+          path: `./${vTree.moduleName}/index.js`
+        });
+        result.modules[vTree.moduleName] = genList(vTree, {
+          root,
+          url: vTree.url,
+          ListPath: jsConfig.ListPath
+        });
+      }
+    }
+    result.index = genList(pageVNodes, { ListPath: jsConfig.basePath, modules });
+
+    return result;
+  }
+
+  const vTree = transform.nejList(pageTitle, listConfig);
+
+  return {
+    [vTree.moduleName]: genList(vTree, {
+      root,
+      url: vTree.url,
+      ListPath: jsConfig.ListPath
+    })
+  };
 };

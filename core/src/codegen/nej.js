@@ -46,13 +46,9 @@ const genNEJJS = (options) => {
 /** NEJ 页面 */
 // 只生成JS和HTML，ftl以及entry等项目相关的放到具体业务中生成
 
-// 单文件生成
-export const buildPage = () => {
-  //
-};
 
 function genList(vTree, config) {
-  const { root = '0', url = '', ListPath = '' } = config;
+  const { root = '0', url = '', ListPath = '', modules = '' } = config;
 
   const eventSet = new Set();
   // 默认加入的变量
@@ -92,9 +88,10 @@ function genList(vTree, config) {
   });
 
   let js = genNEJJS({
-    basePath: ListPath || '',
+    basePath: ListPath,
     eventSet,
-    varMap
+    varMap,
+    modules
   });
 
   return { js, html, url, mock };

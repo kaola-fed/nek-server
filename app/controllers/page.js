@@ -199,7 +199,9 @@ export const genList = (projectConfig, pageTitle, config) => {
     case ProjectTypes.Webpack:
       return codegen.Webpack.buildList(config, {
         pageTitle,
-        jsConfig: {ListPath: projectConfig.listPath, basePath: projectConfig.basePath}
+        jsConfig: {ListPath: projectConfig.listPath, basePath: projectConfig.basePath},
+        // 只要有一个分模块的就建立多文件
+        multiFiles: config.tabsEnable && !!config.lists.find(el => el.module)
       });
     default:
       break;
