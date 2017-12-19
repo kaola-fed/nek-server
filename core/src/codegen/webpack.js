@@ -8,7 +8,8 @@ const genWebpackJs = (options) => {
     basePath = 'common/base/BaseComponent',
     eventSet,
     varMap,
-    modules
+    modules,
+    moduleName = ''
   } = options;
   // 基类名称
   const tmp = basePath.split('/');
@@ -22,18 +23,25 @@ const genWebpackJs = (options) => {
 
   let dataStr = '';
   varMap.forEach((value, key) => dataStr += `${key}: ${value},\n`);
-
+  // 模块name
+  let listModuleName = '';
+  if (moduleName) {
+    listModuleName = `name: '${moduleName}',`;
+  }
   // 引入模块
   let modulesStr = '';
   modules.forEach(el => modulesStr += `import ${el.name} from '${el.path}';\n`);
+  // 声明模块
+  let componentsStr = '';
+  modules.forEach(el => componentsStr += `.component('${el.name}', ${el.name})\n`);
   // 先硬编码，之后再改
   return `import ${name} from '${basePath}';
 
   import template from './index.html';
-  import * as API from './api';
   ${modulesStr}
 
   export default ${name}.extend({
+    ${listModuleName}
     template,
     config(data) {
       this.defaults({
@@ -44,14 +52,14 @@ const genWebpackJs = (options) => {
 
     //UI 事件
     ${eventStr}
-  });
+  })${componentsStr};
   `;
 };
 
 // 生成列表页
 
 function genList(vTree, config) {
-  const { root = '0', url = '', ListPath = '', modules = [] } = config;
+  const { root = '0', url = '', ListPath = '', modules = [], moduleName = '' } = config;
 
   const eventSet = new Set();
   // 默认加入的变量
@@ -94,7 +102,8 @@ function genList(vTree, config) {
     basePath: ListPath || '',
     eventSet,
     varMap,
-    modules
+    modules,
+    moduleName
   });
 
   return { js, html, url, mock };
@@ -121,12 +130,13 @@ export const buildList = (listConfig, options) => {
         const vTree = vTrees[i];
         modules.push({
           name: vTree.moduleName,
-          path: `./${vTree.moduleName}/index.js`
+          path: `./modules/${vTree.moduleName}/index.js`
         });
         result.modules[vTree.moduleName] = genList(vTree, {
           root,
           url: vTree.url,
-          ListPath: jsConfig.ListPath
+          ListPath: jsConfig.ListPath,
+          moduleName: vTree.moduleName
         });
       }
     }

@@ -90,8 +90,7 @@ export default {
       },
       types: [
         {id: ProjectTypes.NEJ, name: 'nej老项目'},
-        {id: ProjectTypes.Webpack, name: 'webpack单页'},
-        {id: ProjectTypes.WebpackMul, name: 'webpack多页'}
+        {id: ProjectTypes.Webpack, name: 'webpack单页'}
       ],
       libraries: []
     };

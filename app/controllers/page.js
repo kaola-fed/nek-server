@@ -197,12 +197,13 @@ export const genList = (projectConfig, pageTitle, config) => {
         multiFiles: config.tabsEnable && !!config.lists.find(el => el.module)
       });
     case ProjectTypes.Webpack:
-      return codegen.Webpack.buildList(config, {
+      const result = codegen.Webpack.buildList(config, {
         pageTitle,
         jsConfig: {ListPath: projectConfig.listPath, basePath: projectConfig.basePath},
         // 只要有一个分模块的就建立多文件
         multiFiles: config.tabsEnable && !!config.lists.find(el => el.module)
       });
+      return Object.assign(result, { mixins: { index: '//mixins' }});
     default:
       break;
   }

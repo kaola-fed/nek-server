@@ -5,6 +5,5 @@ export const PageTypes = {
 
 export const ProjectTypes = {
   NEJ: 1,
-  Webpack: 2,
-  WebpackMul: 3
+  Webpack: 2
 };
