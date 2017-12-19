@@ -52,8 +52,7 @@ export const buildPage = () => {
 };
 
 function genList(vTree, config) {
-  // console.log(vTree);
-  const { root, url, ListPath } = config;
+  const { root = '0', url = '', ListPath = '' } = config;
 
   const eventSet = new Set();
   // 默认加入的变量
@@ -114,12 +113,13 @@ export const buildList = (listConfig, options) => {
   if (multiFiles) {
     const { pageVNodes, ...vTrees } = transform.nejMulList(pageTitle, listConfig);
     const result = {
-      index: genList(pageVNodes, {root: '0', ListPath: jsConfig.basePath }),
       modules: {}
     };
+    let modules = '';
     for (let i in vTrees) {
       if (vTrees.hasOwnProperty(i)) {
         const vTree = vTrees[i];
+        modules += `,\n'./${vTree.moduleName}/index.js'`;
         result.modules[vTree.moduleName] = genList(vTree, {
           root,
           url: vTree.url,
@@ -127,6 +127,7 @@ export const buildList = (listConfig, options) => {
         });
       }
     }
+    result.index = genList(pageVNodes, { ListPath: jsConfig.basePath, modules });
 
     return result;
   }
