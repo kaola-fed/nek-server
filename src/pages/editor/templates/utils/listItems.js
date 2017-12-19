@@ -20,7 +20,8 @@ export const newTabItem = (key) => {
   return {
     id: NSNode.generateId(),
     title: '',
-    key: key || ''
+    key: key || '',
+    url: ''
   };
 };
 

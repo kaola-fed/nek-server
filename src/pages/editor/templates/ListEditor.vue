@@ -139,7 +139,7 @@ export default {
     this.multiTabEnable = !!data.tabsEnable;
     this.setTabs(data.tabs);
     this.setCols(data.lists);
-    this.url = data.url || '';
+    // this.url = data.url || '';
 
     this.$forceUpdate();
   },
@@ -400,7 +400,8 @@ export default {
 
         this.listConfigs[currentTab].filters = listItems.setListWithTemplate(data.filters, listItems.newFilter());
         this.listConfigs[currentTab].cols = listItems.setListWithTemplate(data.cols, listItems.newCol());
-        this.url = value;
+        this.multiTabs[currentTab].url = value;
+        // this.url = value;
 
         this.$forceUpdate();
       } catch (err) {
@@ -484,7 +485,7 @@ export default {
         tabsEnable: this.multiTabEnable,
         tabs: this.multiTabs,
         lists: this.listConfigs,
-        url: this.url
+        // url: this.url
       };
       try {
         await updatePageDom({ id: this.$route.query.id, dom: JSON.stringify(domObj) });

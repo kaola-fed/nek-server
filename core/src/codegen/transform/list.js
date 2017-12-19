@@ -2,6 +2,7 @@ import lodash from 'lodash';
 
 import VNodeTree from '../../VNodeTree';
 import {ConditionTypes} from '../../enums';
+import NSNode from '../../NSNode';
 
 // 面包屑节点
 function getBreadNode(breads) {
@@ -312,7 +313,8 @@ export const nejList = (title, config) => {
   // TODO: 配置这几个变量？
   nsVNodes.excludeVar = new Set(['source', 'pageSize', 'sumTotal', 'current']);
   nsVNodes.excludeEvent = new Set(['refresh', 'reset']);
-
+  nsVNodes.url = tabs[0].url;
+  nsVNodes.cols = lists[0].cols;
   nsVNodes.$apply();
   return nsVNodes;
 };
@@ -341,6 +343,9 @@ export const nejMulList = (title, config) => {
       tmp.excludeVar = new Set(['source', 'pageSize', 'sumTotal', 'current']);
       tmp.excludeEvent = new Set(['refresh', 'reset']);
 
+      tmp.url = tabs[index].url;
+      tmp.cols = el.cols;
+      tmp.$apply();
       modules[moduleName] = tmp;
     }
   });
@@ -348,7 +353,7 @@ export const nejMulList = (title, config) => {
   // 配置公共部分
   pageVNodes.addFromObject(getBreadNode(breadcrumbs));
   pageVNodes.addFromObject(getTabsNode(tabs));
-
+  pageVNodes.$apply();
   return {
     ...modules,
     pageVNodes

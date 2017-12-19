@@ -52,13 +52,32 @@ export const buildPage = () => {
 };
 
 function genList(vTree, config) {
+  // console.log(vTree);
   const { root, url, ListPath } = config;
 
   const eventSet = new Set();
   // 默认加入的变量
   const varMap = new Map();
-  varMap.set('url', `'${url}'`);
-
+  let mock = {
+    code: 200,
+    message: null,
+    data: {
+      list: [],
+      paging: {
+        pageNo: 2,
+        pageSize: 20,
+        total: 5
+      }
+    }
+  };
+  // url存在，设置mock数据
+  if (url) {
+    varMap.set('url', `'${url}'`);
+    mock.list = _.genMockData(vTree.cols);
+    mock = JSON.stringify(mock);
+  } else {
+    mock = null;
+  }
   const html = _.genHTML(vTree.tree, root, { eventSet, varMap });
 
   // 移除基类事件
@@ -74,12 +93,12 @@ function genList(vTree, config) {
   });
 
   let js = genNEJJS({
-    basePath: ListPath,
+    basePath: ListPath || '',
     eventSet,
     varMap
   });
 
-  return { js, html };
+  return { js, html, url, mock };
 }
 
 // 生成列表页
@@ -92,23 +111,20 @@ export const buildList = (listConfig, options) => {
     jsConfig = {},
     multiFiles = false
   } = options;
-
   if (multiFiles) {
     const { pageVNodes, ...vTrees } = transform.nejMulList(pageTitle, listConfig);
-
     const result = {
-      index: genList(pageVNodes)
+      index: genList(pageVNodes, {root: '0', ListPath: jsConfig.basePath }),
+      modules: {}
     };
     for (let i in vTrees) {
       if (vTrees.hasOwnProperty(i)) {
         const vTree = vTrees[i];
-        const { html, js } = genList(vTree, {
+        result.modules[vTree.moduleName] = genList(vTree, {
           root,
-          url: listConfig.url,
+          url: vTree.url,
           ListPath: jsConfig.ListPath
         });
-        result[`${vTree.moduleName}.html`] = html;
-        result[`${vTree.moduleName}.js`] = js;
       }
     }
 
@@ -120,7 +136,7 @@ export const buildList = (listConfig, options) => {
   return {
     [vTree.moduleName]: genList(vTree, {
       root,
-      url: listConfig.url,
+      url: vTree.url,
       ListPath: jsConfig.ListPath
     })
   };
