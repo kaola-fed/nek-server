@@ -16,7 +16,9 @@ const translateData = (params, dataTypes) => {
     message: ''
   };
 
-  rlt.filters = params.inputs.map((item) => {
+  rlt.filters = params.inputs.sort((a, b) => {
+    return a.position - b.position;
+  }).map((item) => {
     return {
       title: item.description || item.name || '条件',
       key: item.name,
@@ -29,11 +31,14 @@ const translateData = (params, dataTypes) => {
     const resultData = dataTypes.find(item => item.id == resultTypeId);
     const listId = resultData.params.find(item => item.name == 'list').type;
     const listParams = dataTypes.find(item => item.id == listId);
-    rlt.cols = listParams.params.map((item) => {
+    rlt.cols = listParams.params.sort((a, b) => {
+      return a.position - b.position;
+    }).map((item) => {
       return {
         name: item.description || item.name || '列名',
         key: item.name,
         typeName: item.typeName || 'String',
+        align: item.typeName == 'Number' ? 'right' : '',
         width: '120'
       };
     });

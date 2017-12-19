@@ -63,7 +63,6 @@
         </el-collapse>
       </side-bar>
     </div>
-
     <preview-button></preview-button>
   </div>
 </template>
@@ -428,12 +427,20 @@ export default {
           this.saveNotify.close();
         }
         await this.saveDomJson();
+
         this.saveNotify = this.$notify({
           title: '保存成功',
           message: `nek server -k ${this.$route.query.id}`,
           type: 'success',
           duration: 0
         });
+        const copyForm = document.createElement('input');
+        copyForm.value = `nek server -k ${this.$route.query.id}`;
+        const body = document.getElementsByTagName('body')[0];
+        body.appendChild(copyForm);
+        copyForm.focus();
+        document.execCommand('copy');
+        body.removeChild(copyForm);
       } catch (err) {
         return err;
       }
