@@ -8,12 +8,13 @@ const genNEJJS = (options) => {
     basePath = 'pro/widget/BaseComponent',
     modules = '',
     eventSet,
-    varMap
+    varMap,
+    moduleName = ''
   } = options;
 
   // 基类名称
   const tmp = basePath.split('/');
-  const name = tmp[tmp.length - 1];
+  const baseName = tmp[tmp.length - 1];
 
   // 事件函数
   let eventStr = '';
@@ -28,8 +29,8 @@ const genNEJJS = (options) => {
   return `NEJ.define([
     '${basePath}',
     'text!./page.html',${modules}
-], function(${name}, tpl) {
-    return ${name}.extend({
+], function(${baseName}, tpl) {
+    return ${baseName}.extend({${moduleName ? `\nname: ${moduleName},\n` : ''}
         template: tpl,
         config: function(data) {
             this.defaults({
@@ -48,7 +49,13 @@ const genNEJJS = (options) => {
 
 
 function genList(vTree, config) {
-  const { root = '0', url = '', ListPath = '', modules = '' } = config;
+  const {
+    root = '0',
+    url = '',
+    ListPath = '',
+    modules = '',
+    moduleName = ''
+  } = config;
 
   const eventSet = new Set();
   // 默认加入的变量
@@ -91,7 +98,8 @@ function genList(vTree, config) {
     basePath: ListPath,
     eventSet,
     varMap,
-    modules
+    modules,
+    moduleName
   });
 
   return { js, html, url, mock };
@@ -119,6 +127,7 @@ export const buildList = (listConfig, options) => {
         modules += `\n'./${vTree.moduleName}/index.js',`;
         result.modules[vTree.moduleName] = genList(vTree, {
           root,
+          name: vTree.moduleName,
           url: vTree.url,
           ListPath: jsConfig.ListPath
         });
