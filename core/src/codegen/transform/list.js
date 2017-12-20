@@ -169,9 +169,12 @@ function getSearchNode(keys, multiFilters) {
     tagName: 'kl-card',
     attributes: { isShowLine: false },
     children: [{
-      tagName: 'kl-search',
-      events: { search: 'refresh', reset: 'reset' },
-      children: diffAndMergeArrays(keys, multiFilters, getSearchItems)
+      tagName: 'kl-form',
+      children: [{
+        tagName: 'kl-search',
+        events: { search: 'refresh', reset: 'reset' },
+        children: diffAndMergeArrays(keys, multiFilters, getSearchItems)
+      }]
     }]
   };
 }
