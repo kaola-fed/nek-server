@@ -27,11 +27,12 @@ const genNEJJS = (options) => {
 
   // 先硬编码，之后再改
   return `NEJ.define([
+    'pro/base/util',
     '${basePath}',
     'text!./page.html',${modules}
-], function(${baseName}, tpl) {
+], function(_, ${baseName}, tpl) {
     return ${baseName}.extend({${moduleName ? `\nname: ${moduleName},\n` : ''}
-        template: tpl,
+        template: _.compressHtml(tpl),
         config: function(data) {
             this.defaults({
             ${dataStr}});
