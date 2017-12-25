@@ -44,6 +44,7 @@ function getTabsNode(tabs) {
 }
 
 // 比较出完全不同的数组，返回索引
+// TODO: 改成用union
 function compareArrays(arrays, comparator = lodash.isEqual) {
   const result = [];
   const tpl = arrays[0];
@@ -58,25 +59,24 @@ function compareArrays(arrays, comparator = lodash.isEqual) {
 }
 
 // 合并多个数组，并加入if-elseif-else
-// TODO: 差异分组
 function diffAndMergeArrays(keys, arrays, getItems, comparator) {
   if (!getItems) {
     throw new Error('[Miss "getItems"] Need to provide a function to generate items.');
   }
 
   const diffIndexes = compareArrays(arrays, comparator);
-  const finalFilterNodes = diffIndexes.map(el => getItems(arrays[el]));
+  const finalNodes = diffIndexes.map(el => getItems(arrays[el]));
 
-  if (finalFilterNodes.length > 1) {
+  if (finalNodes.length > 1) {
     // 加入 if-elseif-else
     let children = [];
-    finalFilterNodes.forEach((el, index) => {
+    finalNodes.forEach((el, index) => {
       let condition;
       switch (index) {
         case 0:
           condition = { type: ConditionTypes.IF, exp: `currentTab === '${keys[diffIndexes[0]]}'` };
           break;
-        case finalFilterNodes.length - 1:
+        case finalNodes.length - 1:
           condition = { type: ConditionTypes.ELSEIF, exp: `currentTab === '${keys[diffIndexes[index]]}'` };
           break;
         default:
@@ -90,7 +90,7 @@ function diffAndMergeArrays(keys, arrays, getItems, comparator) {
   }
 
   // 单个的，直接塞进去
-  return finalFilterNodes[0];
+  return finalNodes[0];
 }
 
 // 获取单独一个搜索项
@@ -164,12 +164,19 @@ function getSearchItems(filters) {
 // multiFilters = [[filters1], [filters2], ...]
 // 早知道就用TS了
 function getSearchNode(keys, multiFilters) {
+  // 找出最长的label，按一个字宽15px算
+  const maxLength = multiFilters.reduce((max, current) => {
+    const tmp = current.reduce((res, curr) => Math.max(res, curr.title.length), max);
+    return Math.max(max, tmp);
+  }, 0);
+
   // TODO: 用computed控制isShowFooter和isShowToggle
   return {
     tagName: 'kl-card',
     attributes: { isShowLine: false },
     children: [{
       tagName: 'kl-form',
+      attributes: { labelSize: maxLength * 15 },
       children: [{
         tagName: 'kl-search',
         events: { search: 'refresh', reset: 'reset' },
