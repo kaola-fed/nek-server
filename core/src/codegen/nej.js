@@ -76,7 +76,7 @@ function genList(vTree, config) {
   // url存在，设置mock数据
   if (url) {
     varMap.set('url', `'${url}'`);
-    mock.list = _.genMockData(vTree.cols);
+    mock.data.list = _.genMockData(vTree.cols);
     mock = JSON.stringify(mock);
   } else {
     mock = null;
