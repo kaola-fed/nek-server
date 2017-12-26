@@ -5,7 +5,7 @@
         <i class="el-icon-arrow-left"></i>&nbsp;&nbsp;{{ projectName }}
       </a>
       <el-tooltip content="保存" effect="light" placement="bottom">
-        <a class="m-button"><i class="iconfont-save" @click="onSave"></i></a>
+        <a class="m-button" id="saveBtn"><i class="iconfont-save" @click="onSave"></i></a>
       </el-tooltip>
       <!-- <el-tooltip content="预览" effect="light" placement="bottom">
         <a class="m-button" @click="onPreviewClick"><i class="iconfont-start"></i></a>

@@ -69,6 +69,7 @@
 
 <script>
 import lodash from 'lodash';
+import clipboard from 'Clipboard';
 import VNodeTree from '@/../core/src/VNodeTree';
 import { genMockData } from '@/../core/src/codegen/utils';
 
@@ -141,6 +142,12 @@ export default {
     // this.url = data.url || '';
 
     this.$forceUpdate();
+    // 保存复制到粘贴板
+    new clipboard('#saveBtn', {
+      text: () => {
+        return `nek server -k ${this.$route.query.id}`;
+      }
+    });
   },
   watch: {
     needUpdate: {
@@ -421,6 +428,7 @@ export default {
       }
     },
     async onSave() {
+
       // TODO: 校验
       try {
         if (this.saveNotify) {
@@ -429,18 +437,11 @@ export default {
         await this.saveDomJson();
 
         this.saveNotify = this.$notify({
-          title: '保存成功',
+          title: '保存成功（命令已复制）',
           message: `nek server -k ${this.$route.query.id}`,
           type: 'success',
           duration: 0
         });
-        const copyForm = document.createElement('input');
-        copyForm.value = `nek server -k ${this.$route.query.id}`;
-        const body = document.getElementsByTagName('body')[0];
-        body.appendChild(copyForm);
-        copyForm.focus();
-        document.execCommand('copy');
-        body.removeChild(copyForm);
       } catch (err) {
         return err;
       }
