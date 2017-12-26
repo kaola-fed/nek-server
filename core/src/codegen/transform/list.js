@@ -329,35 +329,49 @@ export const nejList = (title, config) => {
   return nsVNodes;
 };
 
-// TODO: Untested
 export const nejMulList = (title, config) => {
   const { breadcrumbs, tabs, lists } = config;
   // page.js
   const pageVNodes = new VNodeTree();
   pageVNodes.moduleName = 'page';
 
+  const names = new Set();
+  lists.forEach(el => el.moduleName && names.add(el.moduleName));
+
   // 列表模块生成
   const modules = {};
   lists.forEach((el, index) => {
-    const { moduleName, ...config } = el;
-    if (!modules[moduleName]) {
-      const tmp = new VNodeTree();
-      tmp.moduleName = moduleName;
-      tabs[index].moduleName = moduleName;
-      pageVNodes.subModules.push(moduleName);
-
-      const nodes = getListsNodes([tabs[index]], [config]);
-      const { searchNode, buttonsNode, tablesNode } = nodes;
-      tmp.addFromObject(searchNode);
-      tmp.addFromObject(assemblyLTable(buttonsNode, tablesNode));
-      tmp.excludeVar = new Set(['source', 'pageSize', 'sumTotal', 'current']);
-      tmp.excludeEvent = new Set(['refresh', 'reset']);
-
-      tmp.url = tabs[index].url;
-      tmp.cols = el.cols;
-      tmp.$apply();
-      modules[moduleName] = tmp;
+    let { moduleName, ...config } = el;
+    // 没有配置模块名，则自动生成为 list + n
+    if (!moduleName) {
+      moduleName = 'list';
+      let count = '';
+      while (names.has(moduleName + count)) {
+        count = +(count + 1);
+      }
+      moduleName += count;
     }
+
+    if (modules[moduleName]) {
+      return;
+    }
+
+    const tmp = new VNodeTree();
+    tmp.moduleName = moduleName;
+    tabs[index].moduleName = moduleName;
+    pageVNodes.subModules.push(moduleName);
+
+    const nodes = getListsNodes([tabs[index]], [config]);
+    const { searchNode, buttonsNode, tablesNode } = nodes;
+    tmp.addFromObject(searchNode);
+    tmp.addFromObject(assemblyLTable(buttonsNode, tablesNode));
+    tmp.excludeVar = new Set(['source', 'pageSize', 'sumTotal', 'current']);
+    tmp.excludeEvent = new Set(['refresh', 'reset']);
+
+    tmp.url = tabs[index].url;
+    tmp.cols = el.cols;
+    tmp.$apply();
+    modules[moduleName] = tmp;
   });
 
   // 配置公共部分

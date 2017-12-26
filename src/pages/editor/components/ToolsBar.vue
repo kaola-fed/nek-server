@@ -4,7 +4,7 @@
       <a @click="handleBack" class="u-back" href="javascript:;">
         <i class="el-icon-arrow-left"></i>&nbsp;&nbsp;{{ projectName }}
       </a>
-      <el-tooltip content="保存" effect="light" placement="bottom">
+      <el-tooltip v-if="showSave" content="保存" effect="light" placement="bottom">
         <a class="m-button"><i class="iconfont-save" @click="onSave"></i></a>
       </el-tooltip>
       <!-- <el-tooltip content="预览" effect="light" placement="bottom">
@@ -37,6 +37,10 @@ export default {
     backLink: {
       type: String,
       default: 'dashboard'
+    },
+    showSave: {
+      type: Boolean,
+      default: true
     }
   },
   data() {

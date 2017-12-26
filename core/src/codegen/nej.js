@@ -48,7 +48,6 @@ const genNEJJS = (options) => {
 /** NEJ 页面 */
 // 只生成JS和HTML，ftl以及entry等项目相关的放到具体业务中生成
 
-
 function genList(vTree, config) {
   const {
     root = '0',
@@ -113,27 +112,30 @@ export const buildList = (listConfig, options) => {
     // 页面标题，显示在card上
     pageTitle = '',
     // js代码生成相关配置
-    jsConfig = {},
-    multiFiles = false
+    jsConfig = {}
   } = options;
-  if (multiFiles) {
+
+  if (listConfig.tabsEnable) {
     const { pageVNodes, ...vTrees } = transform.nejMulList(pageTitle, listConfig);
     const result = {
       modules: {}
     };
+
     let modules = '';
-    for (let i in vTrees) {
-      if (vTrees.hasOwnProperty(i)) {
-        const vTree = vTrees[i];
-        modules += `\n'./${vTree.moduleName}/index.js',`;
-        result.modules[vTree.moduleName] = genList(vTree, {
+    for (let moduleName in vTrees) {
+      if (vTrees.hasOwnProperty(moduleName)) {
+        const vTree = vTrees[moduleName];
+
+        modules += `\n'./${moduleName}/index.js',`;
+        result.modules[moduleName] = genList(vTree, {
           root,
-          name: vTree.moduleName,
+          moduleName,
           url: vTree.url,
           ListPath: jsConfig.ListPath
         });
       }
     }
+
     result.index = genList(pageVNodes, { ListPath: jsConfig.basePath, modules });
 
     return result;

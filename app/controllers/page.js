@@ -115,7 +115,7 @@ export const createPage = async (ctx) => {
 
 export const updatePageDom = async (ctx) => {
   const { id, dom } = ctx.request.body;
-  if(!id || !dom ) {
+  if(!id || !dom) {
     return ctx.body = _.paramsError();
   }
   try {
@@ -197,18 +197,19 @@ export const genList = (projectConfig, pageTitle, config) => {
     case ProjectTypes.NEJ:
       return codegen.NEJ.buildList(config, {
         pageTitle,
-        jsConfig: {ListPath: projectConfig.listPath, basePath: projectConfig.basePath},
-        // 只要有一个分模块的就建立多文件
-        multiFiles: config.tabsEnable && !!config.lists.find(el => el.module)
+        jsConfig: {
+          ListPath: projectConfig.listPath,
+          basePath: projectConfig.basePath
+        }
       });
-    case ProjectTypes.Webpack:
+    case ProjectTypes.Webpack: {
       const result = codegen.Webpack.buildList(config, {
         pageTitle,
         jsConfig: {ListPath: projectConfig.listPath, basePath: projectConfig.basePath},
-        // 只要有一个分模块的就建立多文件
-        multiFiles: config.tabsEnable && !!config.lists.find(el => el.module)
+        multiFiles: config.tabsEnable
       });
-      return Object.assign(result, { mixins: { index: '//mixins' }});
+      return Object.assign(result, { mixins: { index: '//mixins' } });
+    }
     default:
       break;
   }

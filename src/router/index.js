@@ -36,6 +36,11 @@ export default new Router({
           path: 'list',
           name: 'listTemplate',
           component: resolve => require(['@/pages/editor/templates/ListEditor.vue'], resolve)
+        },
+        {
+          path: 'preview/code',
+          name: 'codePreview',
+          component: resolve => require(['@/pages/editor/CodePreview.vue'], resolve)
         }
       ]
     },
