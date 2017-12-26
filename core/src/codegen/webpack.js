@@ -69,7 +69,7 @@ function genList(vTree, config) {
     message: null,
     data: {
       list: [],
-      paging: {
+      pagination: {
         pageNo: 2,
         pageSize: 20,
         total: 5
