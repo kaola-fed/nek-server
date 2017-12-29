@@ -22,14 +22,18 @@ function getBreadNode(breads) {
 }
 
 // 多Tab节点
-function getTabsNode(tabs) {
+function getTabsNode(tabs, title) {
   return {
-    tagName: 'kl-tabs',
-    events: { change: 'onTabChange' },
-    children: tabs.map(el => ({
-      tagName: 'kl-tab',
-      attributes: { key: el.key }
-    }))
+    tagName: 'kl-card',
+    attributes: { title },
+    children: [{
+      tagName: 'kl-tabs',
+      events: { change: 'onTabChange' },
+      children: tabs.map(el => ({
+        tagName: 'kl-tab',
+        attributes: { key: el.key }
+      }))
+    }]
   };
 }
 
@@ -101,7 +105,7 @@ function getSearchItems(filters) {
 }
 
 // 生成搜索区节点
-function getSearchNode(filters) {
+function getSearchNode(filters, { multiTabs = false, title = '' }) {
   // 找出最长的label，按一个字宽15px算
   const maxLength = filters.reduce((max, current) => {
     return Math.max(max, current.title.length);
@@ -110,7 +114,7 @@ function getSearchNode(filters) {
   // TODO: 用computed控制isShowFooter和isShowToggle
   return {
     tagName: 'kl-card',
-    attributes: { isShowLine: false },
+    attributes: multiTabs ? { isShowLine: false, class: 'f-undertab' } : { title },
     children: [{
       tagName: 'kl-form',
       attributes: { labelSize: maxLength * 15 },
@@ -197,7 +201,7 @@ function getPagerNode() {
 }
 
 // 生成一个列表下搜索区、按钮及表格
-function getListNodes(config) {
+function getListNodes(config, { title = '', multiTabs = false }) {
   let searches = [], buttons = [], tables = [];
 
   searches.push(config.filters);
@@ -216,7 +220,7 @@ function getListNodes(config) {
   tables.push(cols);
 
   return {
-    searchNode: getSearchNode(config.filters),
+    searchNode: getSearchNode(config.filters, { title, multiTabs }),
     buttonsNode: getButtonsNode(config.buttons),
     tablesNode: getTableNode(cols)
   };
@@ -244,7 +248,7 @@ export const rgList = (title, config) => {
   // 添加面包屑
   nsVNodes.addFromObject(getBreadNode(breadcrumbs));
 
-  const { searchNode, buttonsNode, tablesNode } = getListNodes(lists[0]);
+  const { searchNode, buttonsNode, tablesNode } = getListNodes(lists[0], { title, multiTabs: false });
   nsVNodes.addFromObject(searchNode);
   nsVNodes.addFromObject(assemblyLTable(buttonsNode, tablesNode));
 
@@ -317,9 +321,8 @@ export const rgMulList = (title, config) => {
     tabs[index].moduleName = moduleName;
     pageVNodes.subModules.push(moduleName);
 
-    const nodes = getListNodes(config);
+    const nodes = getListNodes(config, { title, multiTabs: true });
     const { searchNode, buttonsNode, tablesNode } = nodes;
-    searchNode.attributes.class = 'f-undertab';
     tmp.addFromObject(searchNode);
     tmp.addFromObject(assemblyLTable(buttonsNode, tablesNode));
     tmp.excludeVar = new Set(['source', 'pageSize', 'sumTotal', 'current']);
@@ -333,7 +336,7 @@ export const rgMulList = (title, config) => {
 
   // 配置公共部分
   pageVNodes.addFromObject(getBreadNode(breadcrumbs));
-  pageVNodes.addFromObject(getTabsNode(tabs));
+  pageVNodes.addFromObject(getTabsNode(tabs, title));
 
   // 加上列表
   pageVNodes.addFromObject(getMulListNode(tabs));
