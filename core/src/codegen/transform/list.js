@@ -264,21 +264,20 @@ export const rgList = (title, config) => {
 
 // 根据tabs生成list节点
 function getMulListNode(tabs) {
-  const nodes = tabs.map(el => ({ tagName: el.moduleName }));
   let res = [];
 
-  if (nodes.length > 1) {
-    nodes.forEach((el, index) => {
+  if (tabs.length > 1) {
+    tabs.forEach((el, index) => {
       const condition = {
         type: index ? ConditionTypes.ELSEIF : ConditionTypes.IF,
         exp: `tab === ${el.key}`
       };
-      res.push(condition);
-      res.push(nodes[index]);
+      res.push({ condition });
+      res.push({ tagName: el.moduleName });
     });
-    nodes.push({ type: ConditionTypes.ENDIF });
+    res.push({ condition: { type: ConditionTypes.ENDIF } });
   } else {
-    res = nodes;
+    res = tabs.map(el => ({ tagName: el.moduleName }));
   }
 
   return {

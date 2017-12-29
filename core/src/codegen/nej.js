@@ -22,7 +22,7 @@ const genNEJJS = (options) => {
 
   let dataStr = '';
   varMap.forEach((value, key) => dataStr += `${key}: ${value},\n`);
-  const moduleStr = modules.length ? `\n    ${modules.map(el => `'./${el}/index.js',`.join('\n'))}` : '';
+  const moduleStr = modules.length ? `\n    ${modules.map(el => `'./${el}/index.js',`).join('\n')}` : '';
 
   const js = `NEJ.define([
     'pro/base/util',
