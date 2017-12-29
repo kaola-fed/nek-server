@@ -90,5 +90,8 @@ module.exports = {
         }
       }
     ]
+  },
+  externals: {
+    clipboard: 'Clipboard'
   }
 }
