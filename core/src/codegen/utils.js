@@ -147,7 +147,7 @@ function genList(vTree, genJSFunc, config) {
     message: null,
     data: {
       list: [],
-      paging: {
+      pagination: {
         pageNo: 2,
         pageSize: 20,
         total: 5
@@ -157,7 +157,7 @@ function genList(vTree, genJSFunc, config) {
   // url存在，设置mock数据
   if (url) {
     varMap.set('url', `'${url}'`);
-    mock.list = genMockData(vTree.cols);
+    mock.data.list = genMockData(vTree.cols);
     mock = JSON.stringify(mock);
   } else {
     mock = null;
