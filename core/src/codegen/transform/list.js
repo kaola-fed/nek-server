@@ -1,8 +1,5 @@
-import lodash from 'lodash';
-
 import VNodeTree from '../../VNodeTree';
 import {ConditionTypes} from '../../enums';
-import NSNode from '../../NSNode';
 
 // 面包屑节点
 function getBreadNode(breads) {
@@ -29,68 +26,11 @@ function getTabsNode(tabs) {
   return {
     tagName: 'kl-tabs',
     events: { change: 'onTabChange' },
-    children: tabs.map((el) => {
-      const res = {
-        tagName: 'kl-tab',
-        attributes: { key: el.key }
-      };
-      if (el.moduleName) {
-        res.children = [{ tagName: el.moduleName }];
-      }
-
-      return res;
-    })
+    children: tabs.map(el => ({
+      tagName: 'kl-tab',
+      attributes: { key: el.key }
+    }))
   };
-}
-
-// 比较出完全不同的数组，返回索引
-// TODO: 改成用union
-function compareArrays(arrays, comparator = lodash.isEqual) {
-  const result = [];
-  const tpl = arrays[0];
-  for (let i = 1; i < arrays.length; ++i) {
-    if (lodash.differenceWith(tpl, arrays[i], comparator).length > 0) {
-      result.push(i);
-    }
-  }
-  // 第一个作为模板，也就是else，所以放最后
-  result.push(0);
-  return result;
-}
-
-// 合并多个数组，并加入if-elseif-else
-function diffAndMergeArrays(keys, arrays, getItems, comparator) {
-  if (!getItems) {
-    throw new Error('[Miss "getItems"] Need to provide a function to generate items.');
-  }
-
-  const diffIndexes = compareArrays(arrays, comparator);
-  const finalNodes = diffIndexes.map(el => getItems(arrays[el]));
-
-  if (finalNodes.length > 1) {
-    // 加入 if-elseif-else
-    let children = [];
-    finalNodes.forEach((el, index) => {
-      let condition;
-      switch (index) {
-        case 0:
-          condition = { type: ConditionTypes.IF, exp: `currentTab === '${keys[diffIndexes[0]]}'` };
-          break;
-        case finalNodes.length - 1:
-          condition = { type: ConditionTypes.ELSEIF, exp: `currentTab === '${keys[diffIndexes[index]]}'` };
-          break;
-        default:
-          condition = {type: ConditionTypes.ELSE};
-      }
-      children.push({ condition });
-      children = children.concat(el);
-    });
-    children.push({ condition: { type: ConditionTypes.ENDIF } });
-    return children;
-  }
-
-  // 单个的，直接塞进去
-  return finalNodes[0];
 }
 
 // 获取单独一个搜索项
@@ -160,14 +100,11 @@ function getSearchItems(filters) {
   return result;
 }
 
-// keys = ['key1', 'key2', ...]
-// multiFilters = [[filters1], [filters2], ...]
-// 早知道就用TS了
-function getSearchNode(keys, multiFilters) {
+// 生成搜索区节点
+function getSearchNode(filters) {
   // 找出最长的label，按一个字宽15px算
-  const maxLength = multiFilters.reduce((max, current) => {
-    const tmp = current.reduce((res, curr) => Math.max(res, curr.title.length), max);
-    return Math.max(max, tmp);
+  const maxLength = filters.reduce((max, current) => {
+    return Math.max(max, current.title.length);
   }, 0);
 
   // TODO: 用computed控制isShowFooter和isShowToggle
@@ -180,12 +117,13 @@ function getSearchNode(keys, multiFilters) {
       children: [{
         tagName: 'kl-search',
         events: { search: 'refresh', reset: 'reset' },
-        children: diffAndMergeArrays(keys, multiFilters, getSearchItems)
+        children: filters.map(el => getSearchItems(el))
       }]
     }]
   };
 }
 
+// 生成单个按钮
 function getButtons(buttons) {
   return buttons.map((el) => {
     const { event, ...attributes } = el;
@@ -200,17 +138,17 @@ function getButtons(buttons) {
   });
 }
 
-// 参数参考getSearchNode
-function getButtonsNode(keys, multiButtons) {
+// 按钮节点
+function getButtonsNode(buttons) {
   // 按钮可能不存在
-  const children = diffAndMergeArrays(keys, multiButtons, getButtons);
-  return children.length > 0 ? {
+  return buttons.length > 0 ? {
     tagName: 'kl-row',
     attributes: { gutter: 0 },
-    children
+    children: buttons.map(el => getButtons(el))
   } : null;
 }
 
+// 列
 function getCols(cols) {
   return cols.map((el) => {
     if (el.hasOwnProperty('typeName')) {
@@ -233,18 +171,20 @@ function getCols(cols) {
   });
 }
 
-function getTablesNode(keys, cols) {
+// 表格节点
+function getTableNode(cols) {
   return {
     tagName: 'kl-row',
     attributes: { gutter: 0 },
     children: [{
       tagName: 'kl-table',
       attributes: {source: {type: 'var', value: 'list'}},
-      children: diffAndMergeArrays(keys, cols, getCols)
+      children: cols.map(el => getCols(el))
     }]
   };
 }
 
+// 分页
 function getPagerNode() {
   return {
     tagName: 'kl-pager',
@@ -256,34 +196,33 @@ function getPagerNode() {
   };
 }
 
-// 获取多Tab的列表节点
-function getListsNodes(tabs, configs) {
-  let keys = [], searches = [], buttons = [], tables = [];
-  configs.forEach((el, index) => {
-    keys.push(tabs[index].key);
-    searches.push(el.filters);
-    buttons.push(el.buttons);
+// 生成一个列表下搜索区、按钮及表格
+function getListNodes(config) {
+  let searches = [], buttons = [], tables = [];
 
-    const cols = el.cols;
-    if (el.operatorCol) {
-      cols.push({
-        name: '操作',
-        width: '100',
-        template: `${el.operatorButtons.map((el, index) => {
-          return `{'<a href="${el.link}" target="_blank" ${ index > 0 ? 'class="f-ml10"' : ''}>${el.title}</a>'}`;
-        }).join('\n')}`
-      });
-    }
-    tables.push(cols);
-  });
+  searches.push(config.filters);
+  buttons.push(config.buttons);
 
-  const searchNode = getSearchNode(keys, searches);
-  const buttonsNode = getButtonsNode(keys, buttons);
-  const tablesNode = getTablesNode(keys, tables);
+  const cols = config.cols;
+  if (config.operatorCol) {
+    cols.push({
+      name: '操作',
+      width: '100',
+      template: `${config.operatorButtons.map((el, index) => {
+        return `{'<a href="${el.link}" target="_blank" ${ index > 0 ? 'class="f-ml10"' : ''}>${el.title}</a>'}`;
+      }).join('\n')}`
+    });
+  }
+  tables.push(cols);
 
-  return { searchNode, buttonsNode, tablesNode };
+  return {
+    searchNode: getSearchNode(config.filters),
+    buttonsNode: getButtonsNode(config.buttons),
+    tablesNode: getTableNode(cols)
+  };
 }
 
+// 组装表格card
 function assemblyLTable(buttonsNode, tablesNode) {
   const tableObj = {
     tagName: 'kl-card',
@@ -298,24 +237,14 @@ function assemblyLTable(buttonsNode, tablesNode) {
 }
 
 // 单文件
-export const nejList = (title, config) => {
-  const { breadcrumbs, tabsEnable, tabs, lists } = config;
+export const rgList = (title, config) => {
+  const { breadcrumbs, tabs, lists } = config;
   const nsVNodes = new VNodeTree();
 
   // 添加面包屑
   nsVNodes.addFromObject(getBreadNode(breadcrumbs));
 
-  // 根据是否启用多Tab生成不同数据
-  let nodes;
-  if (tabsEnable) {
-    nsVNodes.addFromObject(getTabsNode(tabs));
-    nodes = getListsNodes(tabs, lists);
-    nodes.searchNode.attributes = { class: 'f-undertab' };
-  } else {
-    nodes = getListsNodes([tabs[0]], [lists[0]]);
-  }
-
-  const { searchNode, buttonsNode, tablesNode } = nodes;
+  const { searchNode, buttonsNode, tablesNode } = getListNodes(lists[0]);
   nsVNodes.addFromObject(searchNode);
   nsVNodes.addFromObject(assemblyLTable(buttonsNode, tablesNode));
 
@@ -329,7 +258,33 @@ export const nejList = (title, config) => {
   return nsVNodes;
 };
 
-export const nejMulList = (title, config) => {
+// 根据tabs生成list节点
+function getMulListNode(tabs) {
+  const nodes = tabs.map(el => ({ tagName: el.moduleName }));
+  let res = [];
+
+  if (nodes.length > 1) {
+    nodes.forEach((el, index) => {
+      const condition = {
+        type: index ? ConditionTypes.ELSEIF : ConditionTypes.IF,
+        exp: `tab === ${el.key}`
+      };
+      res.push(condition);
+      res.push(nodes[index]);
+    });
+    nodes.push({ type: ConditionTypes.ENDIF });
+  } else {
+    res = nodes;
+  }
+
+  return {
+    tagName: 'div',
+    children: res
+  };
+}
+
+// 多文件
+export const rgMulList = (title, config) => {
   const { breadcrumbs, tabs, lists } = config;
   // page.js
   const pageVNodes = new VNodeTree();
@@ -356,13 +311,15 @@ export const nejMulList = (title, config) => {
       return;
     }
 
+    // 配置子模块
     const tmp = new VNodeTree();
     tmp.moduleName = moduleName;
     tabs[index].moduleName = moduleName;
     pageVNodes.subModules.push(moduleName);
 
-    const nodes = getListsNodes([tabs[index]], [config]);
+    const nodes = getListNodes(config);
     const { searchNode, buttonsNode, tablesNode } = nodes;
+    searchNode.attributes.class = 'f-undertab';
     tmp.addFromObject(searchNode);
     tmp.addFromObject(assemblyLTable(buttonsNode, tablesNode));
     tmp.excludeVar = new Set(['source', 'pageSize', 'sumTotal', 'current']);
@@ -377,6 +334,11 @@ export const nejMulList = (title, config) => {
   // 配置公共部分
   pageVNodes.addFromObject(getBreadNode(breadcrumbs));
   pageVNodes.addFromObject(getTabsNode(tabs));
+
+  // 加上列表
+  pageVNodes.addFromObject(getMulListNode(tabs));
+
+  pageVNodes.data.tab = tabs[0].key;
   pageVNodes.$apply();
   return {
     ...modules,

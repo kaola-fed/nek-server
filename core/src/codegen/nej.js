@@ -1,15 +1,13 @@
-import * as _ from './utils';
-import * as transform from './transform/list';
-
-/** 通用函数 */
+import * as util from './utils';
 
 const genNEJJS = (options) => {
   const {
     basePath = 'pro/widget/BaseComponent',
-    modules = '',
-    eventSet,
-    varMap,
-    moduleName = ''
+    modules = [],
+    eventSet = new Set(),
+    varMap = new Map(),
+    moduleName = '',
+    outMixin = false
   } = options;
 
   // 基类名称
@@ -24,130 +22,36 @@ const genNEJJS = (options) => {
 
   let dataStr = '';
   varMap.forEach((value, key) => dataStr += `${key}: ${value},\n`);
+  const moduleStr = modules.length ? `\n    ${modules.map(el => `'./${el}/index.js',`.join('\n'))}` : '';
 
-  // 先硬编码，之后再改
-  return `NEJ.define([
+  const js = `NEJ.define([
     'pro/base/util',
     '${basePath}',
-    'text!./page.html',${modules}
-], function(_, ${baseName}, tpl) {
-    return ${baseName}.extend({${moduleName ? `\nname: ${moduleName},\n` : ''}
+    'text!./${moduleName || 'index'}.html',
+    '${outMixin ? '../../' : './mixins/'}${moduleName}.action.js',${moduleStr}
+], function(_, ${baseName}, tpl, ListActionMixin) {
+    return ${baseName}.extend({
+        name: '${moduleName}',
         template: _.compressHtml(tpl),
         config: function(data) {
             this.defaults({
             ${dataStr}});
             this.supr(data);
         },
-
-        // UI事件
-        ${eventStr}
-    });
+    }).use(ListActionMixin);
 });`;
+
+  const mixin = `define([], function() {
+      return function(Component) {
+          Component.implement({
+              ${eventStr}
+          })
+      }
+  })`;
+
+  return { js, mixin };
 };
 
-/** NEJ 页面 */
-// 只生成JS和HTML，ftl以及entry等项目相关的放到具体业务中生成
-
-function genList(vTree, config) {
-  const {
-    root = '0',
-    url = '',
-    ListPath = '',
-    modules = '',
-    moduleName = ''
-  } = config;
-
-  const eventSet = new Set();
-  // 默认加入的变量
-  const varMap = new Map();
-  let mock = {
-    code: 200,
-    message: null,
-    data: {
-      list: [],
-      paging: {
-        pageNo: 2,
-        pageSize: 20,
-        total: 5
-      }
-    }
-  };
-  // url存在，设置mock数据
-  if (url) {
-    varMap.set('url', `'${url}'`);
-    mock.list = _.genMockData(vTree.cols);
-    mock = JSON.stringify(mock);
-  } else {
-    mock = null;
-  }
-  const html = _.genHTML(vTree.tree, root, { eventSet, varMap });
-
-  // 移除基类事件
-  eventSet.forEach((el) => {
-    vTree.excludeEvent.has(el) && eventSet.delete(el);
-  });
-  // 移除基类变量以及条件变量
-  const conditionReg = /^condition\..+/;
-  varMap.forEach((value, key) => {
-    if (vTree.excludeVar.has(key) || conditionReg.test(value)) {
-      varMap.delete(key);
-    }
-  });
-
-  let js = genNEJJS({
-    basePath: ListPath,
-    eventSet,
-    varMap,
-    modules,
-    moduleName
-  });
-
-  return { js, html, url, mock };
-}
-
-// 生成列表页
 export const buildList = (listConfig, options) => {
-  const {
-    root = '0',
-    // 页面标题，显示在card上
-    pageTitle = '',
-    // js代码生成相关配置
-    jsConfig = {}
-  } = options;
-
-  if (listConfig.tabsEnable) {
-    const { pageVNodes, ...vTrees } = transform.nejMulList(pageTitle, listConfig);
-    const result = {
-      modules: {}
-    };
-
-    let modules = '';
-    for (let moduleName in vTrees) {
-      if (vTrees.hasOwnProperty(moduleName)) {
-        const vTree = vTrees[moduleName];
-
-        modules += `\n'./${moduleName}/index.js',`;
-        result.modules[moduleName] = genList(vTree, {
-          root,
-          moduleName,
-          url: vTree.url,
-          ListPath: jsConfig.ListPath
-        });
-      }
-    }
-
-    result.index = genList(pageVNodes, { ListPath: jsConfig.basePath, modules });
-
-    return result;
-  }
-
-  const vTree = transform.nejList(pageTitle, listConfig);
-
-  return {
-    [vTree.moduleName]: genList(vTree, {
-      root,
-      url: vTree.url,
-      ListPath: jsConfig.ListPath
-    })
-  };
+  return util.buildList(listConfig, genNEJJS, options);
 };

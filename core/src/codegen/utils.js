@@ -1,6 +1,5 @@
-// import lodash from 'lodash';
-
 import { ConditionTypes } from '../enums';
+import * as transform from './transform/list';
 
 const getAttrStr = (key, type, value, debug) => {
   if (value === '') {
@@ -15,6 +14,7 @@ const getAttrStr = (key, type, value, debug) => {
     case 'object':
       return ` ${key}={${value}}`;
     case 'var':
+    case 'express':
       if (debug) {
         return '';
       }
@@ -130,20 +130,104 @@ export const genHTML = (tree, nodeId, { eventSet, varMap, level = 0 }) => {
   return `${intend}${text || ''}`;
 };
 
-// 先不搞了，太麻烦，效果也不一定好
-// // 找出多个数组中头尾不同的部分，合并成一个数组返回
-// export const compareArrays = (arrays, isSame = lodash.isEqual) => {
-//   // 计算并集，建立接邻矩阵
-//   const union = lodash.unionWith(...arrays, isSame);
-//   // 增加一个空的点，用来保证只有一个遍历的起点
-//   const length = union.length + 1;
-//   const graph = [...Array(length)].map(() => new Array(length).fill(null));
-//
-//   const maxLength = arrays.reduce((res, curr) => Math.max(res, curr.length), 0);
-//   // 遍历数组集，创建图
-//   for (let i = 0; i < maxLength; ++i) {
-//     arrays.forEach((el) => {
-//
-//     });
-//   }
-// };
+function genList(vTree, genJSFunc, config) {
+  const {
+    root = '0',
+    url = '',
+    ListPath = '',
+    // mixin位置，false为模块内
+    outMixin = false,
+  } = config;
+
+  const eventSet = new Set();
+  // 默认加入的变量
+  const varMap = new Map(Object.entries(vTree.data));
+  let mock = {
+    code: 200,
+    message: null,
+    data: {
+      list: [],
+      paging: {
+        pageNo: 2,
+        pageSize: 20,
+        total: 5
+      }
+    }
+  };
+  // url存在，设置mock数据
+  if (url) {
+    varMap.set('url', `'${url}'`);
+    mock.list = genMockData(vTree.cols);
+    mock = JSON.stringify(mock);
+  } else {
+    mock = null;
+  }
+  const html = genHTML(vTree.tree, root, { eventSet, varMap });
+
+  // 移除基类事件
+  eventSet.forEach((el) => {
+    vTree.excludeEvent.has(el) && eventSet.delete(el);
+  });
+  // 移除基类变量以及条件变量
+  const conditionReg = /^condition\..+/;
+  varMap.forEach((value, key) => {
+    if (vTree.excludeVar.has(key) || conditionReg.test(value)) {
+      varMap.delete(key);
+    }
+  });
+
+  const { js, mixin } = genJSFunc({
+    basePath: ListPath,
+    eventSet,
+    varMap,
+    modules: vTree.subModules,
+    moduleName: vTree.moduleName,
+    outMixin
+  });
+
+  return { js, mixin, html, url, mock };
+}
+
+// 生成列表页
+export const buildList = (listConfig, genJSFunc, options) => {
+  const {
+    root = '0',
+    // 页面标题，显示在card上
+    pageTitle = '',
+    // js代码生成相关配置
+    jsConfig = {}
+  } = options;
+
+  if (listConfig.tabsEnable) {
+    const { pageVNodes, ...vTrees } = transform.rgMulList(pageTitle, listConfig);
+    const result = {
+      modules: {}
+    };
+
+    for (let moduleName in vTrees) {
+      if (vTrees.hasOwnProperty(moduleName)) {
+        const vTree = vTrees[moduleName];
+
+        result.modules[moduleName] = genList(vTree, {
+          root,
+          url: vTree.url,
+          ListPath: jsConfig.ListPath
+        });
+      }
+    }
+
+    result.index = genList(pageVNodes, genJSFunc, { ListPath: jsConfig.basePath, outMixin: true });
+
+    return result;
+  }
+
+  const vTree = transform.rgList(pageTitle, genJSFunc, listConfig);
+
+  return {
+    [vTree.moduleName]: genList(vTree, {
+      root,
+      url: vTree.url,
+      ListPath: jsConfig.ListPath
+    })
+  };
+};
