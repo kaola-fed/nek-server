@@ -7,6 +7,7 @@ const genNEJJS = (options) => {
     eventSet = new Set(),
     varMap = new Map(),
     moduleName = '',
+    fileName = 'index',
     outMixin = false
   } = options;
 
@@ -27,7 +28,7 @@ const genNEJJS = (options) => {
   const js = `NEJ.define([
     'pro/base/util',
     '${basePath}',
-    'text!./${moduleName || 'index'}.html',
+    'text!./${fileName}.html',
     '${outMixin ? '../../' : './mixins/'}${moduleName}.action.js',${moduleStr}
 ], function(_, ${baseName}, tpl, ListActionMixin) {
     return ${baseName}.extend({

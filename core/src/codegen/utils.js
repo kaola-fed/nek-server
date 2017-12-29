@@ -135,6 +135,7 @@ function genList(vTree, genJSFunc, config) {
     root = '0',
     url = '',
     ListPath = '',
+    fileName = 'index',
     // mixin位置，false为模块内
     outMixin = false,
   } = config;
@@ -217,6 +218,7 @@ export const buildList = (listConfig, genJSFunc, options) => {
     }
 
     result.index = genList(pageVNodes, genJSFunc, {
+      fileName: 'page',
       ListPath: jsConfig.basePath,
       outMixin: true
     });
@@ -230,6 +232,7 @@ export const buildList = (listConfig, genJSFunc, options) => {
     [vTree.moduleName]: genList(vTree, genJSFunc, {
       root,
       url: vTree.url,
+      fileName: 'page',
       ListPath: jsConfig.ListPath,
       outMixin: true
     })

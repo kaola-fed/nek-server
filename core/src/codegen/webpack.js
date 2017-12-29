@@ -9,6 +9,7 @@ const genWebpackJs = (options) => {
     varMap = new Map(),
     modules = [],
     moduleName = '',
+    fileName = 'index',
     outMixin = false
   } = options;
   // 基类名称
@@ -40,7 +41,7 @@ const genWebpackJs = (options) => {
 
   const js = `import ${name} from '${basePath}';
 
-  import template from './index.html';
+  import template from './${fileName}.html';
   import ListActionMixin from '${outMixin ? '../../' : './mixins/'}${moduleName}.action.js';
   ${modulesStr}
 
