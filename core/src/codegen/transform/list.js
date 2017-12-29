@@ -117,7 +117,7 @@ function getSearchNode(filters) {
       children: [{
         tagName: 'kl-search',
         events: { search: 'refresh', reset: 'reset' },
-        children: filters.map(el => getSearchItems(el))
+        children: getSearchItems(filters)
       }]
     }]
   };
@@ -144,7 +144,7 @@ function getButtonsNode(buttons) {
   return buttons.length > 0 ? {
     tagName: 'kl-row',
     attributes: { gutter: 0 },
-    children: buttons.map(el => getButtons(el))
+    children: getButtons(buttons)
   } : null;
 }
 
@@ -179,7 +179,7 @@ function getTableNode(cols) {
     children: [{
       tagName: 'kl-table',
       attributes: {source: {type: 'var', value: 'list'}},
-      children: cols.map(el => getCols(el))
+      children: getCols(cols)
     }]
   };
 }

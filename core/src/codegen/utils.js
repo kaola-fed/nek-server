@@ -208,7 +208,7 @@ export const buildList = (listConfig, genJSFunc, options) => {
       if (vTrees.hasOwnProperty(moduleName)) {
         const vTree = vTrees[moduleName];
 
-        result.modules[moduleName] = genList(vTree, {
+        result.modules[moduleName] = genList(vTree, genJSFunc, {
           root,
           url: vTree.url,
           ListPath: jsConfig.ListPath
@@ -216,18 +216,22 @@ export const buildList = (listConfig, genJSFunc, options) => {
       }
     }
 
-    result.index = genList(pageVNodes, genJSFunc, { ListPath: jsConfig.basePath, outMixin: true });
+    result.index = genList(pageVNodes, genJSFunc, {
+      ListPath: jsConfig.basePath,
+      outMixin: true
+    });
 
     return result;
   }
 
-  const vTree = transform.rgList(pageTitle, genJSFunc, listConfig);
+  const vTree = transform.rgList(pageTitle, listConfig);
 
   return {
-    [vTree.moduleName]: genList(vTree, {
+    [vTree.moduleName]: genList(vTree, genJSFunc, {
       root,
       url: vTree.url,
-      ListPath: jsConfig.ListPath
+      ListPath: jsConfig.ListPath,
+      outMixin: true
     })
   };
 };

@@ -45,7 +45,7 @@ const genNEJJS = (options) => {
       return function(Component) {
           Component.implement({
               ${eventStr}
-          })
+          });
       }
   })`;
 
