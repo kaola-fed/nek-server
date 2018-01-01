@@ -16,10 +16,11 @@ route.get('/page', async (ctx) => {
   const modules = await PageController.gen(id);
 
   // 生成ftl/entry
-  const { ftl, entry, url, type } = await PageController.getTpl(id);
+  const { ftl, entry, url, type, name } = await PageController.getTpl(id);
 
   return ctx.body = _.success({
     url,
+    title: name,
     type,
     ftl,
     entry,

@@ -138,6 +138,7 @@ function genList(vTree, genJSFunc, config) {
     fileName = 'index',
     // mixin位置，false为模块内
     outMixin = false,
+    isNeedMixin = true
   } = config;
 
   const eventSet = new Set();
@@ -183,7 +184,8 @@ function genList(vTree, genJSFunc, config) {
     varMap,
     modules: vTree.subModules,
     moduleName: vTree.moduleName,
-    outMixin
+    outMixin,
+    isNeedMixin,
   });
 
   return { js, mixin, html, url, mock };
@@ -220,6 +222,7 @@ export const buildList = (listConfig, genJSFunc, options) => {
     result.index = genList(pageVNodes, genJSFunc, {
       fileName: 'page',
       ListPath: jsConfig.basePath,
+      isNeedMixin: false,
       outMixin: true
     });
 
@@ -234,6 +237,7 @@ export const buildList = (listConfig, genJSFunc, options) => {
       url: vTree.url,
       fileName: 'page',
       ListPath: jsConfig.ListPath,
+      isNeedMixin: false,
       outMixin: true
     })
   };

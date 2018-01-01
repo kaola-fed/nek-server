@@ -8,7 +8,8 @@ const genNEJJS = (options) => {
     varMap = new Map(),
     moduleName = '',
     fileName = 'index',
-    outMixin = false
+    outMixin = false,
+    isNeedMixin = true
   } = options;
 
   // 基类名称
@@ -17,20 +18,31 @@ const genNEJJS = (options) => {
 
   // 事件函数
   let eventStr = '';
-  eventSet.forEach(el => eventStr += `${el}: function(event) {
-    console.log(event);
-  },`);
+  eventSet.forEach((el) => {
+    if (el === 'onTabChange') {
+      eventStr += `${el}: function(event) {
+        this.data.tab = event.key;
+      },`;
+    } else {
+      eventStr += `${el}: function(event) {
+        console.log(event);
+      },`;
+    }
+  });
 
   let dataStr = '';
   varMap.forEach((value, key) => dataStr += `${key}: ${value},\n`);
   const moduleStr = modules.length ? `\n    ${modules.map(el => `'./${el}/index.js',`).join('\n')}` : '';
 
+  const mixinStr = isNeedMixin ?
+    `'${outMixin ? '../../' : './'}mixins/list.action.js',` : '';
+
   const js = `NEJ.define([
     'pro/base/util',
     '${basePath}',
     'text!./${fileName}.html',
-    '${outMixin ? '../../' : './mixins/'}${moduleName}.action.js',${moduleStr}
-], function(_, ${baseName}, tpl, ListActionMixin) {
+    ${mixinStr}${moduleStr}
+], function(_, ${baseName}, tpl ${isNeedMixin ? ', ListActionMixin' : ''}) {
     return ${baseName}.extend({
         name: '${moduleName}',
         template: _.compressHtml(tpl),
@@ -39,7 +51,8 @@ const genNEJJS = (options) => {
             ${dataStr}});
             this.supr(data);
         },
-    }).use(ListActionMixin);
+        ${isNeedMixin ? '' : `${eventStr}`}
+    })${isNeedMixin ? '.use(ListActionMixin)' : ''};
 });`;
 
   const mixin = `define([], function() {

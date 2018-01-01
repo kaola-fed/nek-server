@@ -208,7 +208,7 @@ export const genList = (projectConfig, pageTitle, config) => {
         jsConfig: {ListPath: projectConfig.listPath, basePath: projectConfig.basePath},
         multiFiles: config.tabsEnable
       });
-      return Object.assign(result, { mixins: { index: '//mixins' } });
+      return result;
     }
     default:
       break;
@@ -239,8 +239,8 @@ export const gen = async (id) => {
 };
 
 export const getTpl = async (id) => {
-  const { url, project } = await PageModel.selectByIdWithPro(id);
-  const result = { ftl: '', entry: '', url, type: project.type };
+  const { url, name, project } = await PageModel.selectByIdWithPro(id);
+  const result = { ftl: '', entry: '', url, name, type: project.type };
   switch (project.type) {
     case ProjectTypes.NEJ:
       result.ftl = project.ftl;
