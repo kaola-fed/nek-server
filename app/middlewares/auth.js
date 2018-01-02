@@ -7,7 +7,9 @@ export default (ctx, next) => {
   if (!ctx.session.user) {
     const port = ctx.host.split(':')[1];
     /* eslint-disable */
-    openIDConfig.redirect_uri = `http://nek-server.kaolafed.com:${port}/api/login`;
+    if (port) {
+      openIDConfig.redirect_uri = `http://nek-server.kaolafed.com:${port}/api/login`;
+    }
     /* eslint-enable */
     const koaOpenid = new KoaOpenid(openIDConfig);
     const url = koaOpenid.getLoginURL(ctx);

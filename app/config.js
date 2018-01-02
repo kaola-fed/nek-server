@@ -6,7 +6,7 @@ const config = {
   authorizeUri: 'https://login.netease.com/connect/authorize',
   tokenUri: 'https://login.netease.com/connect/token',
   userInfoUri: 'https://login.netease.com/connect/userinfo',
-  redirectUri: 'http://nek-server.kaolafed.com:3000/api/login'
+  redirectUri: 'http://nek-server.kaolafed.com/api/login'
 };
 
 export default config;
