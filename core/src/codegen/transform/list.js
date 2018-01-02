@@ -106,7 +106,7 @@ function getSearchItems(filters) {
 
 // 生成搜索区节点
 function getSearchNode(filters, { multiTabs = false, title = '' }) {
-  // 找出最长的label，按一个字宽15px算
+  // 找出最长的label，按一个字宽16px算
   const maxLength = filters.reduce((max, current) => {
     return Math.max(max, current.title.length);
   }, 0);
@@ -117,7 +117,7 @@ function getSearchNode(filters, { multiTabs = false, title = '' }) {
     attributes: multiTabs ? { isShowLine: false, class: 'f-undertab' } : { title },
     children: [{
       tagName: 'kl-form',
-      attributes: { labelSize: maxLength * 15 },
+      attributes: { labelSize: maxLength * 16 },
       children: [{
         tagName: 'kl-search',
         events: { search: 'refresh', reset: 'reset' },

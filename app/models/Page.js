@@ -54,7 +54,8 @@ schema.statics = {
     return await this.update({ _id }, {
       url: page.url,
       name: page.name,
-      type: page.type
+      type: page.type,
+      key: page.key
     });
   },
   async selectByUrl(url) {
