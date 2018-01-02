@@ -31,7 +31,7 @@ function getTabsNode(tabs, title) {
       events: { change: 'onTabChange' },
       children: tabs.map(el => ({
         tagName: 'kl-tab',
-        attributes: { key: el.key }
+        attributes: { key: el.key, title: el.title }
       }))
     }]
   };
@@ -270,7 +270,7 @@ function getMulListNode(tabs) {
     tabs.forEach((el, index) => {
       const condition = {
         type: index ? ConditionTypes.ELSEIF : ConditionTypes.IF,
-        exp: `tab === ${el.key}`
+        exp: `tab == ${el.key}`
       };
       res.push({ condition });
       res.push({ tagName: el.moduleName });
@@ -281,7 +281,7 @@ function getMulListNode(tabs) {
   }
 
   return {
-    tagName: 'div',
+    tagName: 'ns-empty',
     children: res
   };
 }

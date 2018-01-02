@@ -18,7 +18,7 @@ function isSameObject(obj1, obj2) {
 export default class NSNode {
   constructor(id, options) {
     const {
-      tagName = 'div',
+      tagName = 'ns-empty',
       libName = 'native',
       condition = null,   // { type: ConditionTypes, exp }
       parent = null,

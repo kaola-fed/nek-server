@@ -184,6 +184,7 @@ function genList(vTree, genJSFunc, config) {
     varMap,
     modules: vTree.subModules,
     moduleName: vTree.moduleName,
+    fileName,
     outMixin,
     isNeedMixin,
   });
