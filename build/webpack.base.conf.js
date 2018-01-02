@@ -92,6 +92,6 @@ module.exports = {
     ]
   },
   externals: {
-    clipboard: 'Clipboard'
+    Clipboard: 'Clipboard'
   }
 }
