@@ -207,13 +207,19 @@ export const buildList = (listConfig, genJSFunc, options) => {
     const result = {
       modules: {}
     };
-
+    // 不建立多list，删除其他list，只保留第一个list
+    if (!listConfig.multiListEnable) {
+      vTrees.splice(1, vTrees.length-1);
+    }
+    // 只有一个list时，将mixins放在外层
+    let outMixin = vTrees.length > 1 ? false : true;
     for (let moduleName in vTrees) {
       if (vTrees.hasOwnProperty(moduleName)) {
         const vTree = vTrees[moduleName];
 
         result.modules[moduleName] = genList(vTree, genJSFunc, {
           root,
+          outMixin,
           url: vTree.url,
           ListPath: jsConfig.ListPath
         });
@@ -223,8 +229,7 @@ export const buildList = (listConfig, genJSFunc, options) => {
     result.index = genList(pageVNodes, genJSFunc, {
       fileName: 'page',
       ListPath: jsConfig.basePath,
-      isNeedMixin: false,
-      outMixin: true
+      isNeedMixin: false
     });
 
     return result;
@@ -238,8 +243,7 @@ export const buildList = (listConfig, genJSFunc, options) => {
       url: vTree.url,
       fileName: 'page',
       ListPath: jsConfig.ListPath,
-      isNeedMixin: false,
-      outMixin: true
+      isNeedMixin: false
     })
   };
 };

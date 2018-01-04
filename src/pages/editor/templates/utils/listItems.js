@@ -16,18 +16,18 @@ export const newBreadcrumbItem = () => {
   };
 };
 
-export const newTabItem = (key) => {
+export const newTabItem = (key = 0) => {
+  const count = key + 1;
   return {
     id: NSNode.generateId(),
-    title: '',
-    key: key || '',
+    title: `tab${count}`,
+    key: count || '',
     url: ''
   };
 };
 
 export const newListConfigItem = () => {
   return {
-    module: false,
     moduleName: '',
     filters: [],
     buttons: [],

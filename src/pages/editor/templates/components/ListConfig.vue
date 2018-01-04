@@ -1,15 +1,10 @@
 <template>
   <div class="m-list-config">
-    <div class="m-card">
+    <div class="m-card" v-show="multiListEnable">
       <h5 class="u-title">模块设置</h5>
-      <span class="f-mr10">建立独立模块</span>
-      <el-switch v-model="value.module" on-text="是" off-text="否"></el-switch>
-      <template v-if="value.module">
         <span class="s-fc-9 f-ml5">所有列表将会按照模块名生成对应的模块</span>
         <el-input class="f-mt5" placeholder="请输入模块名" v-model="value.moduleName"></el-input>
-      </template>
     </div>
-
     <div class="m-card">
 
       <h5 class="u-title">筛选区</h5>
@@ -192,6 +187,10 @@ export default {
       default() {
         return {};
       }
+    },
+    multiListEnable: {
+      type: Boolean,
+      default: false
     }
   },
   data() {

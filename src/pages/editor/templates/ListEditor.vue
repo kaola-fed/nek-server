@@ -23,10 +23,15 @@
           </el-collapse-item>
 
           <el-collapse-item title="多Tab" name="tabs" class="m-config-tabs">
-            <el-switch v-model="multiTabEnable" class="f-mb10" on-text="启用" off-text="停用" @change="onMultiTabEnableChange"></el-switch>
+            <el-row class="f-mb10">
+              <span class="f-mr10">启用多tab</span>
+              <el-switch v-model="multiTabEnable" on-text="是" off-text="否" @change="onMultiTabEnableChange"></el-switch>
+              <span class="f-mr10">建立多模块</span>
+              <el-switch v-model="multiListEnable" :disabled="!multiTabEnable" on-text="是" off-text="否"></el-switch>
+            </el-row>
             <template v-if="multiTabEnable">
               <el-row v-for="(item, index) in multiTabs" :key="item.id + index" :gutter="20">
-                <el-col :span="2"><label class="el-form-item__label">Tab {{ index }}</label></el-col>
+                <el-col :span="2"><label class="el-form-item__label">Tab {{ index+1 }}</label></el-col>
                 <el-col :span="8"><el-input placeholder="标题" v-model="item.title"></el-input></el-col>
                 <el-col :span="8"><el-input placeholder="Tab key（可选）" v-model="item.key"></el-input></el-col>
                 <el-col :span="6">
@@ -52,8 +57,9 @@
                 :key="item.id + index"
                 :label="item.title || `Tab ${index}`"
                 :name="`${index}`"
+                :disabled="!multiListEnable"
               >
-                <list-config v-model="listConfigs[index]"></list-config>
+                <list-config v-model="listConfigs[index]" :multiListEnable="multiListEnable"></list-config>
               </el-tab-pane>
             </el-tabs>
             <div v-else>
@@ -137,6 +143,7 @@ export default {
     const { data } = await getListTemplate({ id: this.$route.query.id });
     this.setBreadcrumbs(data.breadcrumbs);
     this.multiTabEnable = !!data.tabsEnable;
+    this.multiListEnable = !!data.multiListEnable;
     this.setTabs(data.tabs);
     this.setCols(data.lists);
     // this.url = data.url || '';
@@ -239,7 +246,8 @@ export default {
 
       breadcrumbs: [listItems.newBreadcrumbItem()],
 
-      multiTabEnable: null,
+      multiTabEnable: null, //是否多tab
+      multiListEnable: false, //是否多个list
       multiTabs: [listItems.newTabItem()],
       copyTab: -1,
 
@@ -491,6 +499,7 @@ export default {
       const domObj = {
         breadcrumbs: this.breadcrumbs,
         tabsEnable: this.multiTabEnable,
+        multiListEnable: this.multiListEnable,
         tabs: this.multiTabs,
         lists: this.listConfigs,
         // url: this.url
