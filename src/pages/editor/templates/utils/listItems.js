@@ -26,9 +26,10 @@ export const newTabItem = (key = 0) => {
   };
 };
 
-export const newListConfigItem = () => {
+export const newListConfigItem = (index) => {
+  const moduleName = index ? `list${index + 1}` : 'list';
   return {
-    moduleName: '',
+    moduleName,
     filters: [],
     buttons: [],
     cols: [],

@@ -342,7 +342,7 @@ export default {
     },
     onAddTabClick() {
       this.multiTabs.push(listItems.newTabItem(this.multiTabs.length));
-      this.listConfigs.push(listItems.newListConfigItem());
+      this.listConfigs.push(listItems.newListConfigItem(this.listConfigs.length));
     },
     async onDeleteTabClick(index) {
       if (this.multiTabs.length < 2) {

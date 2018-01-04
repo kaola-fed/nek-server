@@ -20,7 +20,11 @@
             {{scope.row.type === 1 ? '列表页' : '编辑页' }}
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="updatedAt" label="更新时间" show-overflow-tooltip></el-table-column>
+        <el-table-column align="center" label="更新时间" show-overflow-tooltip>
+          <template scope="scope">
+            {{ scope.row.updatedAt | moment('YYYY-MM-DD HH:mm:ss') }}
+          </template>
+        </el-table-column>
         <el-table-column align="center" label="操作" fixed="right">
           <template scope="scope">
             <el-button size="small" type="text" @click="handleSetting(scope.row)">设置</el-button>

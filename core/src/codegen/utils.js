@@ -203,16 +203,17 @@ export const buildList = (listConfig, genJSFunc, options) => {
   } = options;
 
   if (listConfig.tabsEnable) {
+    // 不建立多list，删除其他list，只保留第一个list
+    if (!listConfig.multiListEnable) {
+      listConfig.lists.splice(1, listConfig.lists.length - 1);
+    }
+    // 只有一个list时，将mixins放在外层
+    let outMixin = listConfig.lists.length > 1 ? false : true;
     const { pageVNodes, ...vTrees } = transform.rgMulList(pageTitle, listConfig);
     const result = {
       modules: {}
     };
-    // 不建立多list，删除其他list，只保留第一个list
-    if (!listConfig.multiListEnable) {
-      vTrees.splice(1, vTrees.length-1);
-    }
-    // 只有一个list时，将mixins放在外层
-    let outMixin = vTrees.length > 1 ? false : true;
+
     for (let moduleName in vTrees) {
       if (vTrees.hasOwnProperty(moduleName)) {
         const vTree = vTrees[moduleName];
