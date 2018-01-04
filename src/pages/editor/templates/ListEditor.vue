@@ -70,6 +70,7 @@
       </side-bar>
     </div>
     <preview-button></preview-button>
+    <code-modal :visible.sync="codeModalVisible"></code-modal>
   </div>
 </template>
 
@@ -83,6 +84,7 @@ import ToolsBar from '../components/ToolsBar.vue';
 import SideBar from '../components/SideBar.vue';
 import ListConfig from './components/ListConfig.vue';
 import PreviewButton from '../components/PreviewButton.vue';
+import CodeModal from '../modals/code.vue';
 
 import * as listItems from './utils/listItems';
 
@@ -98,7 +100,8 @@ export default {
     ToolsBar,
     SideBar,
     ListConfig,
-    PreviewButton
+    PreviewButton,
+    CodeModal
   },
   created() {
     // 点击预览区的链接时阻止转跳
@@ -240,6 +243,11 @@ export default {
           icon: 'iconfont-refresh',
           onClick: () => this.updatePreview()
         }
+        // , {
+        //   tip: '代码预览',
+        //   icon: 'iconfont-refresh',
+        //   onClick: () => this.previewCode()
+        // }
       ],
 
       configActiveNames: ['breadcrumb', 'tabs', 'list'],
@@ -257,7 +265,8 @@ export default {
       //列表页名称
       pageName: '',
       // 列表请求URL
-      url: ''
+      url: '',
+      codeModalVisible: false
     };
   },
   computed: {
@@ -436,7 +445,14 @@ export default {
       }
     },
     async onSave() {
-
+      // 判断模块名是否重复
+      const moduleNames = this.listConfigs.map(list => list.moduleName);
+      // 数组去重，比较长度
+      const newModuleNames = [...new Set(moduleNames)];
+      if (moduleNames.length !== newModuleNames.length) {
+        this.$message({ message: '请检查模块名是否重复', type: 'warning' });
+        return;
+      }
       // TODO: 校验
       try {
         if (this.saveNotify) {
@@ -502,7 +518,6 @@ export default {
         multiListEnable: this.multiListEnable,
         tabs: this.multiTabs,
         lists: this.listConfigs,
-        // url: this.url
       };
       try {
         await updatePageDom({ id: this.$route.query.id, dom: JSON.stringify(domObj) });
@@ -513,6 +528,10 @@ export default {
 
     updatePreview() {
       this.$nsVNodes.$update({ rerender: true, outter: false });
+    },
+
+    previewCode() {
+      this.codeModalVisible = true;
     },
 
     /* debounce watchers */

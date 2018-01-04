@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="!id ? '创建组件库' : '编辑组件库'" :visible="visible" @open="handleOpen">
+  <el-dialog :title="!id ? '创建组件库' : '编辑组件库'" :visible.sync="visible" :before-close="handleBeforeClose" @open="handleOpen">
     <el-form :model="form" :rules="rules" ref="form">
       <el-form-item label="组件库名称" prop="name">
         <el-input v-model="form.name"></el-input>
@@ -69,9 +69,13 @@ export default {
         }
       });
     },
-    close() {
+    handleBeforeClose() {
+      this.$emit('update:visible', false);
       this.$emit('close');
       this.$refs.form.resetFields();
+    },
+    close() {
+      this.handleBeforeClose();
     }
   }
 };

@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="!id ? '创建项目' : '编辑项目'" :visible="visible" @open="handleOpen">
+  <el-dialog :title="!id ? '创建项目' : '编辑项目'" :visible.sync="visible" :before-close="handleBeforeClose" @open="handleOpen">
     <el-form :model="form" :rules="rules" ref="form" label-width="100px">
       <el-row>
         <el-col :span="12">
@@ -130,9 +130,13 @@ export default {
         }
       });
     },
-    close() {
+    handleBeforeClose() {
+      this.$emit('update:visible', false);
       this.$emit('close');
       this.$refs.form.resetFields();
+    },
+    close() {
+      this.handleBeforeClose();
     }
   }
 };

@@ -18,7 +18,7 @@
         </el-table>
       </div>
     </el-card>
-    <create-key-modal :projectId="projectId" :keyId="currentKeyId" :visible="createVisible"
+    <create-key-modal :projectId="projectId" :keyId="currentKeyId" :visible.sync="createVisible"
                       @refresh="getList" @close="handleCreateClose">
     </create-key-modal>
   </div>
@@ -65,7 +65,6 @@ export default {
       this.createVisible = true;
     },
     handleCreateClose() {
-      this.createVisible = false;
       this.currentKeyId = '';
     },
     async handleDelete(row) {

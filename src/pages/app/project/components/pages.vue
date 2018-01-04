@@ -36,7 +36,7 @@
       </el-table>
     </div>
   </el-card>
-  <create-page-modal :visible="createPageVisible" :pageId="currentPageId" :projectId="project._id" @refresh="getList" @close="handleCreateClose"></create-page-modal>
+  <create-page-modal :visible.sync="createPageVisible" :pageId="currentPageId" :projectId="project._id" @refresh="getList" @close="handleCreateClose"></create-page-modal>
   </div>
 </template>
 <script>
@@ -89,7 +89,6 @@ export default {
       this.currentPageId = row._id;
     },
     handleCreateClose() {
-      this.createPageVisible = false;
       this.currentPageId = '';
     },
     handleEdit(row) {

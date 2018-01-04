@@ -25,7 +25,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <create-component-modal :visible="componentVisible" :componentId="currentComponentId" :libraryId="libraryId" @refresh="getList" @close="onCreateLibClose"></create-component-modal>
+    <create-component-modal :visible.sync="componentVisible" :componentId="currentComponentId" :libraryId="libraryId" @refresh="getList" @close="onCreateLibClose"></create-component-modal>
   </div>
 </template>
 
@@ -75,7 +75,6 @@ export default {
     },
     onCreateLibClose() {
       this.currentComponentId = '';
-      this.componentVisible = false;
     },
     handleEdit(row) {
       if(!row._id) {
