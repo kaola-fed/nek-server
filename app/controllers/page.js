@@ -158,7 +158,7 @@ export const pageList = async (ctx) => {
     return ctx.body = _.paramsError();
   }
   try {
-    const pages = await PageModel.selectByProject(projectId);
+    const pages = await PageModel.selectByProject(projectId, ctx.query.search);
     return ctx.body = _.success(pages);
   } catch (err) {
     return ctx.body = _.error('获取页面列表失败');

@@ -32,8 +32,8 @@ schema.statics = {
   async selectById(_id) {
     return await this.findOne({ _id });
   },
-  async selectByProject(project) {
-    return await this.find({ project });
+  async selectByProject(project, search) {
+    return await this.find({ project, url: { $regex: search, $options: 'i' } });
   },
   async selectByIdWithPro(_id) {
     return await this.findOne({ _id }).populate('project').select('url name type project');

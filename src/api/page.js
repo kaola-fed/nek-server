@@ -14,8 +14,8 @@ export const createPage = ({ projectId, url, name, type, key }) => {
   });
 };
 
-export const getPageList = ({ id }) => {
-  return JSONAPI.get('/api/page/list', { params: {id} });
+export const getPageList = ({ id, search }) => {
+  return JSONAPI.get('/api/page/list', { params: { id, search } });
 };
 
 export const deletePage = ({ id, pageId }) => {
