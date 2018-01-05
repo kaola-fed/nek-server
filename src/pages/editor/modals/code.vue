@@ -7,13 +7,14 @@
         </el-menu>
       </div>
       <div class="main" v-loading="loading">
-        <pre class="pre" v-text="currentCode"></pre>
+        <pre :class="[ mimeType, 'pre']" v-highlight v-text="currentCode"></pre>
       </div>
     </div>
   </el-dialog>
 </template>
 
 <script>
+import '@/components/directives/highlight';
 import { codegen } from '@/../core/src/index';
 
 import { getPageDetail } from '@/api/page';
@@ -32,12 +33,18 @@ export default {
       currentCode: '',
       activeMenu: '',
       menus: [],
-      loading: false
+      loading: false,
+      mimeType: 'html'
     };
   },
   watch: {
     activeMenu(newVal) {
       const pathArr = newVal.split('.');
+      if (pathArr.slice(-1) == 'html') {
+        this.mimeType = 'html';
+      } else {
+        this.mimeType = 'javascript';
+      }
       pathArr.unshift(this.sourceCode);
       this.currentCode = pathArr.reduce((pre, cur) => {
         return pre[cur];
