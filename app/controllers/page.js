@@ -185,7 +185,7 @@ export const pageDetail = async (ctx) => {
     return ctx.body = _.paramsError();
   }
   try {
-    const pageModel = await PageModel.selectByIdWithKey(pageId);
+    const pageModel = await PageModel.selectByIdWithPop(pageId);
     return ctx.body = _.success(pageModel);
   } catch (err) {
     return ctx.body = _.error('获取页面信息失败');

@@ -41,6 +41,9 @@ schema.statics = {
   async selectByIdWithKey(_id) {
     return await this.findOne({ _id }).populate('key').select('url name type key');
   },
+  async selectByIdWithPop(_id) {
+    return await this.findOne({ _id }).populate('key project').select('url name dom type key project');
+  },
   async deleteById(_id) {
     return await this.remove({ _id });
   },

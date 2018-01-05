@@ -70,7 +70,7 @@
       </side-bar>
     </div>
     <preview-button></preview-button>
-    <code-modal :visible.sync="codeModalVisible"></code-modal>
+    <code-modal :visible.sync="codeModalVisible" :title="pageInfo.title"></code-modal>
   </div>
 </template>
 
@@ -242,12 +242,11 @@ export default {
           tip: '刷新预览区',
           icon: 'iconfont-refresh',
           onClick: () => this.updatePreview()
+        }, {
+          tip: '代码预览',
+          icon: 'iconfont-code',
+          onClick: () => this.previewCode()
         }
-        // , {
-        //   tip: '代码预览',
-        //   icon: 'iconfont-refresh',
-        //   onClick: () => this.previewCode()
-        // }
       ],
 
       configActiveNames: ['breadcrumb', 'tabs', 'list'],
@@ -264,6 +263,7 @@ export default {
       needUpdate: false,
       //列表页名称
       pageName: '',
+      pageInfo: {},
       // 列表请求URL
       url: '',
       codeModalVisible: false
@@ -531,6 +531,7 @@ export default {
     },
 
     previewCode() {
+      this.saveDomJson();
       this.codeModalVisible = true;
     },
 
