@@ -212,6 +212,7 @@ function getListNodes(config, { title = '', multiTabs = false }) {
     cols.push({
       name: '操作',
       width: '100',
+      fixed: 'right',
       template: `${config.operatorButtons.map((el, index) => {
         return `{'<a href="${el.link}" target="_blank" ${ index > 0 ? 'class="f-ml10"' : ''}>${el.title}</a>'}`;
       }).join('\n')}`
