@@ -61,7 +61,7 @@ export default {
               id: this.id,
               ...this.form
             });
-            this.$emit('close');
+            this.handleBeforeClose();
             this.$emit('refresh');
           } catch (err) {
             return;

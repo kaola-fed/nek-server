@@ -46,9 +46,11 @@ export default {
         this.mimeType = 'javascript';
       }
       pathArr.unshift(this.sourceCode);
-      this.currentCode = pathArr.reduce((pre, cur) => {
+
+      let code = pathArr.reduce((pre, cur) => {
         return pre[cur];
       });
+      this.currentCode = code.replace(/<\/?ns-empty>/g, '');
     }
   },
   methods: {
