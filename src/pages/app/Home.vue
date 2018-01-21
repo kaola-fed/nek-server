@@ -44,8 +44,8 @@
         </div>
       </el-col>
     </el-row>
-    <project-modal :id="currentProjectId" :visible="projectVisible" @close="onProjectModalClose" @refresh="getProjectList"></project-modal>
-    <library-modal :id="currentLibraryId" :visible="libraryVisible" @close="onLibraryModalClose" @refresh="getLibraryList"></library-modal>
+    <project-modal :id="currentProjectId" :visible.sync="projectVisible" @close="onProjectModalClose" @refresh="getProjectList"></project-modal>
+    <library-modal :id="currentLibraryId" :visible.sync="libraryVisible" @close="onLibraryModalClose" @refresh="getLibraryList"></library-modal>
   </div>
 </template>
 
@@ -143,11 +143,9 @@ export default {
       }
     },
     onProjectModalClose() {
-      this.projectVisible = false;
       this.currentProjectId = null;
     },
     onLibraryModalClose() {
-      this.libraryVisible = false;
       this.currentLibraryId = null;
     }
   }

@@ -158,7 +158,7 @@ export const pageList = async (ctx) => {
     return ctx.body = _.paramsError();
   }
   try {
-    const pages = await PageModel.selectByProject(projectId);
+    const pages = await PageModel.selectByProject(projectId, ctx.query.search);
     return ctx.body = _.success(pages);
   } catch (err) {
     return ctx.body = _.error('获取页面列表失败');
@@ -185,7 +185,7 @@ export const pageDetail = async (ctx) => {
     return ctx.body = _.paramsError();
   }
   try {
-    const pageModel = await PageModel.selectByIdWithKey(pageId);
+    const pageModel = await PageModel.selectByIdWithPop(pageId);
     return ctx.body = _.success(pageModel);
   } catch (err) {
     return ctx.body = _.error('获取页面信息失败');
@@ -209,7 +209,7 @@ export const genList = (projectConfig, pageTitle, config) => {
         jsConfig: {ListPath: projectConfig.listPath, basePath: projectConfig.basePath},
         multiFiles: config.tabsEnable
       });
-      return Object.assign(result, { mixins: { index: '//mixins' } });
+      return result;
     }
     default:
       break;
@@ -240,8 +240,8 @@ export const gen = async (id) => {
 };
 
 export const getTpl = async (id) => {
-  const { url, project } = await PageModel.selectByIdWithPro(id);
-  const result = { ftl: '', entry: '', url, type: project.type };
+  const { url, name, project } = await PageModel.selectByIdWithPro(id);
+  const result = { ftl: '', entry: '', url, name, type: project.type };
   switch (project.type) {
     case ProjectTypes.NEJ:
       result.ftl = project.ftl;

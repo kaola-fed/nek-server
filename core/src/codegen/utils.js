@@ -138,6 +138,7 @@ function genList(vTree, genJSFunc, config) {
     fileName = 'index',
     // mixin位置，false为模块内
     outMixin = false,
+    isNeedMixin = true
   } = config;
 
   const eventSet = new Set();
@@ -182,7 +183,9 @@ function genList(vTree, genJSFunc, config) {
     varMap,
     modules: vTree.subModules,
     moduleName: vTree.moduleName,
+    fileName,
     outMixin,
+    isNeedMixin,
     url
   });
 
@@ -200,6 +203,12 @@ export const buildList = (listConfig, genJSFunc, options) => {
   } = options;
 
   if (listConfig.tabsEnable) {
+    // 不建立多list，删除其他list，只保留第一个list
+    if (!listConfig.multiListEnable) {
+      listConfig.lists.splice(1, listConfig.lists.length - 1);
+    }
+    // 只有一个list时，将mixins放在外层
+    let outMixin = listConfig.lists.length > 1 ? false : true;
     const { pageVNodes, ...vTrees } = transform.rgMulList(pageTitle, listConfig);
     const result = {
       modules: {}
@@ -211,6 +220,7 @@ export const buildList = (listConfig, genJSFunc, options) => {
 
         result.modules[moduleName] = genList(vTree, genJSFunc, {
           root,
+          outMixin,
           url: vTree.url,
           ListPath: jsConfig.ListPath
         });
@@ -220,7 +230,7 @@ export const buildList = (listConfig, genJSFunc, options) => {
     result.index = genList(pageVNodes, genJSFunc, {
       fileName: 'page',
       ListPath: jsConfig.basePath,
-      outMixin: true
+      isNeedMixin: false
     });
 
     return result;
@@ -234,7 +244,7 @@ export const buildList = (listConfig, genJSFunc, options) => {
       url: vTree.url,
       fileName: 'page',
       ListPath: jsConfig.ListPath,
-      outMixin: true
+      isNeedMixin: false
     })
   };
 };

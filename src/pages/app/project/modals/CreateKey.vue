@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="新建NEI key" :visible="visible" @open="handleOpen" size="tiny">
+  <el-dialog title="新建NEI key" :visible.sync="visible" @open="handleOpen" :before-close="handleBeforeClose" size="tiny">
     <el-form :model="form" :rules="rules" ref="form" label-width="80px" label-position="right">
       <el-row>
         <el-col :span="24">
@@ -72,9 +72,13 @@ export default {
         }
       });
     },
-    close() {
+    handleBeforeClose() {
+      this.$emit('update:visible', false);
       this.$emit('close');
       this.$refs.form.resetFields();
+    },
+    close() {
+      this.handleBeforeClose();
     }
   }
 };

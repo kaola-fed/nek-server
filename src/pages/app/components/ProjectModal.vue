@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="!id ? '创建项目' : '编辑项目'" :visible="visible" @open="handleOpen">
+  <el-dialog :title="!id ? '创建项目' : '编辑项目'" :visible.sync="visible" :before-close="handleBeforeClose" @open="handleOpen">
     <el-form :model="form" :rules="rules" ref="form" label-width="110px">
       <el-row>
         <el-col :span="24">
@@ -147,7 +147,7 @@ export default {
               id: this.id,
               ...this.form
             });
-            this.$emit('close');
+            this.handleBeforeClose();
             this.$emit('refresh');
           } catch (err) {
             return;
@@ -155,9 +155,13 @@ export default {
         }
       });
     },
-    close() {
+    handleBeforeClose() {
+      this.$emit('update:visible', false);
       this.$emit('close');
       this.$refs.form.resetFields();
+    },
+    close() {
+      this.handleBeforeClose();
     }
   }
 };

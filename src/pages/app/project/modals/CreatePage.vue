@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog title="新建页面" :visible="visible" @open="handleOpen">
+    <el-dialog title="新建页面" :visible.sync="visible" @open="handleOpen" :before-close="handleBeforeClose">
       <el-form :model="form" :rules="rules" ref="form" label-position="right" label-width="100px">
         <el-row>
           <div class="session-title">基础配置</div>
@@ -40,7 +40,7 @@
         <el-button type="primary" @click="ok">确定</el-button>
       </span>
     </el-dialog>
-    <create-key-modal :projectId="projectId" :visible="createKeyVisible" :modal="false"
+    <create-key-modal :projectId="projectId" :visible.sync="createKeyVisible" :modal="false"
                       @refresh="getNEIKeys" @close="createKeyVisible = false">
     </create-key-modal>
   </div>
@@ -156,9 +156,13 @@ export default {
         }
       });
     },
-    close() {
+    handleBeforeClose() {
+      this.$emit('update:visible', false);
       this.$emit('close');
       this.$refs.form.resetFields();
+    },
+    close() {
+      this.handleBeforeClose();
     }
   }
 };

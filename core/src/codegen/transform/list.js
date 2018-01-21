@@ -31,7 +31,7 @@ function getTabsNode(tabs, title) {
       events: { change: 'onTabChange' },
       children: tabs.map(el => ({
         tagName: 'kl-tab',
-        attributes: { key: el.key }
+        attributes: { key: el.key, title: el.title }
       }))
     }]
   };
@@ -106,7 +106,7 @@ function getSearchItems(filters) {
 
 // 生成搜索区节点
 function getSearchNode(filters, { multiTabs = false, title = '' }) {
-  // 找出最长的label，按一个字宽15px算
+  // 找出最长的label，按一个字宽16px算
   const maxLength = filters.reduce((max, current) => {
     return Math.max(max, current.title.length);
   }, 0);
@@ -117,7 +117,7 @@ function getSearchNode(filters, { multiTabs = false, title = '' }) {
     attributes: multiTabs ? { isShowLine: false, class: 'f-undertab' } : { title },
     children: [{
       tagName: 'kl-form',
-      attributes: { labelSize: maxLength * 15 },
+      attributes: { labelSize: maxLength * 16 },
       children: [{
         tagName: 'kl-search',
         events: { search: 'refresh', reset: 'reset' },
@@ -212,6 +212,7 @@ function getListNodes(config, { title = '', multiTabs = false }) {
     cols.push({
       name: '操作',
       width: '100',
+      fixed: 'right',
       template: `${config.operatorButtons.map((el, index) => {
         return `{'<a href="${el.link}" target="_blank" ${ index > 0 ? 'class="f-ml10"' : ''}>${el.title}</a>'}`;
       }).join('\n')}`
@@ -270,7 +271,7 @@ function getMulListNode(tabs) {
     tabs.forEach((el, index) => {
       const condition = {
         type: index ? ConditionTypes.ELSEIF : ConditionTypes.IF,
-        exp: `tab === ${el.key}`
+        exp: `tab == ${el.key}`
       };
       res.push({ condition });
       res.push({ tagName: el.moduleName });
@@ -281,7 +282,7 @@ function getMulListNode(tabs) {
   }
 
   return {
-    tagName: 'div',
+    tagName: 'ns-empty',
     children: res
   };
 }

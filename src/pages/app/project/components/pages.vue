@@ -5,8 +5,9 @@
       <span class="u-card-title">页面管理</span>
       <el-button class="f-fr f-mb10" type="primary" @click="handleCreate">新建页面</el-button>
     </div>
-    <h2>
-    </h2>
+    <el-row class="f-mb10">
+      <el-input v-model="search" placeholder="url搜索" @change="debounceChange"></el-input>
+    </el-row>
     <div v-loading="loading">
       <el-table striple :data="list" border tooltip-effect="dark">
         <el-table-column align="left" prop="url" label="url" show-overflow-tooltip>
@@ -20,7 +21,11 @@
             {{scope.row.type === 1 ? '列表页' : '编辑页' }}
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="updatedAt" label="更新时间" show-overflow-tooltip></el-table-column>
+        <el-table-column align="center" label="更新时间" show-overflow-tooltip>
+          <template scope="scope">
+            {{ scope.row.updatedAt | moment('YYYY-MM-DD HH:mm:ss') }}
+          </template>
+        </el-table-column>
         <el-table-column align="center" label="操作" fixed="right">
           <template scope="scope">
             <el-button size="small" type="text" @click="handleSetting(scope.row)">设置</el-button>
@@ -31,10 +36,11 @@
       </el-table>
     </div>
   </el-card>
-  <create-page-modal :visible="createPageVisible" :pageId="currentPageId" :projectId="project._id" @refresh="getList" @close="handleCreateClose"></create-page-modal>
+  <create-page-modal :visible.sync="createPageVisible" :pageId="currentPageId" :projectId="project._id" @refresh="getList" @close="handleCreateClose"></create-page-modal>
   </div>
 </template>
 <script>
+import debounce from 'throttle-debounce/debounce';
 import CreatePageModal from '../modals/CreatePage.vue';
 import { getPageList, deletePage } from '@/api/page';
 export default {
@@ -49,8 +55,12 @@ export default {
       createPageVisible: false,
       currentPageId: '',
       loading: false,
-      list: []
+      list: [],
+      search: ''
     };
+  },
+  created() {
+    this.debounceChange = debounce(600, () => this.getList());
   },
   watch: {
     project: function(newValue) {
@@ -64,7 +74,7 @@ export default {
       }
       this.loading = true;
       try {
-        const { data } = await getPageList({ id: this.project._id });
+        const { data } = await getPageList({ id: this.project._id, search: this.search });
         this.list = data;
       } finally {
         this.loading = false;
@@ -79,7 +89,6 @@ export default {
       this.currentPageId = row._id;
     },
     handleCreateClose() {
-      this.createPageVisible = false;
       this.currentPageId = '';
     },
     handleEdit(row) {

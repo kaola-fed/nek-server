@@ -32,14 +32,17 @@ schema.statics = {
   async selectById(_id) {
     return await this.findOne({ _id });
   },
-  async selectByProject(project) {
-    return await this.find({ project });
+  async selectByProject(project, search) {
+    return await this.find({ project, url: { $regex: search, $options: 'i' } });
   },
   async selectByIdWithPro(_id) {
     return await this.findOne({ _id }).populate('project').select('url name type project');
   },
   async selectByIdWithKey(_id) {
     return await this.findOne({ _id }).populate('key').select('url name type key');
+  },
+  async selectByIdWithPop(_id) {
+    return await this.findOne({ _id }).populate('key project').select('url name dom type key project');
   },
   async deleteById(_id) {
     return await this.remove({ _id });
@@ -54,7 +57,8 @@ schema.statics = {
     return await this.update({ _id }, {
       url: page.url,
       name: page.name,
-      type: page.type
+      type: page.type,
+      key: page.key
     });
   },
   async selectByUrl(url) {

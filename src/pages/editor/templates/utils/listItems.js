@@ -16,19 +16,20 @@ export const newBreadcrumbItem = () => {
   };
 };
 
-export const newTabItem = (key) => {
+export const newTabItem = (key = 0) => {
+  const count = key + 1;
   return {
     id: NSNode.generateId(),
-    title: '',
-    key: key || '',
+    title: `tab${count}`,
+    key: count || '',
     url: ''
   };
 };
 
-export const newListConfigItem = () => {
+export const newListConfigItem = (index) => {
+  const moduleName = index ? `list${index + 1}` : 'list';
   return {
-    module: false,
-    moduleName: '',
+    moduleName,
     filters: [],
     buttons: [],
     cols: [],

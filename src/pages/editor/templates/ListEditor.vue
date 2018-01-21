@@ -23,10 +23,15 @@
           </el-collapse-item>
 
           <el-collapse-item title="多Tab" name="tabs" class="m-config-tabs">
-            <el-switch v-model="multiTabEnable" class="f-mb10" on-text="启用" off-text="停用" @change="onMultiTabEnableChange"></el-switch>
+            <el-row class="f-mb10">
+              <span class="f-mr10">启用多tab</span>
+              <el-switch v-model="multiTabEnable" on-text="是" off-text="否" @change="onMultiTabEnableChange"></el-switch>
+              <span class="f-mr10">建立多模块</span>
+              <el-switch v-model="multiListEnable" :disabled="!multiTabEnable" on-text="是" off-text="否"></el-switch>
+            </el-row>
             <template v-if="multiTabEnable">
               <el-row v-for="(item, index) in multiTabs" :key="item.id + index" :gutter="20">
-                <el-col :span="2"><label class="el-form-item__label">Tab {{ index }}</label></el-col>
+                <el-col :span="2"><label class="el-form-item__label">Tab {{ index+1 }}</label></el-col>
                 <el-col :span="8"><el-input placeholder="标题" v-model="item.title"></el-input></el-col>
                 <el-col :span="8"><el-input placeholder="Tab key（可选）" v-model="item.key"></el-input></el-col>
                 <el-col :span="6">
@@ -52,8 +57,9 @@
                 :key="item.id + index"
                 :label="item.title || `Tab ${index}`"
                 :name="`${index}`"
+                :disabled="!multiListEnable"
               >
-                <list-config v-model="listConfigs[index]"></list-config>
+                <list-config v-model="listConfigs[index]" :multiListEnable="multiListEnable"></list-config>
               </el-tab-pane>
             </el-tabs>
             <div v-else>
@@ -64,6 +70,7 @@
       </side-bar>
     </div>
     <preview-button></preview-button>
+    <code-modal :visible.sync="codeModalVisible" :title="pageInfo.title"></code-modal>
   </div>
 </template>
 
@@ -77,6 +84,7 @@ import ToolsBar from '../components/ToolsBar.vue';
 import SideBar from '../components/SideBar.vue';
 import ListConfig from './components/ListConfig.vue';
 import PreviewButton from '../components/PreviewButton.vue';
+import CodeModal from '../modals/code.vue';
 
 import * as listItems from './utils/listItems';
 
@@ -92,7 +100,8 @@ export default {
     ToolsBar,
     SideBar,
     ListConfig,
-    PreviewButton
+    PreviewButton,
+    CodeModal
   },
   created() {
     // 点击预览区的链接时阻止转跳
@@ -137,6 +146,7 @@ export default {
     const { data } = await getListTemplate({ id: this.$route.query.id });
     this.setBreadcrumbs(data.breadcrumbs);
     this.multiTabEnable = !!data.tabsEnable;
+    this.multiListEnable = !!data.multiListEnable;
     this.setTabs(data.tabs);
     this.setCols(data.lists);
     // this.url = data.url || '';
@@ -232,6 +242,10 @@ export default {
           tip: '刷新预览区',
           icon: 'iconfont-refresh',
           onClick: () => this.updatePreview()
+        }, {
+          tip: '代码预览',
+          icon: 'iconfont-code',
+          onClick: () => this.previewCode()
         }
       ],
 
@@ -239,7 +253,8 @@ export default {
 
       breadcrumbs: [listItems.newBreadcrumbItem()],
 
-      multiTabEnable: null,
+      multiTabEnable: null, //是否多tab
+      multiListEnable: false, //是否多个list
       multiTabs: [listItems.newTabItem()],
       copyTab: -1,
 
@@ -248,8 +263,10 @@ export default {
       needUpdate: false,
       //列表页名称
       pageName: '',
+      pageInfo: {},
       // 列表请求URL
-      url: ''
+      url: '',
+      codeModalVisible: false
     };
   },
   computed: {
@@ -334,7 +351,7 @@ export default {
     },
     onAddTabClick() {
       this.multiTabs.push(listItems.newTabItem(this.multiTabs.length));
-      this.listConfigs.push(listItems.newListConfigItem());
+      this.listConfigs.push(listItems.newListConfigItem(this.listConfigs.length));
     },
     async onDeleteTabClick(index) {
       if (this.multiTabs.length < 2) {
@@ -428,7 +445,14 @@ export default {
       }
     },
     async onSave() {
-
+      // 判断模块名是否重复
+      const moduleNames = this.listConfigs.map(list => list.moduleName);
+      // 数组去重，比较长度
+      const newModuleNames = [...new Set(moduleNames)];
+      if (moduleNames.length !== newModuleNames.length) {
+        this.$message({ message: '请检查模块名是否重复', type: 'warning' });
+        return;
+      }
       // TODO: 校验
       try {
         if (this.saveNotify) {
@@ -491,9 +515,9 @@ export default {
       const domObj = {
         breadcrumbs: this.breadcrumbs,
         tabsEnable: this.multiTabEnable,
+        multiListEnable: this.multiListEnable,
         tabs: this.multiTabs,
         lists: this.listConfigs,
-        // url: this.url
       };
       try {
         await updatePageDom({ id: this.$route.query.id, dom: JSON.stringify(domObj) });
@@ -504,6 +528,11 @@ export default {
 
     updatePreview() {
       this.$nsVNodes.$update({ rerender: true, outter: false });
+    },
+
+    previewCode() {
+      this.saveDomJson();
+      this.codeModalVisible = true;
     },
 
     /* debounce watchers */

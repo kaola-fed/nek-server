@@ -11,6 +11,7 @@ const genWebpackJs = (options) => {
     moduleName = '',
     fileName = 'index',
     outMixin = false,
+    isNeedMixin = true
     url = ''
   } = options;
   // 基类名称
@@ -19,9 +20,17 @@ const genWebpackJs = (options) => {
 
   //事件函数
   let eventStr = '';
-  eventSet.forEach(el => eventStr += `${el}(event) {
-      console.log(event);
-  },`);
+  eventSet.forEach((el) => {
+    if (el === 'onTabChange') {
+      eventStr += `${el}(event) {
+        this.data.tab = event.key;
+      },`;
+    } else {
+      eventStr += `${el}(event) {
+        console.log(event);
+      },`;
+    }
+  });
 
   let dataStr = '';
   varMap.forEach((value, key) => dataStr += `${key}: ${value},\n`);
@@ -36,14 +45,18 @@ const genWebpackJs = (options) => {
   // 声明模块
   let componentsStr = '';
   modules.forEach((el) => {
-    modulesStr += `import ${el.name} from './modules/${el.name}/index.js';\n`;
-    componentsStr += `.component('${el.name}', ${el.name})\n`;
+    modulesStr += `import ${el} from './modules/${el}/index.js';\n`;
+    componentsStr += `.component('${el}', ${el})\n`;
   });
+
+  let mixinStr = isNeedMixin ?
+      `import ListActionMixin from '${outMixin ? '../../' : './'}mixins/list.action.js';`
+    : '';
 
   const js = `import ${name} from '${basePath}';
 
   import template from './${fileName}.html';
-  import ListActionMixin from '${outMixin ? '../../' : './mixins/'}${moduleName}.action.js';
+  ${mixinStr}
   ${modulesStr}
 
   export default ${name}.extend({
@@ -55,7 +68,8 @@ const genWebpackJs = (options) => {
           });
           this.supr(data);
       },
-  }).use(ListActionMixin)${componentsStr};
+      ${isNeedMixin ? '' : `${eventStr}`}
+  })${isNeedMixin ? '.use(ListActionMixin)' : ''}${componentsStr};
   `;
 
   const mixin = `export default (Component) => {

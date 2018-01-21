@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="新建组件" :visible="visible" @open="handleOpen">
+  <el-dialog title="新建组件" :visible.sync="visible" @open="handleOpen" :before-close="handleBeforeClose">
     <el-form :model="form" :rules="rules" ref="form" label-width="80px">
       <el-row :gutter="40">
         <el-col :span="8">
@@ -132,10 +132,14 @@ export default {
         }
       });
     },
-    close() {
+    handleBeforeClose() {
+      this.$emit('update:visible', false);
       this.$emit('close');
       this.$refs.form.resetFields();
       this.form.attributes = [{ name: '', type: 'string', default: ''}];
+    },
+    close() {
+      this.handleBeforeClose();
     },
     async handleOpen() {
       if(!this.componentId) {
