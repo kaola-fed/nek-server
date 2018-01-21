@@ -2,13 +2,15 @@ import * as util from './utils';
 
 const genNEJJS = (options) => {
   const {
+    utilPath = 'pro/base/util',
     basePath = 'pro/widget/BaseComponent',
     modules = [],
     eventSet = new Set(),
     varMap = new Map(),
     moduleName = '',
     fileName = 'index',
-    outMixin = false
+    outMixin = false,
+    url = ''
   } = options;
 
   // 基类名称
@@ -26,16 +28,16 @@ const genNEJJS = (options) => {
   const moduleStr = modules.length ? `\n    ${modules.map(el => `'./${el}/index.js',`).join('\n')}` : '';
 
   const js = `NEJ.define([
-    'pro/base/util',
+    '${utilPath}',
     '${basePath}',
     'text!./${fileName}.html',
     '${outMixin ? '../../' : './mixins/'}${moduleName}.action.js',${moduleStr}
 ], function(_, ${baseName}, tpl, ListActionMixin) {
     return ${baseName}.extend({
         name: '${moduleName}',
-        template: _.compressHtml(tpl),
+        template: tpl,${url ? `\nurl: '${url}',` : ''}
         config: function(data) {
-            this.defaults({
+            _.extend(data, {
             ${dataStr}});
             this.supr(data);
         },

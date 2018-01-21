@@ -1,7 +1,10 @@
 <template>
   <el-dialog :title="!id ? '创建项目' : '编辑项目'" :visible="visible" @open="handleOpen">
-    <el-form :model="form" :rules="rules" ref="form" label-width="100px">
+    <el-form :model="form" :rules="rules" ref="form" label-width="110px">
       <el-row>
+        <el-col :span="24">
+          <h3>基础设置</h3>
+        </el-col>
         <el-col :span="12">
           <el-form-item label="项目名称" prop="name">
             <el-input v-model="form.name"></el-input>
@@ -33,21 +36,40 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
-          <el-form-item label="BaseComponent" prop="basePath">
-            <el-input v-model="form.basePath"></el-input>
-          </el-form-item>
+      </el-row>
+
+      <el-row>
+        <el-col :span="24">
+          <h3 class="m-other-setting" @click="moreConfig = !moreConfig">
+            其他设置
+            <small>
+              <i v-if="moreConfig" class="el-icon-arrow-down"></i>
+              <i v-else class="el-icon-arrow-right"></i>
+            </small>
+          </h3>
         </el-col>
-        <el-col :span="12">
-          <el-form-item label="ListComponent" prop="listPath">
-            <el-input v-model="form.listPath"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="BaseModal" prop="modalPath">
-            <el-input v-model="form.modalPath"></el-input>
-          </el-form-item>
-        </el-col>
+        <template v-if="moreConfig">
+          <el-col :span="12">
+            <el-form-item label="BaseComponent" prop="basePath">
+              <el-input v-model="form.basePath"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="ListComponent" prop="listPath">
+              <el-input v-model="form.listPath"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="BaseModal" prop="modalPath">
+              <el-input v-model="form.modalPath"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="Util path" prop="utilPath">
+              <el-input v-model="form.utilPath"></el-input>
+            </el-form-item>
+          </el-col>
+        </template>
       </el-row>
     </el-form>
   <span slot="footer" class="dialog-footer">
@@ -78,7 +100,8 @@ export default {
         library: '',
         basePath: 'pro/widget/BaseComponent',
         listPath: 'pro/components/ListComponent',
-        modalPath: 'pro/components/modal/modal'
+        modalPath: 'pro/components/modal/modal',
+        utilPath: 'pro/base/util'
       },
       rules: {
         name: required('项目名称'),
@@ -86,13 +109,15 @@ export default {
         library: required('组件库', 'change'),
         basePath: required('BaseComponent'),
         listPath: required('ListComponent'),
-        modalPath: required('BaseModal')
+        modalPath: required('BaseModal'),
+        utilPath: required('Util path')
       },
       types: [
         {id: ProjectTypes.NEJ, name: 'nej老项目'},
         {id: ProjectTypes.Webpack, name: 'webpack单页'}
       ],
-      libraries: []
+      libraries: [],
+      moreConfig: false
     };
   },
   methods: {
@@ -139,4 +164,9 @@ export default {
 </script>
 
 <style scoped>
+  .m-other-setting {
+    display: inline-block;
+    cursor: pointer;
+    user-select: none;
+  }
 </style>

@@ -10,7 +10,8 @@ const genWebpackJs = (options) => {
     modules = [],
     moduleName = '',
     fileName = 'index',
-    outMixin = false
+    outMixin = false,
+    url = ''
   } = options;
   // 基类名称
   const tmp = basePath.split('/');
@@ -47,7 +48,7 @@ const genWebpackJs = (options) => {
 
   export default ${name}.extend({
       ${listModuleName}
-      template,
+      template,${url ? `url: '${url}'` : ''}
       config(data) {
           this.defaults({
               ${dataStr}

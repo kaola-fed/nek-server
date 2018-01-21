@@ -157,7 +157,6 @@ function genList(vTree, genJSFunc, config) {
   };
   // url存在，设置mock数据
   if (url) {
-    varMap.set('url', `'${url}'`);
     mock.data.list = genMockData(vTree.cols);
     mock = JSON.stringify(mock);
   } else {
@@ -183,7 +182,8 @@ function genList(vTree, genJSFunc, config) {
     varMap,
     modules: vTree.subModules,
     moduleName: vTree.moduleName,
-    outMixin
+    outMixin,
+    url
   });
 
   return { js, mixin, html, url, mock };

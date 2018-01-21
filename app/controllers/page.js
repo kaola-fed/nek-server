@@ -199,7 +199,8 @@ export const genList = (projectConfig, pageTitle, config) => {
         pageTitle,
         jsConfig: {
           ListPath: projectConfig.listPath,
-          basePath: projectConfig.basePath
+          basePath: projectConfig.basePath,
+          utilPath: projectConfig.utilPath
         }
       });
     case ProjectTypes.Webpack: {
