@@ -198,6 +198,7 @@ export const buildList = (listConfig, genJSFunc, options) => {
     root = '0',
     // 页面标题，显示在card上
     pageTitle = '',
+    fileName,
     // js代码生成相关配置
     jsConfig = {}
   } = options;
@@ -228,7 +229,7 @@ export const buildList = (listConfig, genJSFunc, options) => {
     }
 
     result.index = genList(pageVNodes, genJSFunc, {
-      fileName: 'page',
+      fileName,
       ListPath: jsConfig.basePath,
       isNeedMixin: false
     });
@@ -242,7 +243,7 @@ export const buildList = (listConfig, genJSFunc, options) => {
     [vTree.moduleName]: genList(vTree, genJSFunc, {
       root,
       url: vTree.url,
-      fileName: 'page',
+      fileName,
       ListPath: jsConfig.ListPath,
       isNeedMixin: false
     })

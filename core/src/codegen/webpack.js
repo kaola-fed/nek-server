@@ -11,7 +11,7 @@ const genWebpackJs = (options) => {
     moduleName = '',
     fileName = 'index',
     outMixin = false,
-    isNeedMixin = true
+    isNeedMixin = true,
     url = ''
   } = options;
   // 基类名称
@@ -61,7 +61,7 @@ const genWebpackJs = (options) => {
 
   export default ${name}.extend({
       ${listModuleName}
-      template,${url ? `url: '${url}'` : ''}
+      template,${url ? `url: '${url}',` : ''}
       config(data) {
           this.defaults({
               ${dataStr}
@@ -82,5 +82,6 @@ const genWebpackJs = (options) => {
 };
 
 export const buildList = (listConfig, options) => {
+  options.fileName = 'index';
   return util.buildList(listConfig, genWebpackJs, options);
 };

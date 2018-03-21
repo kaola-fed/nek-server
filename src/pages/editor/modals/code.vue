@@ -39,18 +39,17 @@ export default {
   },
   watch: {
     activeMenu(newVal) {
-      const pathArr = newVal.split('.');
+      const pathArr = newVal.split('/');
       if (pathArr.slice(-1) == 'html') {
         this.mimeType = 'html';
       } else {
         this.mimeType = 'javascript';
       }
       pathArr.unshift(this.sourceCode);
-
       let code = pathArr.reduce((pre, cur) => {
         return pre[cur];
       });
-      this.currentCode = code.replace(/<\/?ns-empty>/g, '');
+      this.currentCode = code && code.replace(/<\/?ns-empty>/g, '');
     }
   },
   methods: {
@@ -85,7 +84,7 @@ export default {
 
         }
         this.handleCode(this.sourceCode, data.project.type);
-        this.activeMenu = 'index.html';
+        this.activeMenu = 'index/html';
         this.loading = false;
       } catch (err) {
         this.loading = false;
@@ -122,12 +121,12 @@ export default {
         }
         modulesMenu.items.push({
           name: 'page.js',
-          key: 'index.js',
+          key: 'index/js',
           icon: 'js'
         });
         modulesMenu.items.push({
           name: 'page.html',
-          key: 'index.html',
+          key: 'index/html',
           icon: 'html'
         });
       }
@@ -137,12 +136,12 @@ export default {
       if (code.index) {
         this.menus.push({
           name: 'index.js',
-          key: 'index.js',
+          key: 'index/js',
           icon: 'js'
         });
         this.menus.push({
           name: 'index.html',
-          key: 'index.html',
+          key: 'index/html',
           icon: 'html'
         });
       }
@@ -156,18 +155,18 @@ export default {
             if (['js', 'html'].indexOf(vk) > -1) {
               its.push({
                 name: `index.${vk}`,
-                key: `modules.${k}.${vk}`,
+                key: `modules/${k}/${vk}`,
                 icon: vk
               });
             } else if (vk == 'mixin') {
               const mixin = {
                 name: 'mixins',
-                key: `modules.${k}.${vk}`,
+                key: `modules/${k}/${vk}`,
                 icon: 'folder',
                 items: [
                   {
                     name: 'list.action.js',
-                    key: `modules.${k}.${vk}`,
+                    key: `modules/${k}/${vk}`,
                     icon: 'js'
                   }
                 ]

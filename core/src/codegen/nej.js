@@ -69,5 +69,6 @@ const genNEJJS = (options) => {
 };
 
 export const buildList = (listConfig, options) => {
+  options.fileName = 'page';
   return util.buildList(listConfig, genNEJJS, options);
 };
